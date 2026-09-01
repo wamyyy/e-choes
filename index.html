@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NexSole — Discover premium sneakers, boots, and footwear crafted for comfort, durability, and timeless elegance. Shop the latest collections from top brands.">
+  <meta property="og:title" content="NexSole | Premium Footwear Store">
+  <meta property="og:description" content="Step into premium footwear. Shop sneakers, boots, formal shoes and more at NexSole.">
+  <title>NexSole | Premium Footwear Store</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    /* Critical inline styles for immediate render */
+    body { visibility: visible; }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== LOADING SCREEN ==================== -->
+  <div id="loading-screen" role="status" aria-label="Loading NexSole">
+    <div class="loading-logo">Nex<span>Sole</span></div>
+    <div class="loading-bar-container">
+      <div class="loading-bar"></div>
+    </div>
+  </div>
+
+  <!-- ==================== HEADER ==================== -->
+  <header id="site-header" role="banner">
+    <div class="container">
+      <nav class="nav-inner" role="navigation" aria-label="Main navigation">
+
+        <!-- Logo -->
+        <a href="#hero" class="nav-logo" aria-label="NexSole Home">
+          Nex<span>Sole</span>
+        </a>
+
+        <!-- Desktop Nav Links -->
+        <ul class="nav-links" role="list">
+          <li><a href="#hero"       class="nav-link active">Home</a></li>
+          <li><a href="#categories" class="nav-link">Men</a></li>
+          <li><a href="#categories" class="nav-link">Women</a></li>
+          <li><a href="#brands"     class="nav-link">Brands</a></li>
+          <li><a href="#site-footer" class="nav-link">About Us</a></li>
+        </ul>
+
+        <!-- Nav Actions -->
+        <div class="nav-actions">
+          <!-- Search -->
+          <button class="nav-icon-btn search-btn" aria-label="Search products" id="search-toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </button>
+
+          <!-- User -->
+          <button class="nav-icon-btn" aria-label="Account" id="user-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </button>
+
+          <!-- Cart -->
+          <button class="nav-icon-btn cart-btn" aria-label="Open cart" id="cart-toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 01-8 0"/>
+            </svg>
+            <span class="cart-badge" aria-live="polite" aria-label="Items in cart">0</span>
+          </button>
+
+          <!-- Hamburger -->
+          <button class="hamburger" aria-label="Toggle mobile menu" aria-expanded="false" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+
+      </nav>
+    </div>
+  </header>
+
+  <!-- ==================== MOBILE MENU ==================== -->
+  <nav class="mobile-menu" aria-label="Mobile navigation" id="mobile-menu">
+    <ul class="mobile-nav-links" role="list">
+      <li><a href="#hero"        class="mobile-nav-link">Home <span>→</span></a></li>
+      <li><a href="#categories"  class="mobile-nav-link">Men <span>→</span></a></li>
+      <li><a href="#categories"  class="mobile-nav-link">Women <span>→</span></a></li>
+      <li><a href="#brands"      class="mobile-nav-link">Brands <span>→</span></a></li>
+      <li><a href="#site-footer" class="mobile-nav-link">About Us <span>→</span></a></li>
+      <li><a href="#site-footer" class="mobile-nav-link">Contact <span>→</span></a></li>
+    </ul>
+    <div class="mobile-menu-footer">
+      <a href="#categories" class="btn btn-primary" style="width:100%;justify-content:center;">
+        Shop Now →
+      </a>
+    </div>
+  </nav>
+
+  <!-- ==================== SEARCH OVERLAY ==================== -->
+  <div class="search-overlay" id="search-overlay" role="dialog" aria-label="Search" aria-modal="true">
+    <div class="search-box">
+      <div class="search-input-wrapper">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          type="search"
+          id="search-input"
+          placeholder="Search for sneakers, boots, brands..."
+          autocomplete="off"
+          aria-label="Search products"
+        >
+        <button class="search-close" aria-label="Close search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main id="main-content">
+
+    <!-- ===== HERO ===== -->
+    <section id="hero" aria-labelledby="hero-headline">
+
+      <!-- Decorative background elements -->
+      <div class="hero-bg-element" aria-hidden="true"></div>
+      <div class="hero-dot-grid" aria-hidden="true"></div>
+      <div class="hero-circle hero-circle-1" aria-hidden="true"></div>
+      <div class="hero-circle hero-circle-2" aria-hidden="true"></div>
+
+      <div class="container">
+        <div class="hero-inner">
+
+          <!-- Content -->
+          <div class="hero-content">
+
+            <!-- Rating badge -->
+            <div class="hero-rating" aria-label="4.9 star rating with 10,000 plus trusted customers">
+              <div class="hero-rating-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </div>
+              <span class="hero-rating-stars" aria-hidden="true">★★★★★</span>
+              <div>
+                <div class="hero-rating-text">4.9 Rating</div>
+                <div class="hero-rating-sub">10K+ Trusted Customers</div>
+              </div>
+            </div>
+
+            <!-- Headline -->
+            <h1 class="hero-headline" id="hero-headline">
+              SHOES<br>
+              THAT<br>
+              <span class="accent">MOVE</span><br>
+              <span class="outline-text">YOU</span>
+            </h1>
+
+            <!-- Description -->
+            <p class="hero-desc">
+              Discover premium sneakers crafted to support your everyday movement. Style meets performance in every sole.
+            </p>
+
+            <!-- CTA -->
+            <div class="hero-cta">
+              <a href="#categories" class="btn btn-primary btn-arrow">
+                Explore Shoes <span class="arrow">→</span>
+              </a>
+              <a href="#best-collection" class="btn btn-outline btn-arrow">
+                Best Collection <span class="arrow">→</span>
+              </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="hero-stats" aria-label="Store statistics">
+              <div class="hero-stat">
+                <span class="hero-stat-num">50K+</span>
+                <span class="hero-stat-label">Products Sold</span>
+              </div>
+              <div class="hero-stat">
+                <span class="hero-stat-num">200+</span>
+                <span class="hero-stat-label">Brands Available</span>
+              </div>
+              <div class="hero-stat">
+                <span class="hero-stat-num">98%</span>
+                <span class="hero-stat-label">Happy Customers</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Visual -->
+          <div class="hero-visual" aria-hidden="true">
+            <div class="hero-sneaker-wrapper" id="hero-sneaker">
+
+              <!-- Floating badges -->
+              <div class="hero-badge hero-badge-1">
+                <div class="hero-badge-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                </div>
+                <div class="hero-badge-text">
+                  <strong>Premium Quality</strong>
+                  <span>Top-rated sneakers</span>
+                </div>
+              </div>
+
+              <img
+                src="images/18198879-d042-443b-9fa8-4157e94777e8.JPG"
+                alt="Adidas Samba OG Cloud White Core Black"
+                class="hero-sneaker-img"
+                width="540"
+                height="480"
+                loading="eager"
+                fetchpriority="high"
+                style="object-fit: contain; mix-blend-mode: multiply;"
+              >
+              <div class="hero-sneaker-shadow"></div>
+
+              <div class="hero-badge hero-badge-2">
+                <div class="hero-badge-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </div>
+                <div class="hero-badge-text">
+                  <strong>Free Shipping</strong>
+                  <span>On all orders over $80</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Scroll hint -->
+      <div class="hero-scroll-hint" aria-hidden="true">
+        <span>Scroll</span>
+        <div class="scroll-line"></div>
+      </div>
+
+    </section>
+
+    <!-- ===== TRUST BAR ===== -->
+    <section id="trust-bar" aria-label="Our services">
+      <div class="container">
+        <div class="trust-bar-inner">
+
+          <div class="trust-item">
+            <div class="trust-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13"/>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                <circle cx="5.5" cy="18.5" r="2.5"/>
+                <circle cx="18.5" cy="18.5" r="2.5"/>
+              </svg>
+            </div>
+            <div class="trust-text">
+              <div class="trust-title">Free Shipping</div>
+              <div class="trust-subtitle">On orders over $80</div>
+            </div>
+          </div>
+
+          <div class="trust-item">
+            <div class="trust-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.79 19.79 0 01.22 2.2 2 2 0 012.12 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.06 6.06l1.27-.86a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+              </svg>
+            </div>
+            <div class="trust-text">
+              <div class="trust-title">24/7 Customer Support</div>
+              <div class="trust-subtitle">Always here for you</div>
+            </div>
+          </div>
+
+          <div class="trust-item">
+            <div class="trust-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="1 4 1 10 7 10"/>
+                <path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+              </svg>
+            </div>
+            <div class="trust-text">
+              <div class="trust-title">10-Day Easy Returns</div>
+              <div class="trust-subtitle">Hassle-free returns</div>
+            </div>
+          </div>
+
+          <div class="trust-item">
+            <div class="trust-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0110 0v4"/>
+              </svg>
+            </div>
+            <div class="trust-text">
+              <div class="trust-title">100% Secure Payment</div>
+              <div class="trust-subtitle">Your data is protected</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== BRANDS ===== -->
+    <section id="brands" class="section" aria-labelledby="brands-title">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label reveal">Our Partners</span>
+          <h2 class="section-title reveal reveal-delay-1" id="brands-title">
+            Recognized by <span>Iconic Brands</span>
+          </h2>
+        </div>
+        <div class="brands-grid" role="list" aria-label="Partner brands">
+          <div class="brand-item reveal" role="listitem"><span class="brand-name">Nike</span></div>
+          <div class="brand-item reveal reveal-delay-1" role="listitem"><span class="brand-name">Adidas</span></div>
+          <div class="brand-item reveal reveal-delay-2" role="listitem"><span class="brand-name">PUMA</span></div>
+          <div class="brand-item reveal reveal-delay-3" role="listitem"><span class="brand-name">Reebok</span></div>
+          <div class="brand-item reveal reveal-delay-1" role="listitem"><span class="brand-name">New Balance</span></div>
+          <div class="brand-item reveal reveal-delay-2" role="listitem"><span class="brand-name">Converse</span></div>
+          <div class="brand-item reveal reveal-delay-3" role="listitem"><span class="brand-name">Vans</span></div>
+          <div class="brand-item reveal reveal-delay-4" role="listitem"><span class="brand-name">ASICS</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PRODUCT CATEGORIES ===== -->
+    <section id="categories" class="section" aria-labelledby="categories-title">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label reveal">Curated Collections</span>
+          <h2 class="section-title reveal reveal-delay-1" id="categories-title">
+            Our <span>Shoe Collections</span>
+          </h2>
+          <p class="section-desc reveal reveal-delay-2">
+            Browse through our authentic shoes with complete multi-angle photo galleries for every style.
+          </p>
+        </div>
+
+        <div class="categories-inner">
+
+          <!-- Category Nav -->
+          <aside class="category-nav" aria-label="Product categories">
+            <div class="category-nav-title">Filter By Model</div>
+            <button class="category-btn active" data-category="all">
+              All Shoes <span class="category-count">19</span>
+            </button>
+            <button class="category-btn" data-category="samba">
+              Adidas Samba <span class="category-count">6</span>
+            </button>
+            <button class="category-btn" data-category="campus">
+              Adidas Campus <span class="category-count">5</span>
+            </button>
+            <button class="category-btn" data-category="af1">
+              Nike Air Force 1 <span class="category-count">8</span>
+            </button>
+            <button class="category-btn" data-category="adidas">
+              All Adidas <span class="category-count">11</span>
+            </button>
+            <button class="category-btn" data-category="nike">
+              All Nike <span class="category-count">8</span>
+            </button>
+          </aside>
+
+          <!-- Product Area -->
+          <div class="product-area">
+            <div class="product-grid" id="product-grid" role="list" aria-label="Products">
+              <!-- Populated by JS -->
+              <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #888;">
+                Loading shoes...
+              </div>
+            </div>
+
+            <!-- Load More Button Container -->
+            <div class="load-more-container" id="load-more-container" style="text-align: center; margin-top: 2.5rem; display: none;">
+              <button class="btn btn-outline btn-arrow load-more-btn" id="load-more-btn" aria-label="Load more shoes">
+                Load More Shoes <span class="arrow">↓</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== COUNTDOWN / PROMO BANNER ===== -->
+    <section id="countdown-section" aria-labelledby="countdown-title">
+      <div class="countdown-bg" aria-hidden="true">
+        <img
+          src="images/18198879-d042-443b-9fa8-4157e94777e8.JPG"
+          alt=""
+          class="countdown-bg-img"
+          loading="lazy"
+          aria-hidden="true"
+        >
+        <div class="countdown-bg-overlay"></div>
+      </div>
+
+      <div class="container">
+        <div class="countdown-inner">
+
+          <div class="countdown-content">
+            <div class="countdown-label">Limited Time Drop</div>
+            <h2 class="countdown-title" id="countdown-title">
+              Special Release<br>Collection
+            </h2>
+            <p class="countdown-desc">
+              Authentic Adidas Samba OG, Campus 00s & Nike Air Force 1 collections. Explore all photos and secure your pair today.
+            </p>
+
+            <div class="countdown-timer" aria-live="polite" aria-label="Sale countdown timer">
+              <div class="countdown-unit">
+                <div class="countdown-number" id="cd-days">02</div>
+                <div class="countdown-unit-label">Days</div>
+              </div>
+              <div class="countdown-separator" aria-hidden="true">:</div>
+              <div class="countdown-unit">
+                <div class="countdown-number" id="cd-hours">21</div>
+                <div class="countdown-unit-label">Hours</div>
+              </div>
+              <div class="countdown-separator" aria-hidden="true">:</div>
+              <div class="countdown-unit">
+                <div class="countdown-number" id="cd-mins">44</div>
+                <div class="countdown-unit-label">Minutes</div>
+              </div>
+              <div class="countdown-separator" aria-hidden="true">:</div>
+              <div class="countdown-unit">
+                <div class="countdown-number" id="cd-secs">54</div>
+                <div class="countdown-unit-label">Seconds</div>
+              </div>
+            </div>
+
+            <a href="#categories" class="btn btn-primary btn-arrow">
+              Explore Collection <span class="arrow">→</span>
+            </a>
+          </div>
+
+          <div class="countdown-visual" aria-hidden="true">
+            <img
+              src="images/03e0972f-72d5-421d-8f0c-d4219e495966.JPG"
+              alt=""
+              class="countdown-sneaker-img"
+              loading="lazy"
+              style="object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4)); background: #fff; border-radius: 16px; padding: 10px;"
+            >
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== BEST COLLECTION ===== -->
+    <section id="best-collection" class="section" aria-labelledby="collection-title">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label reveal">Featured</span>
+          <h2 class="section-title reveal reveal-delay-1" id="collection-title">
+            Our Best <span>Collection</span>
+          </h2>
+          <p class="section-desc reveal reveal-delay-2">
+            Handpicked styles from our premium collection — the shoes everyone's talking about.
+          </p>
+        </div>
+
+        <div class="product-grid" id="collection-grid" role="list" aria-label="Featured products">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Load More Button -->
+        <div class="load-more-container" id="collection-load-more" style="text-align: center; margin-top: 2.5rem; display: none;">
+          <button class="btn btn-outline btn-arrow load-more-btn" id="collection-load-more-btn" aria-label="Load more featured shoes">
+            View All Shoes <span class="arrow">↓</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== EDITORIAL / STYLE SECTION ===== -->
+    <section id="editorial" class="section" aria-labelledby="editorial-title">
+      <div class="container">
+        <div class="editorial-inner">
+
+          <div class="editorial-content">
+            <span class="section-label reveal">Style Favorites</span>
+            <h2 class="editorial-title reveal reveal-delay-1" id="editorial-title">
+              Big Savings on<br><span class="accent">Must-Have</span><br>Styles
+            </h2>
+            <p class="editorial-desc reveal reveal-delay-2">
+              Step up your look with our most popular designs, thoughtfully crafted for lasting comfort and modern style. Fashion that moves with you.
+            </p>
+            <div class="reveal reveal-delay-3">
+              <a href="#categories" class="btn btn-primary btn-arrow">
+                Explore More <span class="arrow">→</span>
+              </a>
+            </div>
+
+            <!-- Mini Stats -->
+            <div style="display:flex; gap: 2rem; margin-top: 1.5rem; flex-wrap: wrap;">
+              <div class="reveal reveal-delay-4">
+                <div style="font-size: 1.5rem; font-weight: 800; color: var(--clr-dark);">500+</div>
+                <div style="font-size: 0.8rem; color: var(--clr-gray-500);">New Arrivals</div>
+              </div>
+              <div class="reveal reveal-delay-5">
+                <div style="font-size: 1.5rem; font-weight: 800; color: var(--clr-dark);">40%</div>
+                <div style="font-size: 0.8rem; color: var(--clr-gray-500);">Off Sale Items</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Collage — populated by JS -->
+          <div class="editorial-visual" id="editorial-visual" aria-label="Style editorial photos">
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer id="site-footer" role="contentinfo">
+    <div class="footer-main">
+      <div class="container">
+        <div class="footer-grid">
+
+          <!-- Brand -->
+          <div class="footer-brand">
+            <div class="footer-logo">Nex<span>Sole</span></div>
+            <p class="footer-desc">
+              Discover premium footwear crafted for comfort, durability, and timeless elegance — perfect for every step of your journey.
+            </p>
+            <div class="social-links" aria-label="Social media links">
+              <!-- Instagram -->
+              <a href="#" class="social-link" aria-label="Instagram">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                  <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                </svg>
+              </a>
+              <!-- Facebook -->
+              <a href="#" class="social-link" aria-label="Facebook">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+                </svg>
+              </a>
+              <!-- X / Twitter -->
+              <a href="#" class="social-link" aria-label="X (Twitter)">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </a>
+              <!-- LinkedIn -->
+              <a href="#" class="social-link" aria-label="LinkedIn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/>
+                  <rect x="2" y="9" width="4" height="12"/>
+                  <circle cx="4" cy="4" r="2"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Navigation -->
+          <div>
+            <div class="footer-col-title">Quick Links</div>
+            <ul class="footer-links">
+              <li><a href="#hero"        class="footer-link">→ Home</a></li>
+              <li><a href="#categories"  class="footer-link">→ Men</a></li>
+              <li><a href="#categories"  class="footer-link">→ Women</a></li>
+              <li><a href="#brands"      class="footer-link">→ Brands</a></li>
+              <li><a href="#editorial"    class="footer-link">→ About Us</a></li>
+              <li><a href="#site-footer" class="footer-link">→ Contact Us</a></li>
+            </ul>
+          </div>
+
+          <!-- Categories -->
+          <div>
+            <div class="footer-col-title">Categories</div>
+            <ul class="footer-links">
+              <li><a href="#categories" class="footer-link">→ Adidas Samba</a></li>
+              <li><a href="#categories" class="footer-link">→ Adidas Campus 00s</a></li>
+              <li><a href="#categories" class="footer-link">→ Nike Air Force 1</a></li>
+              <li><a href="#categories" class="footer-link">→ Nike Collection</a></li>
+              <li><a href="#categories" class="footer-link">→ Adidas Collection</a></li>
+              <li><a href="#best-collection" class="footer-link">→ Featured Drops</a></li>
+            </ul>
+          </div>
+
+          <!-- Contact -->
+          <div>
+            <div class="footer-col-title">Contact Us</div>
+
+            <div class="footer-contact-item">
+              <span class="footer-contact-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+              </span>
+              <address style="font-style: normal;">
+                245 Fashion District,<br>New York, NY 10001<br>United States
+              </address>
+            </div>
+
+            <div class="footer-contact-item">
+              <span class="footer-contact-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </span>
+              <a href="mailto:hello@nexsole.com" class="footer-link">hello@nexsole.com</a>
+            </div>
+
+            <div class="footer-contact-item">
+              <span class="footer-contact-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81a2 2 0 011.72-2.12l3-.22a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 12a16 16 0 006.29 6.29l.86-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+                </svg>
+              </span>
+              <a href="tel:+12125550199" class="footer-link">+1 (212) 555-0199</a>
+            </div>
+
+            <!-- Newsletter -->
+            <div style="margin-top: 1.5rem;">
+              <div style="font-size: 0.82rem; color: rgba(255,255,255,0.4); margin-bottom: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-weight: 600;">Newsletter</div>
+              <form style="display: flex; gap: 8px;" onsubmit="return false;" aria-label="Newsletter signup">
+                <input
+                  type="email"
+                  placeholder="Your email"
+                  aria-label="Email for newsletter"
+                  style="flex:1; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 0.6rem 0.9rem; font-family: inherit; font-size: 0.85rem; color: white; outline: none; min-width: 0;"
+                >
+                <button
+                  type="submit"
+                  style="background: var(--clr-primary); color: white; border: none; border-radius: 8px; padding: 0.6rem 1rem; font-family: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background 0.2s;"
+                  onclick="window.NEXSOLE?.cart?.showToast('Subscribed! 🎉', 'success')"
+                >Subscribe</button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
+      <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+        <p class="footer-copyright">© 2025 NexSole. All Rights Reserved. Designed with ♥</p>
+        <div class="footer-payment" aria-label="Accepted payment methods">
+          <span class="payment-icon">VISA</span>
+          <span class="payment-icon">MC</span>
+          <span class="payment-icon">AMEX</span>
+          <span class="payment-icon">PayPal</span>
+          <span class="payment-icon">Apple Pay</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== CART DRAWER ==================== -->
+  <div class="cart-overlay" id="cart-overlay" aria-hidden="true"></div>
+
+  <aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping Cart">
+    <div class="cart-drawer-header">
+      <div class="cart-drawer-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        Shopping Cart
+        <span class="cart-items-count">0</span>
+      </div>
+      <button class="cart-close" aria-label="Close cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="cart-items" id="cart-items">
+      <div class="cart-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        <p class="cart-empty-title">Your cart is empty</p>
+        <p class="cart-empty-desc">Add some products to get started!</p>
+      </div>
+    </div>
+
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span class="cart-total-label">Total</span>
+        <span class="cart-total-amount">$0.00</span>
+      </div>
+      <button class="cart-checkout-btn" aria-label="Proceed to checkout">
+        Proceed to Checkout
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ==================== PRODUCT MODAL ==================== -->
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-label="Product Details">
+    <div class="product-modal" id="product-modal">
+      <div class="product-modal-inner">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PRODUCT LIGHTBOX ==================== -->
+  <div class="lightbox-overlay" id="product-lightbox" role="dialog" aria-modal="true" aria-label="Fullscreen Image View">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close fullscreen view">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <button class="lightbox-nav prev" id="lightbox-prev" aria-label="Previous image">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+    <div class="lightbox-img-wrapper">
+      <img src="" alt="Fullscreen Shoe View" id="lightbox-img">
+    </div>
+    <button class="lightbox-nav next" id="lightbox-next" aria-label="Next image">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+    <div class="lightbox-counter" id="lightbox-counter">1 / 1</div>
+  </div>
+
+  <!-- ==================== SCRIPTS ==================== -->
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+</html>
