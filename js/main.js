@@ -54,20 +54,97 @@
     }
 
     // Active nav link based on scroll
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+    const navLinks = document.querySelectorAll('.nav-links .nav-link[href^="#"]');
+    let preferredCategoryLink = 'Men';
 
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          navLinks.forEach(link => {
-            link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`);
-          });
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        const href = link.getAttribute('href');
+        if (href === '#categories') {
+          preferredCategoryLink = link.textContent.trim();
         }
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
       });
-    }, { threshold: 0.4 });
+    });
 
-    sections.forEach(s => observer.observe(s));
+    function updateActiveNav() {
+      const headerEl = document.getElementById('site-header');
+      const headerHeight = headerEl ? headerEl.offsetHeight : 64;
+      const scrollY = window.scrollY;
+      const scrollPos = scrollY + headerHeight + 80;
+
+      // Special case: Top of page
+      if (scrollY < 200) {
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#hero');
+        });
+        return;
+      }
+
+      // Special case: Near bottom of page -> footer / about us
+      if ((window.innerHeight + scrollY) >= (document.documentElement.scrollHeight - 80)) {
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#site-footer' || link.getAttribute('href') === '#editorial');
+        });
+        return;
+      }
+
+      const trackedSections = [
+        { id: 'site-footer', href: '#site-footer' },
+        { id: 'editorial', href: '#site-footer' },
+        { id: 'best-collection', href: '#categories' },
+        { id: 'countdown-section', href: '#categories' },
+        { id: 'categories', href: '#categories' },
+        { id: 'brands', href: '#brands' },
+        { id: 'trust-bar', href: '#hero' },
+        { id: 'hero', href: '#hero' }
+      ];
+
+      for (const item of trackedSections) {
+        const el = document.getElementById(item.id);
+        if (el) {
+          const top = el.offsetTop;
+          if (scrollPos >= top) {
+            navLinks.forEach(link => {
+              const href = link.getAttribute('href');
+              if (href === item.href) {
+                if (href === '#categories') {
+                  link.classList.toggle('active', link.textContent.trim() === preferredCategoryLink);
+                } else {
+                  link.classList.add('active');
+                }
+              } else {
+                link.classList.remove('active');
+              }
+            });
+            break;
+          }
+        }
+      }
+    }
+
+    window.addEventListener('scroll', updateActiveNav, { passive: true });
+
+    // Interactive brand cards filter
+    document.querySelectorAll('.brand-item').forEach(item => {
+      const name = item.querySelector('.brand-name')?.textContent.trim().toLowerCase();
+      if (name === 'nike' || name === 'adidas') {
+        item.style.cursor = 'pointer';
+        item.setAttribute('title', `Filter shoes by ${name.toUpperCase()}`);
+        item.addEventListener('click', () => {
+          const catBtn = document.querySelector(`.category-btn[data-category="${name}"]`);
+          if (catBtn) catBtn.click();
+          const catSec = document.getElementById('categories');
+          if (catSec) {
+            const headerEl = document.getElementById('site-header');
+            const hH = headerEl ? headerEl.offsetHeight : 64;
+            const topPos = catSec.getBoundingClientRect().top + window.scrollY - hH;
+            window.scrollTo({ top: Math.max(0, topPos), behavior: 'smooth' });
+          }
+        });
+      }
+    });
   }
 
   /* ===================================================
@@ -1403,10 +1480,24 @@
   function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(link => {
       link.addEventListener('click', e => {
-        const target = document.querySelector(link.getAttribute('href'));
+        const href = link.getAttribute('href');
+        if (!href || href === '#' || href.length < 2) return;
+        const target = document.querySelector(href);
         if (target) {
           e.preventDefault();
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const header = document.getElementById('site-header');
+          const headerHeight = header ? header.offsetHeight : 64;
+          const targetTop = target.getBoundingClientRect().top + window.scrollY - headerHeight;
+          window.scrollTo({
+            top: Math.max(0, targetTop),
+            behavior: 'smooth'
+          });
+
+          // Update active link immediately if desktop nav link
+          if (link.classList.contains('nav-link')) {
+            document.querySelectorAll('.nav-links .nav-link').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+          }
         }
       });
     });

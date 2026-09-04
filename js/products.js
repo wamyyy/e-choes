@@ -46,13 +46,7 @@ const PRODUCTS = [
       "images/18198879-d042-443b-9fa8-4157e94777e8.JPG",
       "images/153692d4-b0c4-4e5d-aabc-2aaf1a43db3f.JPG",
       "images/e788b373-6c6f-48b2-a478-2ff68462b935.JPG",
-      "images/9558b8b9-1038-4357-9ed9-11217b76be02.JPG",
-      "images/e7404995-5bf7-4240-a4e0-31319b142816.JPG",
-      "images/74db4bcf-2451-4143-85be-2b4fe527e6e9.JPG",
-      "images/131077bf-3318-4f39-babd-aabad3aed9f3.JPG",
-      "images/422eeead-df21-4050-bd47-6aa8ea63c5a3.JPG",
-      "images/0d4310be-4856-4181-ac91-163a325f5fb4.JPG",
-      "images/f80ffcf2-785c-4bde-80fd-11e79bfc1198.JPG"
+      "images/9558b8b9-1038-4357-9ed9-11217b76be02.JPG"
     ],
     description: "The universally loved classic Samba OG. Smooth Cloud White leather upper contrasted by black serrated three stripes, light grey suede T-toe, classic blue tongue badge, and the signature dark gum sole.",
     sizes: ["US 6", "US 7", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 11", "US 12"]
