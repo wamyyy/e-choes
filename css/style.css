@@ -1126,6 +1126,10 @@ ul, ol {
 }
 
 /* Category Nav */
+.category-mobile-toggle {
+  display: none;
+}
+
 .category-nav {
   position: sticky;
   top: calc(var(--nav-height-sm) + var(--space-md));
@@ -3575,13 +3579,7 @@ ul, ol {
   }
 
   .hero-visual {
-    order: -1;
-    min-height: auto;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
+    display: none;
   }
 
   .hero-sneaker-wrapper {
@@ -3667,23 +3665,12 @@ ul, ol {
     gap: 1.25rem;
   }
 
+  /* Category list is a closed, zero-height dropdown by default so it can
+     never overlap the product grid underneath it */
   .category-nav {
-    position: static;
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    white-space: nowrap;
-    gap: 8px;
-    padding: 4px 2px 12px;
-    margin-bottom: 0.5rem;
-    width: 100%;
-    max-width: 100%;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .category-nav::-webkit-scrollbar {
     display: none;
+    width: 100%;
+    margin-bottom: 0;
   }
 
   .category-nav-title {
@@ -3691,17 +3678,19 @@ ul, ol {
   }
 
   .category-btn {
-    padding: 0.5rem 1rem;
-    flex: 0 0 auto;
-    font-size: 0.85rem;
-    border-radius: var(--radius-full);
-    margin-bottom: 0;
-    border: 1px solid var(--clr-gray-200);
-    background: var(--clr-white);
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 2px;
+    border: none;
+    background: transparent;
+    color: var(--clr-gray-600);
   }
 
   .category-btn.active {
-    border-color: var(--clr-primary);
+    background: var(--clr-primary);
+    color: var(--clr-white);
   }
 
   .category-count {
@@ -3711,6 +3700,44 @@ ul, ol {
     opacity: 0.85;
   }
 
+  .category-mobile-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 0.85rem 1.1rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--clr-gray-200);
+    background: var(--clr-white);
+    color: var(--clr-dark);
+    font-size: 0.9rem;
+    font-weight: var(--fw-medium);
+    margin-bottom: 0.75rem;
+  }
+
+  .category-mobile-toggle svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .category-mobile-toggle-label {
+    flex: 1;
+    text-align: left;
+  }
+
+  /* Tapping the hamburger expands the full list as a white dropdown panel,
+     placed after the toggle in normal flow — it can only push content down,
+     never overlap it */
+  .category-nav.open {
+    display: block;
+    background: var(--clr-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.16);
+    padding: 0.4rem;
+    margin-bottom: 0.75rem;
+  }
+
   /* Countdown */
   .countdown-inner {
     grid-template-columns: 1fr;
@@ -3718,7 +3745,12 @@ ul, ol {
   }
 
   .countdown-visual {
-    display: none;
+    display: flex;
+    padding: var(--space-lg) 0 0;
+  }
+
+  .countdown-sneaker-img {
+    max-width: 320px;
   }
 
   .countdown-desc {
@@ -3786,14 +3818,14 @@ ul, ol {
     box-sizing: border-box;
   }
 
-  /* Fixed close button — always accessible on mobile */
+  /* Close button sits on the modal card itself, not floating above it */
   .modal-close {
-    position: fixed;
-    top: max(env(safe-area-inset-top, 0px), 12px);
-    right: 16px;
+    position: absolute;
+    top: 14px;
+    right: 14px;
     width: 40px;
     height: 40px;
-    z-index: 1500;
+    z-index: 25;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(8px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);

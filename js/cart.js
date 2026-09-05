@@ -89,7 +89,7 @@
       badge.classList.toggle('visible', count > 0);
     }
     if (countEl) countEl.textContent = count;
-    if (totalEl) totalEl.textContent = `$${getCartTotal().toFixed(2)}`;
+    if (totalEl) totalEl.textContent = `${getCartTotal().toFixed(2)} DH`;
   }
 
   function updateFavoriteButtons() {
@@ -126,7 +126,7 @@
         <div class="cart-item-info">
           <div class="cart-item-name">${item.name}</div>
           <div class="cart-item-size">${item.size ? `Size: ${item.size}` : 'One size'}</div>
-          <div class="cart-item-price">$${(item.price * item.qty).toFixed(2)}</div>
+          <div class="cart-item-price">${(item.price * item.qty).toFixed(2)} DH</div>
           <div class="cart-item-controls">
             <button class="qty-btn qty-minus" data-id="${item.id}" data-size="${item.size || ''}" aria-label="Decrease quantity">−</button>
             <span class="qty-value">${item.qty}</span>

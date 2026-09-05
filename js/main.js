@@ -218,7 +218,7 @@
           <img class="search-result-img" src="${p.image}" alt="${p.name}" loading="lazy">
           <div class="search-result-info">
             <div class="search-result-name">${p.name}</div>
-            <div class="search-result-price">$${p.price.toFixed(2)} · <span style="font-size:0.75rem;color:var(--clr-gray-400);">${(p.images || []).length} photos</span></div>
+            <div class="search-result-price">${p.price.toFixed(2)} DH · <span style="font-size:0.75rem;color:var(--clr-gray-400);">${(p.images || []).length} photos</span></div>
           </div>
         </div>
       `).join('');
@@ -317,6 +317,18 @@
     }
 
     // Category click event
+    const categoryNavEl = document.querySelector('.category-nav');
+    const mobileToggleBtn = document.getElementById('category-mobile-toggle');
+    const mobileToggleLabel = document.getElementById('category-mobile-toggle-label');
+
+    // Hamburger toggle opens/closes the dropdown list on mobile
+    if (mobileToggleBtn && categoryNavEl) {
+      mobileToggleBtn.addEventListener('click', () => {
+        const nowOpen = categoryNavEl.classList.toggle('open');
+        mobileToggleBtn.setAttribute('aria-expanded', nowOpen ? 'true' : 'false');
+      });
+    }
+
     catBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         catBtns.forEach(b => b.classList.remove('active'));
@@ -324,7 +336,26 @@
         activeCategory = btn.dataset.category;
         showingAll = true;
         renderGrid(activeCategory);
+
+        if (mobileToggleLabel) {
+          mobileToggleLabel.textContent = btn.textContent.trim().replace(/\s*\d+\s*$/, '').trim();
+        }
+        if (categoryNavEl) {
+          categoryNavEl.classList.remove('open');
+        }
+        if (mobileToggleBtn) {
+          mobileToggleBtn.setAttribute('aria-expanded', 'false');
+        }
       });
+    });
+
+    // Close the mobile dropdown when tapping outside of it
+    document.addEventListener('click', (e) => {
+      if (categoryNavEl && categoryNavEl.classList.contains('open') &&
+          !categoryNavEl.contains(e.target) && !(mobileToggleBtn && mobileToggleBtn.contains(e.target))) {
+        categoryNavEl.classList.remove('open');
+        if (mobileToggleBtn) mobileToggleBtn.setAttribute('aria-expanded', 'false');
+      }
     });
 
     // Initial render
@@ -340,7 +371,7 @@
       ? `<span class="product-badge">${product.badge}</span>`
       : '';
     const oldPriceHtml = product.oldPrice
-      ? `<span class="old-price">$${product.oldPrice.toFixed(2)}</span>`
+      ? `<span class="old-price">${product.oldPrice.toFixed(2)} DH</span>`
       : '';
     const photoCount = (product.images || [product.image]).length;
 
@@ -372,7 +403,7 @@
           <div class="product-card-colorway">${product.colorway || ''}</div>
           <div class="product-card-colors">${colorsHtml}</div>
           <div class="product-card-footer">
-            <div class="product-card-price">${oldPriceHtml}$${product.price.toFixed(2)}</div>
+            <div class="product-card-price">${oldPriceHtml}${product.price.toFixed(2)} DH</div>
             <button class="product-card-shop-btn btn-arrow" data-id="${product.id}">
               View Angles <span class="arrow">→</span>
             </button>
@@ -428,10 +459,7 @@
   /* ===================================================
      PREMIUM PRODUCT QUICK-VIEW MODAL & GALLERY
      =================================================== */
-  const ALL_STANDARD_SIZES = [
-    "US 6", "US 6.5", "US 7", "US 7.5", "US 8", "US 8.5",
-    "US 9", "US 9.5", "US 10", "US 10.5", "US 11", "US 11.5", "US 12", "US 13"
-  ];
+  const ALL_STANDARD_SIZES = ["39", "40", "41", "42", "43", "44"];
 
   let currentModalProduct = null;
   let currentModalGallery = {
@@ -514,7 +542,7 @@
 
     const starsHtml   = buildStars(product.rating);
     const oldPriceHtml = product.oldPrice
-      ? `<span class="old-price">$${product.oldPrice.toFixed(2)}</span>` : '';
+      ? `<span class="old-price">${product.oldPrice.toFixed(2)} DH</span>` : '';
     const discountPercent = product.oldPrice && product.oldPrice > product.price
       ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
       : null;
@@ -581,8 +609,8 @@
     }
 
     // Sizes grid HTML
-    const availableSizes = product.sizes || ["US 7", "US 7.5", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 11"];
-    let defaultSelectedSize = availableSizes[0] || "US 8";
+    const availableSizes = product.sizes || ["39", "40", "41", "42", "43", "44"];
+    let defaultSelectedSize = availableSizes[0] || "40";
 
     const sizesHtml = ALL_STANDARD_SIZES.map(s => {
       const isAvailable = availableSizes.includes(s);
@@ -694,7 +722,7 @@
         <!-- Price & Stock Row -->
         <div class="modal-price-stock-row">
           <div class="modal-price-wrapper">
-            <span class="modal-current-price">$${product.price.toFixed(2)}</span>
+            <span class="modal-current-price">${product.price.toFixed(2)} DH</span>
             ${oldPriceHtml}
             ${discountPill}
           </div>
@@ -717,7 +745,7 @@
         <div class="modal-selector-block" id="modal-size-block">
           <div class="modal-selector-header">
             <div class="modal-size-title-wrap">
-              <span class="modal-label">Select Size (US)</span>
+              <span class="modal-label">Select Size</span>
               <span class="modal-selected-size-label" id="modal-selected-size-text">${defaultSelectedSize ? `: ${defaultSelectedSize}` : ''}</span>
             </div>
             <button type="button" class="modal-size-guide-link" id="modal-size-guide-trigger">
@@ -762,7 +790,7 @@
                 </svg>
                 <span>Add to Cart</span>
               </span>
-              <span class="btn-price-tag">$${product.price.toFixed(2)}</span>
+              <span class="btn-price-tag">${product.price.toFixed(2)} DH</span>
             </button>
           </div>
         </div>

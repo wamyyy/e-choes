@@ -13,8 +13,8 @@ const PRODUCTS = [
     category: "samba",
     brandCategory: "adidas",
     colorway: "Cloud White / Better Scarlet / Gum",
-    price: 100.00,
-    oldPrice: 125.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.9,
     reviews: 482,
     badge: "Trending",
@@ -25,7 +25,7 @@ const PRODUCTS = [
       "images/f9b48170-8663-4ca4-b22e-6390c337d7db.JPG"
     ],
     description: "The iconic Adidas Samba OG with vibrant Better Scarlet red 3-stripes and heel tab. Features a premium soft leather upper, classic suede T-toe overlay, textured gum rubber outsole, and gold foil Samba branding.",
-    sizes: ["US 6.5", "US 7", "US 7.5", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 10.5", "US 11"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 2,
@@ -35,8 +35,8 @@ const PRODUCTS = [
     category: "samba",
     brandCategory: "adidas",
     colorway: "Cloud White / Core Black / Clear Granite Gum",
-    price: 100.00,
-    oldPrice: 130.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.9,
     reviews: 890,
     badge: "Best Seller",
@@ -49,7 +49,7 @@ const PRODUCTS = [
       "images/9558b8b9-1038-4357-9ed9-11217b76be02.JPG"
     ],
     description: "The universally loved classic Samba OG. Smooth Cloud White leather upper contrasted by black serrated three stripes, light grey suede T-toe, classic blue tongue badge, and the signature dark gum sole.",
-    sizes: ["US 6", "US 7", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 11", "US 12"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 3,
@@ -59,8 +59,8 @@ const PRODUCTS = [
     category: "samba",
     brandCategory: "adidas",
     colorway: "Wonder White / Wonder Clay / Gum",
-    price: 105.00,
-    oldPrice: 130.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.9,
     reviews: 310,
     badge: "Trending",
@@ -71,7 +71,7 @@ const PRODUCTS = [
       "images/542a35b5-3ef6-4446-b08e-0b60b590cdaa.JPG"
     ],
     description: "Chic and subtle. Smooth white leather upper elevated by muted Wonder Clay pink 3-stripes, matching pink heel tab, grey suede toe cap, and low-profile gum outsole.",
-    sizes: ["US 6", "US 6.5", "US 7", "US 7.5", "US 8", "US 8.5", "US 9", "US 9.5", "US 10"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 4,
@@ -81,8 +81,8 @@ const PRODUCTS = [
     category: "samba",
     brandCategory: "adidas",
     colorway: "Cloud White / Halo Blue / Gum",
-    price: 105.00,
-    oldPrice: 135.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.9,
     reviews: 364,
     badge: "New Release",
@@ -95,7 +95,7 @@ const PRODUCTS = [
       "images/f1346fa9-beb5-4079-b512-02dc030180ff.JPG"
     ],
     description: "A fresh summer aesthetic. The Samba OG in soft white leather detailed with pastel Halo Blue 3-stripes, matching heel tab, grey suede toe cap, and low-profile gum sole.",
-    sizes: ["US 6.5", "US 7", "US 7.5", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 11"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 5,
@@ -105,8 +105,8 @@ const PRODUCTS = [
     category: "samba",
     brandCategory: "adidas",
     colorway: "Footwear White / Footwear White / Gum",
-    price: 100.00,
-    oldPrice: 125.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.8,
     reviews: 295,
     badge: "Clean",
@@ -118,7 +118,7 @@ const PRODUCTS = [
       "images/c8806a59-91ab-4f67-8e36-405442b457c2.JPG"
     ],
     description: "Ultra-clean monochrome execution of the Samba OG with crisp white leather upper, matching white 3-stripes, grey suede T-toe, and classic gum sole.",
-    sizes: ["US 6.5", "US 7", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 11"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 6,
@@ -128,8 +128,8 @@ const PRODUCTS = [
     category: "samba",
     brandCategory: "adidas",
     colorway: "Core Black / Cloud White / Gum",
-    price: 100.00,
-    oldPrice: 125.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.8,
     reviews: 512,
     badge: "Popular",
@@ -143,7 +143,7 @@ const PRODUCTS = [
       "images/bf822a9d-55de-4f9d-b3f8-333c46beb109.JPG"
     ],
     description: "Sleek and versatile Core Black leather edition of the Samba OG with contrasting white three stripes, tonal black suede T-toe, and vintage dark gum rubber cupsole.",
-    sizes: ["US 7", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 11", "US 12"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 7,
@@ -153,8 +153,8 @@ const PRODUCTS = [
     category: "campus",
     brandCategory: "adidas",
     colorway: "Core Black / Footwear White / Off White",
-    price: 110.00,
-    oldPrice: 140.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.9,
     reviews: 810,
     badge: "Best Seller",
@@ -167,7 +167,7 @@ const PRODUCTS = [
       "images/ab260256-195c-49f3-8dd9-f989dc4c3856.JPG"
     ],
     description: "The quintessential skate sneaker. Plush black suede upper with extra wide white 3-stripes, puffy white laces, padded tongue with trefoil logo, and durable rubber cupsole.",
-    sizes: ["US 6", "US 7", "US 7.5", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 11", "US 12"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 8,
@@ -177,8 +177,8 @@ const PRODUCTS = [
     category: "campus",
     brandCategory: "adidas",
     colorway: "Core Black / Carbon / Core Black",
-    price: 110.00,
-    oldPrice: 140.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.8,
     reviews: 420,
     badge: "Stealth",
@@ -191,7 +191,7 @@ const PRODUCTS = [
       "images/d83f5ff2-67f7-42f6-aec0-591edde3f413.JPG"
     ],
     description: "All-black blackout edition of the chunky Campus 00s with black suede, tonal black thick stripes, black fat laces, and black midsole.",
-    sizes: ["US 7", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 11", "US 12"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 9,
@@ -201,8 +201,8 @@ const PRODUCTS = [
     category: "campus",
     brandCategory: "adidas",
     colorway: "Bark Brown / Cloud White / Off White",
-    price: 115.00,
-    oldPrice: 145.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.9,
     reviews: 350,
     badge: "Trending",
@@ -214,7 +214,7 @@ const PRODUCTS = [
       "images/e3b8abbe-242b-4581-ad29-e9ba2f040fa6.JPG"
     ],
     description: "Rich mocha bark brown suede upper complemented by stark white chunky stripes, off-white vintage midsole, and gum outsole.",
-    sizes: ["US 6.5", "US 7", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 11"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 10,
@@ -224,8 +224,8 @@ const PRODUCTS = [
     category: "campus",
     brandCategory: "adidas",
     colorway: "Grey Three / Cloud White / Off White / Gum",
-    price: 110.00,
-    oldPrice: 140.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.9,
     reviews: 640,
     badge: "Top Rated",
@@ -237,7 +237,7 @@ const PRODUCTS = [
       "images/dd576f82-035b-4952-8f3f-65d5ed1c0384.JPG"
     ],
     description: "Y2K skate aesthetics reimagined for modern street culture. Rich grey suede, exaggerated oversized three stripes, chunky puffy laces, and gum outsole.",
-    sizes: ["US 6", "US 7", "US 7.5", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 11"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 11,
@@ -247,8 +247,8 @@ const PRODUCTS = [
     category: "campus",
     brandCategory: "adidas",
     colorway: "Off White / Dark Green / Gum",
-    price: 110.00,
-    oldPrice: 140.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.9,
     reviews: 430,
     badge: "Hot",
@@ -260,7 +260,7 @@ const PRODUCTS = [
       "images/65669823-cb40-4b7b-aa66-f98a815c588d.JPG"
     ],
     description: "Vintage collegiate look with soft off-white suede uppers, dark green leather 3-stripes, matching heel tab, thick white laces, and gum sole.",
-    sizes: ["US 6.5", "US 7", "US 7.5", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 11"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 12,
@@ -270,8 +270,8 @@ const PRODUCTS = [
     category: "af1",
     brandCategory: "nike",
     colorway: "White / White / White",
-    price: 115.00,
-    oldPrice: 140.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 5.0,
     reviews: 1250,
     badge: "Iconic",
@@ -286,7 +286,7 @@ const PRODUCTS = [
       "images/d4603a08-da90-45c1-8c6f-a4de2fe3f6b8.JPG"
     ],
     description: "The legend lives on in the Nike Air Force 1 '07, a modern take on the iconic basketball shoe that blends classic court style and crisp, unmistakable fresh all-white leather.",
-    sizes: ["US 6", "US 7", "US 7.5", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 10.5", "US 11", "US 12"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 13,
@@ -296,8 +296,8 @@ const PRODUCTS = [
     category: "af1",
     brandCategory: "nike",
     colorway: "Black / Black / Black",
-    price: 115.00,
-    oldPrice: 140.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.8,
     reviews: 920,
     badge: "Popular",
@@ -312,7 +312,7 @@ const PRODUCTS = [
       "images/d1a21d16-dd11-4a67-ae5e-4c1082fd8e73.JPG"
     ],
     description: "Stealthy, sleek, and durable. The Triple Black Air Force 1 features full black crisp leather uppers, matching black Nike Air cushioning, and tonal black metal AF1 dubrae.",
-    sizes: ["US 7", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 11", "US 12"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 14,
@@ -322,8 +322,8 @@ const PRODUCTS = [
     category: "af1",
     brandCategory: "nike",
     colorway: "White / Light Armory Blue / Ice Blue",
-    price: 120.00,
-    oldPrice: 150.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.9,
     reviews: 460,
     badge: "New Edition",
@@ -336,7 +336,7 @@ const PRODUCTS = [
       "images/e523f056-ec53-4aa4-a452-fd3ec57d646c.JPG"
     ],
     description: "Crisp white leather upper highlighted by embroidered baby blue Swoosh contouring, star-shaped metallic lace dubrae, and a light armory blue rubber traction outsole.",
-    sizes: ["US 6.5", "US 7", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 11"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 15,
@@ -346,8 +346,8 @@ const PRODUCTS = [
     category: "af1",
     brandCategory: "nike",
     colorway: "White / Midnight Navy / White",
-    price: 115.00,
-    oldPrice: 140.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.8,
     reviews: 215,
     badge: "Popular",
@@ -361,7 +361,7 @@ const PRODUCTS = [
       "images/eadd89a9-bb37-427c-961d-d2d4f38299ba.JPG"
     ],
     description: "Classic collegiate design with pure white leather upper, deep Midnight Navy Swoosh, navy heel tab, and navy outsole for effortless day-to-night styling.",
-    sizes: ["US 7", "US 8", "US 8.5", "US 9", "US 10", "US 11"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 16,
@@ -371,8 +371,8 @@ const PRODUCTS = [
     category: "af1",
     brandCategory: "nike",
     colorway: "White / Malachite Green / Pine",
-    price: 120.00,
-    oldPrice: 145.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.9,
     reviews: 318,
     badge: "Fresh",
@@ -384,7 +384,7 @@ const PRODUCTS = [
       "images/ef83bc37-fece-4577-a593-340871a4dbdf.JPG"
     ],
     description: "Clean white leather foundation elevated by vibrant Malachite green Swooshes, green Nike Air heel branding, and vibrant green footbed for an athletic pop of color.",
-    sizes: ["US 7", "US 8", "US 8.5", "US 9", "US 10", "US 11"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 17,
@@ -394,8 +394,8 @@ const PRODUCTS = [
     category: "af1",
     brandCategory: "nike",
     colorway: "Sail / Gorge Green / Sesame / Gum",
-    price: 125.00,
-    oldPrice: 160.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.9,
     reviews: 290,
     badge: "Limited Edition",
@@ -407,7 +407,7 @@ const PRODUCTS = [
       "images/75f8e9b1-63bd-41a9-a366-f3c67a784584.JPG"
     ],
     description: "Vintage basketball elegance. Crafted with an off-white Sail leather upper, Gorge Green leather Swooshes, warm gold collar lining, and a classic gum rubber sole.",
-    sizes: ["US 7.5", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 11"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 18,
@@ -417,8 +417,8 @@ const PRODUCTS = [
     category: "af1",
     brandCategory: "nike",
     colorway: "Summit White / Black Outline / Black",
-    price: 120.00,
-    oldPrice: 150.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.8,
     reviews: 380,
     badge: "Special",
@@ -431,7 +431,7 @@ const PRODUCTS = [
       "images/af1_black_outline_top.png"
     ],
     description: "Modern graphic aesthetic with crisp Summit White leather, black piping defining the iconic Swoosh contours, mesh quarter panel, and a bold black outsole.",
-    sizes: ["US 7", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 11", "US 12"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   },
   {
     id: 19,
@@ -441,8 +441,8 @@ const PRODUCTS = [
     category: "af1",
     brandCategory: "nike",
     colorway: "White / University Red / White",
-    price: 120.00,
-    oldPrice: 150.00,
+    price: 199.00,
+    oldPrice: 249.00,
     rating: 4.9,
     reviews: 345,
     badge: "New Release",
@@ -453,7 +453,7 @@ const PRODUCTS = [
       "images/af1_red_outline_side.jpg"
     ],
     description: "Crisp white leather upper accented by striking University Red piped contours around the iconic Swoosh, vibrant red Nike Air branding, and a bold matching red outsole.",
-    sizes: ["US 6.5", "US 7", "US 7.5", "US 8", "US 8.5", "US 9", "US 9.5", "US 10", "US 10.5", "US 11", "US 12"]
+    sizes: ["39", "40", "41", "42", "43", "44"]
   }
 ];
 
