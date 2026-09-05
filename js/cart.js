@@ -1,5 +1,5 @@
 /* =====================================================
-   NexSole — Cart Functionality
+   CasaShoes — Cart Functionality
    ===================================================== */
 
 (function () {
@@ -57,6 +57,13 @@
 
   function getCartCount() {
     return cart.reduce((sum, i) => sum + i.qty, 0);
+  }
+
+  function clearCart() {
+    cart = [];
+    saveCart();
+    updateCartUI();
+    renderCartItems();
   }
 
   /* --- Favorites --- */
@@ -172,6 +179,7 @@
     if (!overlay || !drawer) return;
     renderCartItems();
     updateCartUI();
+    drawer.dataset.step = 'cart';
     overlay.classList.add('open');
     drawer.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -211,7 +219,9 @@
 
     // Cart overlay close
     document.querySelector('.cart-overlay')?.addEventListener('click', closeCart);
-    document.querySelector('.cart-close')?.addEventListener('click', closeCart);
+    document.querySelectorAll('.cart-close').forEach(btn => {
+      btn.addEventListener('click', closeCart);
+    });
 
     // Escape key
     document.addEventListener('keydown', e => {
@@ -232,6 +242,7 @@
     showToast,
     getCartCount,
     getCartTotal,
+    clearCart,
     updateFavoriteButtons,
     renderCartItems,
     updateCartUI,

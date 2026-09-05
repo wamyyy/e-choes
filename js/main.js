@@ -1,5 +1,5 @@
 /* =====================================================
-   NexSole — Main JavaScript
+   CasaShoes — Main JavaScript
    ===================================================== */
 
 (function () {
@@ -151,28 +151,34 @@
      SEARCH
      =================================================== */
   function initSearch() {
-    const overlay   = document.querySelector('.search-overlay');
-    const input     = document.getElementById('search-input');
-    const closeBtn  = document.querySelector('.search-close');
-    const resultsEl = document.querySelector('.search-results');
-    const searchBtn = document.querySelector('.search-btn');
+    const overlay      = document.querySelector('.search-overlay');
+    const input        = document.getElementById('search-input');
+    const closeBtn     = document.querySelector('.search-close');
+    const resultsEl    = document.querySelector('.search-results');
+    const desktopBtn   = document.getElementById('search-toggle');
+    const heroTrigger   = document.getElementById('hero-search-trigger');
 
     if (!overlay || !input) return;
 
     function openSearch() {
       overlay.classList.add('open');
+      // Hide the persistent mobile search bar while the overlay is open,
+      // so only one search box is ever visible at a time.
+      heroTrigger?.classList.add('is-hidden-while-searching');
       document.body.style.overflow = 'hidden';
       setTimeout(() => input.focus(), 100);
     }
 
     function closeSearch() {
       overlay.classList.remove('open');
+      heroTrigger?.classList.remove('is-hidden-while-searching');
       document.body.style.overflow = '';
       input.value = '';
       if (resultsEl) resultsEl.innerHTML = '';
     }
 
-    searchBtn?.addEventListener('click', openSearch);
+    desktopBtn?.addEventListener('click', openSearch);
+    heroTrigger?.addEventListener('click', openSearch);
     closeBtn?.addEventListener('click', closeSearch);
 
     overlay.addEventListener('click', e => {
@@ -235,6 +241,89 @@
         item.addEventListener('keydown', e => { if (e.key === 'Enter') handler(); });
       });
     }
+  }
+
+  /* ===================================================
+     ACCOUNT MODAL (Sign In / Sign Up)
+     =================================================== */
+  function initAccountModal() {
+    const overlay      = document.querySelector('.account-overlay');
+    const userBtn       = document.getElementById('user-btn');
+    const closeBtn      = document.getElementById('account-close');
+    const tabLogin      = document.getElementById('account-tab-login');
+    const tabSignup     = document.getElementById('account-tab-signup');
+    const form          = document.getElementById('account-form');
+    const submitBtn     = document.getElementById('account-submit');
+    const usernameEl    = document.getElementById('account-username');
+    const passwordEl    = document.getElementById('account-password');
+    const confirmGroup  = document.getElementById('account-confirm-group');
+    const confirmEl     = document.getElementById('account-password-confirm');
+    const passwordError = document.getElementById('account-password-error');
+    const googleBtn     = document.getElementById('account-google-btn');
+
+    if (!overlay || !userBtn) return;
+
+    let mode = 'login';
+
+    function openAccount() {
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => usernameEl?.focus(), 100);
+    }
+
+    function closeAccount() {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+      form?.reset();
+      passwordError.hidden = true;
+    }
+
+    function setMode(newMode) {
+      mode = newMode;
+      const isLogin = mode === 'login';
+      tabLogin.classList.toggle('active', isLogin);
+      tabSignup.classList.toggle('active', !isLogin);
+      tabLogin.setAttribute('aria-selected', isLogin);
+      tabSignup.setAttribute('aria-selected', !isLogin);
+      submitBtn.textContent = isLogin ? 'Sign In' : 'Create Account';
+
+      // Sign up requires typing the password twice the first time
+      confirmGroup.hidden = isLogin;
+      confirmEl.required = !isLogin;
+      if (isLogin) confirmEl.value = '';
+      passwordError.hidden = true;
+    }
+
+    userBtn.addEventListener('click', openAccount);
+    closeBtn?.addEventListener('click', closeAccount);
+    tabLogin?.addEventListener('click', () => setMode('login'));
+    tabSignup?.addEventListener('click', () => setMode('signup'));
+
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) closeAccount();
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && overlay.classList.contains('open')) closeAccount();
+    });
+
+    form?.addEventListener('submit', e => {
+      e.preventDefault();
+
+      if (mode === 'signup' && passwordEl.value !== confirmEl.value) {
+        passwordError.hidden = false;
+        confirmEl.focus();
+        return;
+      }
+
+      passwordError.hidden = true;
+      closeAccount();
+    });
+
+    googleBtn?.addEventListener('click', () => {
+      // Placeholder: hook up real Google OAuth flow here
+      closeAccount();
+    });
   }
 
   /* ===================================================
@@ -889,25 +978,7 @@
             </div>
           </div>
 
-          <!-- Accordion 4: Shipping & Returns -->
-          <div class="modal-accordion-item">
-            <button class="modal-accordion-header" aria-expanded="false">
-              <span>Shipping & Hassle-Free Returns</span>
-              <span class="accordion-icon">+</span>
-            </button>
-            <div class="modal-accordion-body">
-              <div class="accordion-content-inner">
-                <div class="shipping-info-item">
-                  <strong>🚀 Free Express Shipping:</strong>
-                  <p>Orders are processed within 24 hours and delivered in 2–4 business days with tracking.</p>
-                </div>
-                <div class="shipping-info-item" style="margin-top: 8px;">
-                  <strong>🔄 30-Day Return Guarantee:</strong>
-                  <p>Not the perfect fit? Return unworn shoes in their original box within 30 days for a full refund or exchange.</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <!-- Accordion 4: Shipping & Returns removed per request -->
         </div>
       </div>
     `;
@@ -1220,7 +1291,7 @@
         color: "#7C3AED"
       },
       {
-        text: "These are the most comfortable sneakers I've ever owned. The premium materials are obvious the moment you put them on. NexSole has become my go-to shoe store.",
+        text: "These are the most comfortable sneakers I've ever owned. The premium materials are obvious the moment you put them on. CasaShoes has become my go-to shoe store.",
         name: "Alex Rivera",
         role: "Verified Customer",
         rating: 5,
@@ -1228,7 +1299,7 @@
         color: "#0EA5E9"
       },
       {
-        text: "Absolutely love my new formal shoes from NexSole. They look stunning and feel even better. I've been getting compliments every time I wear them. Highly recommend!",
+        text: "Absolutely love my new formal shoes from CasaShoes. They look stunning and feel even better. I've been getting compliments every time I wear them. Highly recommend!",
         name: "Emma Williams",
         role: "Verified Customer",
         rating: 5,
@@ -1532,12 +1603,59 @@
   }
 
   /* ===================================================
+     SETTINGS PANEL + DARK MODE
+     =================================================== */
+  function initSettingsPanel() {
+    const openBtn   = document.getElementById('settings-open-btn');
+    const closeBtn  = document.getElementById('settings-close-btn');
+    const overlay   = document.getElementById('settings-overlay');
+    const panel     = document.getElementById('settings-panel');
+    const toggle    = document.getElementById('dark-mode-toggle');
+    const STORAGE_KEY = 'nexsole-theme';
+
+    function openPanel() {
+      overlay?.classList.add('open');
+      panel?.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePanel() {
+      overlay?.classList.remove('open');
+      panel?.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    openBtn?.addEventListener('click', openPanel);
+    closeBtn?.addEventListener('click', closePanel);
+    overlay?.addEventListener('click', closePanel);
+
+    function applyTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+      toggle?.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
+    }
+
+    // Restore saved preference (or system preference as fallback)
+    let saved = null;
+    try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) { /* ignore */ }
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+
+    toggle?.addEventListener('click', () => {
+      const isDark = document.body.getAttribute('data-theme') === 'dark';
+      const next = isDark ? 'light' : 'dark';
+      applyTheme(next);
+      try { localStorage.setItem(STORAGE_KEY, next); } catch (e) { /* ignore */ }
+    });
+  }
+
+  /* ===================================================
      INIT ALL
      =================================================== */
   document.addEventListener('DOMContentLoaded', () => {
     initLoadingScreen();
     initNavigation();
     initSearch();
+    initAccountModal();
     initProductGrid();
     initBestCollection();
     initReviewsCarousel();
@@ -1547,6 +1665,7 @@
     initCountdown();
     initModalEvents();
     initSmoothScroll();
+    initSettingsPanel();
 
     // Init cart
     window.NEXSOLE?.cart?.init();

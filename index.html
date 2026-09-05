@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="NexSole — Discover premium sneakers, boots, and footwear crafted for comfort, durability, and timeless elegance. Shop the latest collections from top brands.">
-  <meta property="og:title" content="NexSole | Premium Footwear Store">
-  <meta property="og:description" content="Step into premium footwear. Shop sneakers, boots, formal shoes and more at NexSole.">
-  <title>NexSole | Premium Footwear Store</title>
+  <meta name="description" content="CasaShoes — Discover premium sneakers, boots, and footwear crafted for comfort, durability, and timeless elegance. Shop the latest collections from top brands.">
+  <meta property="og:title" content="CasaShoes | Premium Footwear Store">
+  <meta property="og:description" content="Step into premium footwear. Shop sneakers, boots, formal shoes and more at CasaShoes.">
+  <title>CasaShoes | Premium Footwear Store</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,8 +24,8 @@
 <body>
 
   <!-- ==================== LOADING SCREEN ==================== -->
-  <div id="loading-screen" role="status" aria-label="Loading NexSole">
-    <div class="loading-logo">Nex<span>Sole</span></div>
+  <div id="loading-screen" role="status" aria-label="Loading CasaShoes">
+    <div class="loading-logo">Casa<span>Shoes</span></div>
     <div class="loading-bar-container">
       <div class="loading-bar"></div>
     </div>
@@ -37,22 +37,21 @@
       <nav class="nav-inner" role="navigation" aria-label="Main navigation">
 
         <!-- Logo -->
-        <a href="#hero" class="nav-logo" aria-label="NexSole Home">
-          Nex<span>Sole</span>
+        <a href="#hero" class="nav-logo" aria-label="CasaShoes Home">
+          Casa<span>Shoes</span>
         </a>
 
         <!-- Desktop Nav Links -->
         <ul class="nav-links" role="list">
-          <li><a href="#hero"       class="nav-link active">Home</a></li>
-          <li><a href="#categories" class="nav-link">Men</a></li>
-          <li><a href="#categories" class="nav-link">Women</a></li>
-          <li><a href="#brands"     class="nav-link">Brands</a></li>
-          <li><a href="#site-footer" class="nav-link">About Us</a></li>
+          <li><a href="#hero"            class="nav-link active">Home</a></li>
+          <li><a href="#best-collection" class="nav-link">Collections</a></li>
+          <li><a href="#countdown-section" class="nav-link">Special Promotion</a></li>
+          <li><a href="#site-footer"     class="nav-link">About Us</a></li>
         </ul>
 
         <!-- Nav Actions -->
         <div class="nav-actions">
-          <!-- Search -->
+          <!-- Search (desktop only) -->
           <button class="nav-icon-btn search-btn" aria-label="Search products" id="search-toggle">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -92,12 +91,11 @@
   <!-- ==================== MOBILE MENU ==================== -->
   <nav class="mobile-menu" aria-label="Mobile navigation" id="mobile-menu">
     <ul class="mobile-nav-links" role="list">
-      <li><a href="#hero"        class="mobile-nav-link">Home <span>→</span></a></li>
-      <li><a href="#categories"  class="mobile-nav-link">Men <span>→</span></a></li>
-      <li><a href="#categories"  class="mobile-nav-link">Women <span>→</span></a></li>
-      <li><a href="#brands"      class="mobile-nav-link">Brands <span>→</span></a></li>
-      <li><a href="#site-footer" class="mobile-nav-link">About Us <span>→</span></a></li>
-      <li><a href="#site-footer" class="mobile-nav-link">Contact <span>→</span></a></li>
+      <li><a href="#hero"              class="mobile-nav-link">Home <span>→</span></a></li>
+      <li><a href="#best-collection"   class="mobile-nav-link">Collections <span>→</span></a></li>
+      <li><a href="#countdown-section" class="mobile-nav-link">Special Promotion <span>→</span></a></li>
+      <li><a href="#site-footer"       class="mobile-nav-link">About Us <span>→</span></a></li>
+      <li><button type="button" class="mobile-nav-link mobile-nav-link--btn" id="settings-open-btn">Settings <span>→</span></button></li>
     </ul>
     <div class="mobile-menu-footer">
       <a href="#categories" class="btn btn-primary" style="width:100%;justify-content:center;">
@@ -105,6 +103,44 @@
       </a>
     </div>
   </nav>
+
+  <!-- ==================== SETTINGS PANEL ==================== -->
+  <div class="settings-overlay" id="settings-overlay"></div>
+  <aside class="settings-panel" id="settings-panel" aria-label="Settings">
+    <div class="settings-panel-header">
+      <h3>Settings</h3>
+      <button type="button" class="settings-close-btn" id="settings-close-btn" aria-label="Close settings">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="settings-panel-body">
+      <div class="settings-row">
+        <div class="settings-row-text">
+          <span class="settings-row-title">Dark Mode</span>
+          <span class="settings-row-sub">Easier on the eyes at night</span>
+        </div>
+        <button type="button" class="dark-mode-toggle" id="dark-mode-toggle" role="switch" aria-checked="false" aria-label="Toggle dark mode">
+          <span class="dark-mode-toggle-icon dark-mode-icon-sun" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="4"/>
+              <line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/>
+              <line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/>
+              <line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/>
+              <line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/>
+            </svg>
+          </span>
+          <span class="dark-mode-toggle-knob"></span>
+          <span class="dark-mode-toggle-icon dark-mode-icon-moon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M20.5 14.7A8.5 8.5 0 019.3 3.5a8.5 8.5 0 1011.2 11.2z"/>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </div>
+  </aside>
 
   <!-- ==================== SEARCH OVERLAY ==================== -->
   <div class="search-overlay" id="search-overlay" role="dialog" aria-label="Search" aria-modal="true">
@@ -130,6 +166,50 @@
     </div>
   </div>
 
+  <!-- ==================== ACCOUNT MODAL ==================== -->
+  <div class="account-overlay" id="account-overlay" role="dialog" aria-label="Account" aria-modal="true">
+    <div class="account-box">
+      <button class="account-close" id="account-close" aria-label="Close account form">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+      <div class="account-tabs" role="tablist">
+        <button class="account-tab active" id="account-tab-login" role="tab" aria-selected="true">Sign In</button>
+        <button class="account-tab" id="account-tab-signup" role="tab" aria-selected="false">Sign Up</button>
+      </div>
+
+      <form class="account-form" id="account-form" autocomplete="off">
+        <label class="account-label" for="account-username">Username</label>
+        <input class="account-input" type="text" id="account-username" name="username" placeholder="Enter your username" required>
+
+        <label class="account-label" for="account-password">Password</label>
+        <input class="account-input" type="password" id="account-password" name="password" placeholder="Enter your password" required>
+
+        <div class="account-confirm-group" id="account-confirm-group" hidden>
+          <label class="account-label" for="account-password-confirm">Confirm Password</label>
+          <input class="account-input" type="password" id="account-password-confirm" name="password-confirm" placeholder="Re-enter your password">
+          <p class="account-error" id="account-password-error" hidden>Passwords don't match.</p>
+        </div>
+
+        <button type="submit" class="btn btn-primary account-submit" id="account-submit">Sign In</button>
+      </form>
+
+      <div class="account-divider"><span>or</span></div>
+
+      <button type="button" class="account-google-btn" id="account-google-btn">
+        <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true">
+          <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+          <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+          <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0124 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+          <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 01-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+        </svg>
+        <span>Continue with Google</span>
+      </button>
+    </div>
+  </div>
+
   <!-- ==================== MAIN CONTENT ==================== -->
   <main id="main-content">
 
@@ -147,6 +227,14 @@
 
           <!-- Content -->
           <div class="hero-content">
+
+            <!-- Persistent search bar trigger -->
+            <button type="button" class="hero-search-trigger" id="hero-search-trigger" aria-label="Search for sneakers, boots, brands">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <span>Search for sneakers, boots, brands...</span>
+            </button>
 
             <!-- Rating badge -->
             <div class="hero-rating" aria-label="4.9 star rating with 10,000 plus trusted customers">
@@ -553,7 +641,7 @@
 
           <!-- Brand -->
           <div class="footer-brand">
-            <div class="footer-logo">Nex<span>Sole</span></div>
+            <div class="footer-logo">Casa<span>Shoes</span></div>
             <p class="footer-desc">
               Discover premium footwear crafted for comfort, durability, and timeless elegance — perfect for every step of your journey.
             </p>
@@ -572,18 +660,10 @@
                   <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
                 </svg>
               </a>
-              <!-- X / Twitter -->
-              <a href="#" class="social-link" aria-label="X (Twitter)">
+              <!-- WhatsApp -->
+              <a href="#" class="social-link" aria-label="WhatsApp">
                 <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                </svg>
-              </a>
-              <!-- LinkedIn -->
-              <a href="#" class="social-link" aria-label="LinkedIn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/>
-                  <rect x="2" y="9" width="4" height="12"/>
-                  <circle cx="4" cy="4" r="2"/>
+                  <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 004.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2zm0 18.15h-.01a8.2 8.2 0 01-4.19-1.15l-.3-.18-3.11.82.83-3.03-.2-.31a8.22 8.22 0 01-1.26-4.4c0-4.55 3.7-8.25 8.25-8.25 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 012.42 5.83c0 4.55-3.71 8.25-8.26 8.25zm4.52-6.18c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.13-.17.24-.64.81-.78.97-.14.17-.29.19-.53.06-.25-.12-1.04-.38-1.98-1.22-.73-.65-1.23-1.46-1.37-1.7-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.15.16-.25.25-.42.08-.16.04-.31-.02-.43-.06-.13-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43-.14-.01-.31-.01-.47-.01a.9.9 0 00-.65.31c-.23.24-.85.83-.85 2.03s.87 2.35.99 2.51c.12.17 1.71 2.61 4.14 3.66.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.11-.23-.17-.48-.29z"/>
                 </svg>
               </a>
             </div>
@@ -622,28 +702,6 @@
             <div class="footer-contact-item">
               <span class="footer-contact-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-                  <circle cx="12" cy="10" r="3"/>
-                </svg>
-              </span>
-              <address style="font-style: normal;">
-                245 Fashion District,<br>New York, NY 10001<br>United States
-              </address>
-            </div>
-
-            <div class="footer-contact-item">
-              <span class="footer-contact-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                  <polyline points="22,6 12,13 2,6"/>
-                </svg>
-              </span>
-              <a href="mailto:hello@nexsole.com" class="footer-link">hello@nexsole.com</a>
-            </div>
-
-            <div class="footer-contact-item">
-              <span class="footer-contact-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81a2 2 0 011.72-2.12l3-.22a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 12a16 16 0 006.29 6.29l.86-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
                 </svg>
               </span>
@@ -676,7 +734,7 @@
     <!-- Footer Bottom -->
     <div class="footer-bottom">
       <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-        <p class="footer-copyright">© 2025 NexSole. All Rights Reserved. Designed with ♥</p>
+        <p class="footer-copyright">© 2025 CasaShoes. All Rights Reserved. Designed with ♥</p>
         <div class="footer-payment" aria-label="Accepted payment methods">
           <span class="payment-icon">VISA</span>
           <span class="payment-icon">MC</span>
@@ -691,48 +749,168 @@
   <!-- ==================== CART DRAWER ==================== -->
   <div class="cart-overlay" id="cart-overlay" aria-hidden="true"></div>
 
-  <aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping Cart">
-    <div class="cart-drawer-header">
-      <div class="cart-drawer-title">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-          <line x1="3" y1="6" x2="21" y2="6"/>
-          <path d="M16 10a4 4 0 01-8 0"/>
-        </svg>
-        Shopping Cart
-        <span class="cart-items-count">0</span>
-      </div>
-      <button class="cart-close" aria-label="Close cart">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-      </button>
-    </div>
+  <aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping Cart" data-step="cart">
+    <div class="cart-drawer-viewport">
 
-    <div class="cart-items" id="cart-items">
-      <div class="cart-empty">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-          <line x1="3" y1="6" x2="21" y2="6"/>
-          <path d="M16 10a4 4 0 01-8 0"/>
-        </svg>
-        <p class="cart-empty-title">Your cart is empty</p>
-        <p class="cart-empty-desc">Add some products to get started!</p>
-      </div>
-    </div>
+      <!-- ========== VIEW 1: CART ========== -->
+      <div class="cart-view cart-view-cart" id="cart-view-cart">
+        <div class="cart-drawer-header">
+          <div class="cart-drawer-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 01-8 0"/>
+            </svg>
+            Shopping Cart
+            <span class="cart-items-count">0</span>
+          </div>
+          <button class="cart-close" aria-label="Close cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
 
-    <div class="cart-footer">
-      <div class="cart-total">
-        <span class="cart-total-label">Total</span>
-        <span class="cart-total-amount">0.00 DH</span>
+        <div class="cart-items" id="cart-items">
+          <div class="cart-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 01-8 0"/>
+            </svg>
+            <p class="cart-empty-title">Your cart is empty</p>
+            <p class="cart-empty-desc">Add some products to get started!</p>
+          </div>
+        </div>
+
+        <div class="cart-footer">
+          <div class="cart-total">
+            <span class="cart-total-label">Total</span>
+            <span class="cart-total-amount">0.00 DH</span>
+          </div>
+          <button class="cart-checkout-btn" id="cart-checkout-btn" aria-label="Proceed to checkout">
+            Proceed to Checkout
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+        </div>
       </div>
-      <button class="cart-checkout-btn" aria-label="Proceed to checkout">
-        Proceed to Checkout
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <line x1="5" y1="12" x2="19" y2="12"/>
-          <polyline points="12 5 19 12 12 19"/>
-        </svg>
-      </button>
+
+      <!-- ========== VIEW 2: CHECKOUT FORM ========== -->
+      <div class="cart-view cart-view-checkout" id="cart-view-checkout">
+        <div class="cart-drawer-header">
+          <div class="cart-drawer-title-group">
+            <button class="cart-back-btn" id="checkout-back-btn" aria-label="Back to cart">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+            </button>
+            <span class="cart-drawer-title">Checkout</span>
+          </div>
+          <button class="cart-close" aria-label="Close cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="checkout-body">
+          <form class="checkout-form" id="checkout-form" novalidate autocomplete="off">
+
+            <div class="checkout-row">
+              <div class="checkout-field">
+                <label class="checkout-label" for="checkout-firstname">First Name</label>
+                <input class="checkout-input" type="text" id="checkout-firstname" name="firstname" placeholder="John" required>
+                <p class="checkout-error" data-error-for="firstname" hidden>Please enter your first name.</p>
+              </div>
+              <div class="checkout-field">
+                <label class="checkout-label" for="checkout-lastname">Last Name</label>
+                <input class="checkout-input" type="text" id="checkout-lastname" name="lastname" placeholder="Doe" required>
+                <p class="checkout-error" data-error-for="lastname" hidden>Please enter your last name.</p>
+              </div>
+            </div>
+
+            <div class="checkout-field">
+              <label class="checkout-label" for="checkout-phone">Phone Number</label>
+              <input class="checkout-input" type="tel" id="checkout-phone" name="phone" placeholder="06 12 34 56 78" required>
+              <p class="checkout-error" data-error-for="phone" hidden>Please enter a valid phone number.</p>
+            </div>
+
+            <div class="checkout-field">
+              <label class="checkout-label" for="checkout-email">Email</label>
+              <input class="checkout-input" type="email" id="checkout-email" name="email" placeholder="you@gmail.com" required>
+              <p class="checkout-error" data-error-for="email" hidden>Please enter a valid email address.</p>
+            </div>
+
+            <div class="checkout-summary" id="checkout-summary">
+              <div class="checkout-summary-row">
+                <span>Subtotal</span>
+                <span id="checkout-subtotal">0.00 DH</span>
+              </div>
+              <div class="checkout-summary-row">
+                <span>Delivery</span>
+                <span class="checkout-free">Free</span>
+              </div>
+              <div class="checkout-summary-row checkout-summary-total">
+                <span>Total</span>
+                <span id="checkout-total">0.00 DH</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary checkout-submit-btn" id="checkout-submit-btn">
+              <span class="checkout-submit-label">Confirm Order</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ========== VIEW 3: ORDER CONFIRMATION / ANIMATION ========== -->
+      <div class="cart-view cart-view-confirm" id="cart-view-confirm">
+        <div class="cart-drawer-header">
+          <div class="cart-drawer-title">Your Order</div>
+          <button class="cart-close" aria-label="Close cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="confirm-body">
+          <div class="confirm-anim-stage" id="confirm-anim-stage">
+
+            <!-- Scene 1: packing the shoe (custom animation) -->
+            <div class="scene scene-pack-art">
+              <?xml version="1.0" encoding="utf-8"?><svg fill="none" height="100%" width="100%" viewBox="0 0 300 400" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="cp-300-400"><rect height="400" width="300" y="0" x="0" /></clipPath><g id="comp_0"><g visibility="hidden" id="BG/Box Receiing Outlines"><animate repeatCount="indefinite" begin="0s" calcMode="discrete" dur="4.070737s" values="hidden; visible; visible" keyTimes="0; 0.098006; 1" attributeName="visibility" /><g transform="translate(156.66,281.27)"><g transform="scale(0.1,0.1)"><animateTransform repeatCount="indefinite" type="scale" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="0.1 0.1; 0.1 0.1; 1.15 1.15; 1 1; 1 1" keyTimes="0; 0.409836; 0.508197; 0.565574; 1" keySplines="0 0 1 1; 0.333 0 0.667 1; 0.333 0 0.667 1; 0 0 1 1" fill="freeze" /><g transform="translate(-77.16,-132.27)"><g id="Group 1" transform="matrix(1,0,0,1,76.201,67.616)"><path fill="#f9b27b" fill-opacity="1" d="M48.096,67.365C65.099,53.436,75.951,32.28,75.951,8.585C75.951,-33.361,41.947,-67.365,0.001,-67.365C-41.946,-67.365,-75.951,-33.361,-75.951,8.585C-75.951,32.28,-65.099,53.436,-48.096,67.365C-33.71,67.126,-17.35,66.99,0.001,66.99C17.352,66.99,33.71,67.126,48.096,67.365Z" /></g></g></g></g></g><g opacity="0" visibility="hidden" id="Arrow/Box Receiing Outlines"><animate repeatCount="indefinite" begin="0s" calcMode="discrete" dur="4.070737s" values="hidden; visible; visible" keyTimes="0; 0.098006; 1" attributeName="visibility" /><animate repeatCount="indefinite" attributeName="opacity" dur="4.070737s" begin="0s" fill="freeze" values="0; 0; 1; 1; 0; 0" keyTimes="0; 0.098361; 0.139344; 0.295082; 0.352459; 1" keySplines="0 0 1 1; 0.333 0 0.667 1; 0.333 0 0.667 1; 0.333 0 0.667 1; 0 0 1 1" calcMode="spline" /><g transform="translate(150,155)"><animateTransform repeatCount="indefinite" type="translate" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="150 155; 150 155; 150 242; 150 242" keyTimes="0; 0.098361; 0.327869; 1" keySplines="0 0 1 1; 0.333 0 0.667 1; 0 0 1 1" fill="freeze" /><g transform="scale(1,1) translate(-14,-23)"><g id="Group 5" transform="matrix(1,0,0,1,14,22.76)"><path fill="#871844" fill-opacity="1" fill-rule="evenodd" d="M12.72,2.21C11.95,0.87,10.716,-0.063,9.274,-0.442C8.765,-0.576,8.41,-1.03,8.41,-1.556C8.41,-1.556,8.41,-16.04,8.41,-16.04C8.41,-19.613,5.513,-22.51,1.94,-22.51C1.94,-22.51,-1.42,-22.51,-1.42,-22.51C-4.984,-22.51,-7.9,-19.594,-7.9,-16.03C-7.9,-16.03,-7.9,-1.651,-7.9,-1.651C-7.9,-1.096,-8.296,-0.63,-8.841,-0.52C-10.505,-0.185,-11.95,0.874,-12.76,2.41C-13.75,4.28,-13.62,6.53,-12.42,8.29C-12.42,8.29,-4.56,19.76,-4.56,19.76C-3.38,21.48,-1.43,22.51,0.66,22.51C2.95,22.51,5,21.33,6.14,19.34C6.14,19.34,12.73,7.91,12.73,7.91C13.75,6.12,13.75,4,12.72,2.21ZM10.13,6.41C10.13,6.41,3.54,17.85,3.54,17.85C2.32,19.97,-0.7,20.09,-2.09,18.07C-2.09,18.07,-9.94,6.59,-9.94,6.59C-11.17,4.8,-9.89,2.37,-7.72,2.37C-7.72,2.37,-6.06,2.37,-6.06,2.37C-5.419,2.37,-4.9,1.851,-4.9,1.21C-4.9,1.21,-4.9,-16.04,-4.9,-16.04C-4.9,-17.956,-3.347,-19.51,-1.43,-19.51C-1.43,-19.51,3.1,-19.51,3.1,-19.51C4.37,-19.51,5.41,-18.48,5.41,-17.2C5.41,-17.2,5.41,1.21,5.41,1.21C5.41,1.851,5.929,2.37,6.57,2.37C6.57,2.37,7.8,2.37,7.8,2.37C9.87,2.37,11.16,4.61,10.13,6.41Z" /></g><g id="Group 4" transform="matrix(1,0,0,1,13.995,23.05)"><path fill="#ffbf00" fill-opacity="1" d="M10.135,6.12C10.135,6.12,3.545,17.56,3.545,17.56C2.325,19.68,-0.695,19.8,-2.085,17.78C-2.085,17.78,-9.935,6.3,-9.935,6.3C-11.165,4.51,-9.885,2.08,-7.715,2.08C-7.715,2.08,-6.055,2.08,-6.055,2.08C-5.414,2.08,-4.895,1.561,-4.895,0.92C-4.895,0.92,-4.895,-16.33,-4.895,-16.33C-4.895,-18.246,-3.342,-19.8,-1.425,-19.8C-1.425,-19.8,3.105,-19.8,3.105,-19.8C4.375,-19.8,5.415,-18.77,5.415,-17.49C5.415,-17.49,5.415,0.92,5.415,0.92C5.415,1.561,5.934,2.08,6.575,2.08C6.575,2.08,7.805,2.08,7.805,2.08C9.875,2.08,11.165,4.32,10.135,6.12Z" /></g><g id="Group 3" transform="matrix(1,0,0,1,18.07,34.145)"><path fill="#b33266" fill-opacity="1" d="M6.06,-4.975C6.06,-4.975,-0.53,6.465,-0.53,6.465C-1.75,8.585,-4.77,8.705,-6.16,6.685C-6.16,6.685,-6.86,5.655,-6.86,5.655C-5.33,6.915,-2.93,6.585,-1.87,4.745C-1.87,4.745,4.72,-6.695,4.72,-6.695C5.1,-7.355,5.16,-8.065,4.99,-8.705C6.26,-8.025,6.86,-6.365,6.06,-4.975Z" /></g><g id="Group 2" transform="matrix(1,0,0,1,18.63,13.765)"><path fill="#b33266" fill-opacity="1" d="M0.78,-8.218C0.78,-8.218,0.78,10.515,0.78,10.515C0.78,10.515,0.406,10.194,0.406,10.194C-0.317,9.573,-0.735,8.467,-0.735,7.512C-0.735,7.512,-0.735,-10.091,-0.735,-10.091C-0.735,-10.232,-0.746,-10.374,-0.78,-10.515C0.135,-10.134,0.78,-9.252,0.78,-8.218Z" /></g><g id="Group 1" transform="matrix(1,0,0,1,11.259,22.76)"><path fill="#ffb47a" fill-opacity="1" d="M8.27,-17.215C7.99,-17.345,7.67,-17.415,7.34,-17.415C7.34,-17.415,1.66,-17.415,1.66,-17.415C0.38,-17.415,-0.66,-16.385,-0.66,-15.105C-0.66,-15.105,-0.66,4.465,-0.66,4.465C-0.66,4.465,-3.48,4.465,-3.48,4.465C-5.65,4.465,-6.93,6.895,-5.7,8.685C-5.7,8.685,1.45,19.135,1.45,19.135C1.21,18.945,1,18.715,0.81,18.445C0.81,18.445,-7.04,6.965,-7.04,6.965C-8.27,5.175,-6.99,2.745,-4.82,2.745C-4.82,2.745,-2,2.745,-2,2.745C-2,2.745,-2,-16.825,-2,-16.825C-2,-18.105,-0.96,-19.135,0.32,-19.135C0.32,-19.135,6,-19.135,6,-19.135C7.14,-19.135,8.09,-18.305,8.27,-17.215Z" /></g></g></g></g><g opacity="0" visibility="hidden" id="Arrow/Box Receiing Outlines 2"><animate repeatCount="indefinite" begin="0s" calcMode="discrete" dur="4.070737s" values="hidden; visible; visible" keyTimes="0; 0.246016; 1" attributeName="visibility" /><animate repeatCount="indefinite" attributeName="opacity" dur="4.070737s" begin="0s" fill="freeze" values="0; 0; 1; 1; 0; 0" keyTimes="0; 0.245902; 0.286885; 0.442623; 0.5; 1" keySplines="0 0 1 1; 0.333 0 0.667 1; 0.333 0 0.667 1; 0.333 0 0.667 1; 0 0 1 1" calcMode="spline" /><g transform="translate(150,155)"><animateTransform repeatCount="indefinite" type="translate" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="150 155; 150 155; 150 242; 150 242" keyTimes="0; 0.245902; 0.47541; 1" keySplines="0 0 1 1; 0.333 0 0.667 1; 0 0 1 1" fill="freeze" /><g transform="scale(1,1) translate(-14,-23)"><g id="Group 5" transform="matrix(1,0,0,1,14,22.76)"><path fill="#871844" fill-opacity="1" fill-rule="evenodd" d="M12.72,2.21C11.95,0.87,10.716,-0.063,9.274,-0.442C8.765,-0.576,8.41,-1.03,8.41,-1.556C8.41,-1.556,8.41,-16.04,8.41,-16.04C8.41,-19.613,5.513,-22.51,1.94,-22.51C1.94,-22.51,-1.42,-22.51,-1.42,-22.51C-4.984,-22.51,-7.9,-19.594,-7.9,-16.03C-7.9,-16.03,-7.9,-1.651,-7.9,-1.651C-7.9,-1.096,-8.296,-0.63,-8.841,-0.52C-10.505,-0.185,-11.95,0.874,-12.76,2.41C-13.75,4.28,-13.62,6.53,-12.42,8.29C-12.42,8.29,-4.56,19.76,-4.56,19.76C-3.38,21.48,-1.43,22.51,0.66,22.51C2.95,22.51,5,21.33,6.14,19.34C6.14,19.34,12.73,7.91,12.73,7.91C13.75,6.12,13.75,4,12.72,2.21ZM10.13,6.41C10.13,6.41,3.54,17.85,3.54,17.85C2.32,19.97,-0.7,20.09,-2.09,18.07C-2.09,18.07,-9.94,6.59,-9.94,6.59C-11.17,4.8,-9.89,2.37,-7.72,2.37C-7.72,2.37,-6.06,2.37,-6.06,2.37C-5.419,2.37,-4.9,1.851,-4.9,1.21C-4.9,1.21,-4.9,-16.04,-4.9,-16.04C-4.9,-17.956,-3.347,-19.51,-1.43,-19.51C-1.43,-19.51,3.1,-19.51,3.1,-19.51C4.37,-19.51,5.41,-18.48,5.41,-17.2C5.41,-17.2,5.41,1.21,5.41,1.21C5.41,1.851,5.929,2.37,6.57,2.37C6.57,2.37,7.8,2.37,7.8,2.37C9.87,2.37,11.16,4.61,10.13,6.41Z" /></g><g id="Group 4" transform="matrix(1,0,0,1,13.995,23.05)"><path fill="#ffbf00" fill-opacity="1" d="M10.135,6.12C10.135,6.12,3.545,17.56,3.545,17.56C2.325,19.68,-0.695,19.8,-2.085,17.78C-2.085,17.78,-9.935,6.3,-9.935,6.3C-11.165,4.51,-9.885,2.08,-7.715,2.08C-7.715,2.08,-6.055,2.08,-6.055,2.08C-5.414,2.08,-4.895,1.561,-4.895,0.92C-4.895,0.92,-4.895,-16.33,-4.895,-16.33C-4.895,-18.246,-3.342,-19.8,-1.425,-19.8C-1.425,-19.8,3.105,-19.8,3.105,-19.8C4.375,-19.8,5.415,-18.77,5.415,-17.49C5.415,-17.49,5.415,0.92,5.415,0.92C5.415,1.561,5.934,2.08,6.575,2.08C6.575,2.08,7.805,2.08,7.805,2.08C9.875,2.08,11.165,4.32,10.135,6.12Z" /></g><g id="Group 3" transform="matrix(1,0,0,1,18.07,34.145)"><path fill="#b33266" fill-opacity="1" d="M6.06,-4.975C6.06,-4.975,-0.53,6.465,-0.53,6.465C-1.75,8.585,-4.77,8.705,-6.16,6.685C-6.16,6.685,-6.86,5.655,-6.86,5.655C-5.33,6.915,-2.93,6.585,-1.87,4.745C-1.87,4.745,4.72,-6.695,4.72,-6.695C5.1,-7.355,5.16,-8.065,4.99,-8.705C6.26,-8.025,6.86,-6.365,6.06,-4.975Z" /></g><g id="Group 2" transform="matrix(1,0,0,1,18.63,13.765)"><path fill="#b33266" fill-opacity="1" d="M0.78,-8.218C0.78,-8.218,0.78,10.515,0.78,10.515C0.78,10.515,0.406,10.194,0.406,10.194C-0.317,9.573,-0.735,8.467,-0.735,7.512C-0.735,7.512,-0.735,-10.091,-0.735,-10.091C-0.735,-10.232,-0.746,-10.374,-0.78,-10.515C0.135,-10.134,0.78,-9.252,0.78,-8.218Z" /></g><g id="Group 1" transform="matrix(1,0,0,1,11.259,22.76)"><path fill="#ffb47a" fill-opacity="1" d="M8.27,-17.215C7.99,-17.345,7.67,-17.415,7.34,-17.415C7.34,-17.415,1.66,-17.415,1.66,-17.415C0.38,-17.415,-0.66,-16.385,-0.66,-15.105C-0.66,-15.105,-0.66,4.465,-0.66,4.465C-0.66,4.465,-3.48,4.465,-3.48,4.465C-5.65,4.465,-6.93,6.895,-5.7,8.685C-5.7,8.685,1.45,19.135,1.45,19.135C1.21,18.945,1,18.715,0.81,18.445C0.81,18.445,-7.04,6.965,-7.04,6.965C-8.27,5.175,-6.99,2.745,-4.82,2.745C-4.82,2.745,-2,2.745,-2,2.745C-2,2.745,-2,-16.825,-2,-16.825C-2,-18.105,-0.96,-19.135,0.32,-19.135C0.32,-19.135,6,-19.135,6,-19.135C7.14,-19.135,8.09,-18.305,8.27,-17.215Z" /></g></g></g></g><g id="Box/Box Receiing Outlines"><g transform="translate(97,248)"><animateTransform repeatCount="indefinite" type="translate" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="97 248; 150 248; 150 248; 157 248; 157 248" keyTimes="0; 0.073771; 0.467213; 0.540984; 1" keySplines="0.333 0 0.667 1; 0 0 1 1; 0 0 1 1; 0 0 1 1" fill="freeze" /><g transform="scale(1,1) translate(-49,-38.5)"><g opacity="0" id="RS/Box Receiing Outlines"><animate repeatCount="indefinite" attributeName="opacity" dur="4.070737s" begin="0s" fill="freeze" values="0; 1; 1" keyTimes="0; 0.057377; 1" keySplines="0.333 0 0.667 1; 0 0 1 1" calcMode="spline" /><g transform="translate(93,38.5)"><g transform="scale(1,1)"><animateTransform repeatCount="indefinite" type="scale" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="1 1; 1 1; 0 1; 0 1" keyTimes="0; 0.459016; 0.540984; 1" keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1" fill="freeze" /><g transform="translate(0,-39)"><g id="Group 6" transform="matrix(1,0,0,1,20.063,42.39)"><path fill="#ff8e3a" fill-opacity="1" d="M-16.179,-30.917C-16.179,-30.917,-8.824,-14.454,-8.824,-14.454C-7.55,-11.603,-4.709,-9.76,-1.585,-9.76C-1.585,-9.76,16.78,-9.76,16.78,-9.76C16.78,-9.76,16.78,28.566,16.78,28.566C16.78,29.862,15.725,30.917,14.43,30.917C14.43,30.917,-16.78,30.917,-16.78,30.917C-16.397,30.218,-16.179,29.417,-16.179,28.566C-16.179,28.566,-16.179,-30.917,-16.179,-30.917Z" /></g><g id="Group 5" transform="matrix(1,0,0,1,22.189,33.759)"><path fill="#a47551" fill-opacity="1" d="M-8.61,-6.87C-7.748,-4.94,-5.826,-3.693,-3.712,-3.693C-3.712,-3.693,12.907,-3.693,12.907,-3.693C12.907,-3.693,14.654,-1.129,14.654,-1.129C14.654,-1.129,14.654,14.555,14.654,14.555C14.654,14.555,-8.521,5.656,-8.521,5.656C-10.699,4.82,-12.253,2.867,-12.58,0.557C-12.58,0.557,-14.654,-14.113,-14.654,-14.113C-14.654,-14.113,-12.044,-14.555,-12.044,-14.555C-12.044,-14.555,-8.61,-6.87,-8.61,-6.87Z" /></g><g id="Group 4" transform="matrix(1,0,0,1,29.766,16.549)"><path fill="#ff8e3a" fill-opacity="1" d="M-16.187,10.34C-16.187,10.34,-25.882,-11.359,-25.882,-11.359C-25.882,-11.359,-25.882,-11.385,-25.882,-11.385C-25.882,-12.149,-26.063,-12.871,-26.375,-13.517C-26.375,-13.517,12.252,-13.517,12.252,-13.517C13.846,-13.517,15.297,-12.576,15.948,-11.12C15.948,-11.12,26.208,11.84,26.208,11.84C26.375,12.215,26.342,12.63,26.12,12.974C25.895,13.32,25.531,13.517,25.121,13.517C25.121,13.517,-11.289,13.517,-11.289,13.517C-13.403,13.517,-15.325,12.27,-16.187,10.34Z" /></g><g id="Group 3" transform="matrix(1,0,0,1,29.766,16.549)"><path fill="#d8b69d" fill-opacity="1" d="M14.483,-7.092C13.833,-8.548,12.381,-9.488,10.788,-9.488C10.788,-9.488,-25.046,-9.488,-25.046,-9.488C-25.046,-9.488,-25.882,-11.359,-25.882,-11.359C-25.882,-11.359,-25.882,-11.385,-25.882,-11.385C-25.882,-12.15,-26.063,-12.87,-26.375,-13.516C-26.375,-13.516,12.253,-13.516,12.253,-13.516C13.846,-13.516,15.297,-12.575,15.948,-11.119C15.948,-11.119,26.208,11.842,26.208,11.842C26.375,12.217,26.342,12.629,26.12,12.973C25.895,13.319,25.531,13.516,25.121,13.516C25.121,13.516,23.691,13.516,23.691,13.516C23.691,13.516,14.483,-7.092,14.483,-7.092Z" /></g><g id="Group 2" transform="matrix(1,0,0,1,29.542,38.06)"><path fill="#871844" fill-opacity="1" fill-rule="evenodd" d="M28.771,-10.716C28.771,-10.716,18.512,-33.676,18.512,-33.676C17.449,-36.055,15.08,-37.591,12.477,-37.591C12.477,-37.591,6.402,-37.591,6.402,-37.591C5.943,-37.733,5.455,-37.81,4.951,-37.81C4.951,-37.81,-9.913,-37.808,-29.292,-37.805C-29.056,-36.669,-28.876,-35.516,-28.751,-34.347C-28.429,-33.946,-28.221,-33.449,-28.221,-32.896C-28.221,-32.896,-28.221,32.896,-28.221,32.896C-28.221,32.949,-28.235,32.999,-28.238,33.051C-28.186,33.678,-28.139,34.306,-28.111,34.939C-28.069,35.884,-28.088,36.845,-28.135,37.81C-28.135,37.81,4.951,37.81,4.951,37.81C7.66,37.81,9.865,35.605,9.865,32.896C9.865,32.896,9.865,-5.431,9.865,-5.431C9.865,-5.431,25.344,-5.431,25.344,-5.431C26.62,-5.431,27.799,-6.07,28.494,-7.142C29.189,-8.214,29.292,-9.55,28.771,-10.716ZM7.301,32.896C7.301,34.192,6.246,35.247,4.951,35.247C4.951,35.247,-26.26,35.247,-26.26,35.247C-25.877,34.547,-25.658,33.747,-25.658,32.896C-25.658,32.896,-25.658,-26.586,-25.658,-26.586C-25.658,-26.586,-18.303,-10.124,-18.303,-10.124C-17.03,-7.273,-14.188,-5.431,-11.064,-5.431C-11.064,-5.431,7.301,-5.431,7.301,-5.431C7.301,-5.431,7.301,32.896,7.301,32.896ZM26.344,-8.537C26.119,-8.192,25.754,-7.994,25.344,-7.994C25.344,-7.994,-11.064,-7.994,-11.064,-7.994C-13.178,-7.994,-15.101,-9.241,-15.964,-11.17C-15.964,-11.17,-25.658,-32.87,-25.658,-32.87C-25.658,-32.87,-25.658,-32.896,-25.658,-32.896C-25.658,-33.661,-25.84,-34.382,-26.152,-35.027C-26.152,-35.027,12.477,-35.027,12.477,-35.027C14.071,-35.027,15.521,-34.086,16.171,-32.631C16.171,-32.631,26.432,-9.67,26.432,-9.67C26.599,-9.295,26.567,-8.882,26.344,-8.537Z" /></g><g id="Group 1" transform="matrix(1,0,0,1,20.063,68.729)"><path fill="#a47551" fill-opacity="1" d="M14.43,4.577C14.43,4.577,-16.78,4.577,-16.78,4.577C-16.397,3.878,-16.179,3.078,-16.179,2.227C-16.179,2.227,-16.179,-4.577,-16.179,-4.577C-16.179,-4.577,16.78,-4.577,16.78,-4.577C16.78,-4.577,16.78,2.227,16.78,2.227C16.78,3.523,15.725,4.577,14.43,4.577Z" /></g></g></g></g></g></g></g></g><g id="Box/Box Receiing Outlines"><g transform="translate(97,248)"><animateTransform repeatCount="indefinite" type="translate" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="97 248; 150 248; 150 248; 157 248; 157 248" keyTimes="0; 0.073771; 0.467213; 0.540984; 1" keySplines="0.333 0 0.667 1; 0 0 1 1; 0 0 1 1; 0 0 1 1" fill="freeze" /><g transform="scale(1,1) translate(-49,-38.5)"><g opacity="0" id="LS/Box Receiing Outlines"><animate repeatCount="indefinite" attributeName="opacity" dur="4.070737s" begin="0s" fill="freeze" values="0; 1; 1" keyTimes="0; 0.057377; 1" keySplines="0.333 0 0.667 1; 0 0 1 1" calcMode="spline" /><g transform="translate(3,14.5)"><g transform="scale(1,1)"><animateTransform repeatCount="indefinite" type="scale" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="1 1; 1 1; 0 1; 0 1" keyTimes="0; 0.459016; 0.540984; 1" keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1" fill="freeze" /><g transform="translate(-20,-11)"><g id="Group 2" transform="matrix(1,0,0,1,9.924,11.722)"><path fill="#a47551" fill-opacity="1" d="M6.934,-7.098C6.934,-7.098,6.934,7.098,6.934,7.098C6.934,7.098,-6.622,7.098,-6.622,7.098C-6.666,7.098,-6.799,7.098,-6.867,6.935C-6.934,6.771,-6.84,6.677,-6.809,6.646C-6.809,6.646,6.934,-7.098,6.934,-7.098Z" /></g><g id="Group 1" transform="matrix(1,0,0,1,9.836,10.907)"><path fill="#871844" fill-opacity="1" fill-rule="evenodd" d="M9.538,-9.224C8.636,-9.566,7.854,-10.053,7.201,-10.656C7.138,-10.424,7.087,-10.189,7.059,-9.944C7.059,-9.944,-8.534,5.65,-8.534,5.65C-9.346,6.461,-9.586,7.671,-9.147,8.732C-8.707,9.792,-7.682,10.478,-6.534,10.478C-6.534,10.478,7.023,10.478,7.023,10.478C7.023,10.478,7.023,10.656,7.023,10.656C7.869,10.43,8.726,10.248,9.586,10.094C9.586,10.094,9.586,-8.348,9.586,-8.348C9.571,-8.59,9.549,-8.83,9.538,-9.072C9.536,-9.123,9.54,-9.173,9.538,-9.224ZM7.023,7.913C7.023,7.913,-6.534,7.913,-6.534,7.913C-6.578,7.913,-6.711,7.913,-6.779,7.75C-6.846,7.586,-6.752,7.492,-6.721,7.461C-6.721,7.461,7.023,-6.283,7.023,-6.283C7.023,-6.283,7.023,7.913,7.023,7.913Z" /></g></g></g></g></g></g></g></g><g opacity="0" id="Box/Box Receiing Outlines"><animate repeatCount="indefinite" attributeName="opacity" dur="4.070737s" begin="0s" fill="freeze" values="0; 1; 1" keyTimes="0; 0.057377; 1" keySplines="0.333 0 0.667 1; 0 0 1 1" calcMode="spline" /><g transform="translate(97,248)"><animateTransform repeatCount="indefinite" type="translate" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="97 248; 150 248; 150 248; 157 248; 157 248" keyTimes="0; 0.073771; 0.467213; 0.540984; 1" keySplines="0.333 0 0.667 1; 0 0 1 1; 0 0 1 1; 0 0 1 1" fill="freeze" /><g transform="scale(1,1) translate(-49,-38.5)"><g id="Group 16" transform="matrix(1,0,0,1,47.88,11.23)"><path fill="#d2d1d0" fill-opacity="1" d="M-5.127,-8.416C-5.127,-8.416,5.127,-8.416,5.127,-8.416C5.127,-8.416,5.127,8.416,5.127,8.416C5.127,8.416,-5.127,4.78,-5.127,4.78C-5.127,4.78,-5.127,-8.416,-5.127,-8.416Z" /></g><g id="Group 15" transform="matrix(1,0,0,1,47.88,61.633)"><path fill="#d2d1d0" fill-opacity="1" d="M7.472,-3.126C7.472,-3.126,5.127,-3.126,5.127,-3.126C5.127,-3.126,5.127,11.673,5.127,11.673C5.127,11.673,-5.128,11.673,-5.128,11.673C-5.128,11.673,-5.128,-3.126,-5.128,-3.126C-5.128,-3.126,-7.472,-3.126,-7.472,-3.126C-7.472,-3.126,-0.001,-11.673,-0.001,-11.673C-0.001,-11.673,7.472,-3.126,7.472,-3.126Z" /></g><g id="Group 14" transform="matrix(1,0,0,1,48.493,38.06)"><path fill="#ff8e3a" fill-opacity="1" d="M-43.333,-35.247C-43.333,-35.247,-8.305,-35.247,-8.305,-35.247C-8.305,-35.247,-8.305,-35.193,-8.305,-35.193C-8.305,-35.193,-8.305,-20.239,-8.305,-20.239C-8.305,-20.239,7.077,-14.786,7.077,-14.786C7.077,-14.786,7.077,-35.247,7.077,-35.247C7.077,-35.247,43.333,-35.247,43.333,-35.247C43.768,-35.247,44.174,-35.125,44.523,-34.919C45.217,-34.51,45.684,-33.757,45.684,-32.896C45.684,-32.896,45.684,32.895,45.684,32.895C45.684,34.191,44.628,35.247,43.333,35.247C43.333,35.247,7.077,35.247,7.077,35.247C7.077,35.247,7.077,23.011,7.077,23.011C7.077,23.011,12.503,23.011,12.503,23.011C12.503,23.011,-0.613,8.005,-0.613,8.005C-0.613,8.005,-13.73,23.011,-13.73,23.011C-13.73,23.011,-8.305,23.011,-8.305,23.011C-8.305,23.011,-8.305,35.193,-8.305,35.193C-8.305,35.193,-8.305,35.247,-8.305,35.247C-8.305,35.247,-43.333,35.247,-43.333,35.247C-44.629,35.247,-45.684,34.191,-45.684,32.895C-45.684,32.895,-45.684,-32.896,-45.684,-32.896C-45.684,-34.192,-44.629,-35.247,-43.333,-35.247Z" /></g><g id="Group 13" transform="matrix(1,0,0,1,74.873,68.729)"><path fill="#a47551" fill-opacity="1" d="M16.953,4.577C16.953,4.577,-19.303,4.577,-19.303,4.577C-19.303,4.577,-19.303,-4.577,-19.303,-4.577C-19.303,-4.577,19.303,-4.577,19.303,-4.577C19.303,-4.577,19.303,2.227,19.303,2.227C19.303,3.523,18.248,4.577,16.953,4.577Z" /></g><g id="Group 12" transform="matrix(1,0,0,1,21.499,68.729)"><path fill="#a47551" fill-opacity="1" d="M18.689,4.524C18.689,4.524,18.689,4.578,18.689,4.578C18.689,4.578,-16.339,4.578,-16.339,4.578C-17.635,4.578,-18.689,3.523,-18.689,2.227C-18.689,2.227,-18.689,-4.578,-18.689,-4.578C-18.689,-4.578,18.689,-4.578,18.689,-4.578C18.689,-4.578,18.689,4.524,18.689,4.524Z" /></g><g id="Group 11" transform="matrix(1,0,0,1,74.873,38.06)"><path fill="#d8b69d" fill-opacity="1" d="M15.275,-28.567C15.275,-29.428,14.808,-30.18,14.115,-30.589C13.765,-30.795,13.36,-30.917,12.924,-30.917C12.924,-30.917,-19.303,-30.917,-19.303,-30.917C-19.303,-30.917,-19.303,-35.247,-19.303,-35.247C-19.303,-35.247,16.954,-35.247,16.954,-35.247C17.388,-35.247,17.794,-35.127,18.143,-34.92C18.837,-34.511,19.303,-33.757,19.303,-32.896C19.303,-32.896,19.303,32.895,19.303,32.895C19.303,34.191,18.249,35.247,16.954,35.247C16.954,35.247,15.275,35.247,15.275,35.247C15.275,35.247,15.275,-28.567,15.275,-28.567Z" /></g><g id="Group 10" transform="matrix(1,0,0,1,21.499,5.005)"><path fill="#d8b69d" fill-opacity="1" d="M-16.339,-2.192C-16.339,-2.192,18.689,-2.192,18.689,-2.192C18.689,-2.192,18.689,-2.139,18.689,-2.139C18.689,-2.139,18.689,2.192,18.689,2.192C18.689,2.192,-18.689,2.139,-18.689,2.139C-18.689,2.139,-18.689,0.158,-18.689,0.158C-18.689,-1.138,-17.635,-2.192,-16.339,-2.192Z" /></g><g id="Group 9" transform="matrix(1,0,0,1,27.953,29.516)"><path fill="#a47551" fill-opacity="1" d="M19.441,1.098C19.441,1.098,-19.442,1.098,-19.442,1.098C-20.049,1.098,-20.54,0.606,-20.54,-0.001C-20.54,-0.608,-20.049,-1.098,-19.442,-1.098C-19.442,-1.098,19.441,-1.098,19.441,-1.098C20.048,-1.098,20.54,-0.608,20.54,-0.001C20.54,0.606,20.048,1.098,19.441,1.098Z" /></g><g id="Group 8" transform="matrix(1,0,0,1,17.683,33.911)"><path fill="#a47551" fill-opacity="1" d="M9.171,1.098C9.171,1.098,-9.172,1.098,-9.172,1.098C-9.779,1.098,-10.27,0.606,-10.27,-0.001C-10.27,-0.607,-9.779,-1.098,-9.172,-1.098C-9.172,-1.098,9.171,-1.098,9.171,-1.098C9.778,-1.098,10.27,-0.607,10.27,-0.001C10.27,0.606,9.778,1.098,9.171,1.098Z" /></g><g id="Group 7" transform="matrix(1,0,0,1,12.548,38.306)"><path fill="#a47551" fill-opacity="1" d="M4.036,1.098C4.036,1.098,-4.037,1.098,-4.037,1.098C-4.644,1.098,-5.135,0.606,-5.135,-0.001C-5.135,-0.607,-4.644,-1.098,-4.037,-1.098C-4.037,-1.098,4.036,-1.098,4.036,-1.098C4.643,-1.098,5.135,-0.607,5.135,-0.001C5.135,0.606,4.643,1.098,4.036,1.098Z" /></g><g id="Group 6" transform="matrix(1,0,0,1,48.53,38.065)"><path fill="#871844" fill-opacity="1" fill-rule="evenodd" d="M48.21,-32.875C48.21,-32.875,48.21,-32.905,48.21,-32.905C48.21,-33.665,48.03,-34.385,47.72,-35.035C47.72,-35.035,47.76,-35.035,47.76,-35.035C46.96,-36.655,45.31,-37.775,43.39,-37.805C7.86,-37.805,-41.88,-37.795,-43.88,-37.775C-44,-37.765,-44.13,-37.745,-44.25,-37.725C-44.43,-37.695,-44.61,-37.645,-44.78,-37.595C-46.81,-36.965,-48.28,-35.065,-48.28,-32.825C-48.28,-32.825,-48.28,32.815,-48.28,32.815C-48.28,32.985,-48.27,33.155,-48.25,33.325C-48.02,35.675,-46.15,37.545,-43.81,37.775C-43.64,37.795,-43.47,37.805,-43.3,37.805C-43.3,37.805,43.29,37.805,43.29,37.805C45.16,37.805,46.79,36.775,47.65,35.246C47.65,35.246,47.61,35.246,47.61,35.246C47.99,34.545,48.21,33.746,48.21,32.895C48.21,32.895,48.21,-26.595,48.21,-26.595C48.21,-26.595,48.28,-26.435,48.28,-26.435C48.28,-26.435,48.28,-32.715,48.28,-32.715C48.28,-32.715,48.21,-32.875,48.21,-32.875ZM-5.78,-35.255C-5.78,-35.255,4.48,-35.255,4.48,-35.255C4.48,-35.255,4.48,-18.415,4.48,-18.415C4.48,-18.415,-5.78,-22.055,-5.78,-22.055C-5.78,-22.055,-5.78,-35.255,-5.78,-35.255ZM4.48,20.445C4.48,20.445,4.48,35.246,4.48,35.246C4.48,35.246,-5.78,35.246,-5.78,35.246C-5.78,35.246,-5.78,20.445,-5.78,20.445C-5.78,20.445,-8.12,20.445,-8.12,20.445C-8.12,20.445,-0.65,11.895,-0.65,11.895C-0.65,11.895,6.82,20.445,6.82,20.445C6.82,20.445,4.48,20.445,4.48,20.445ZM45.65,32.895C45.65,34.185,44.59,35.246,43.3,35.246C43.3,35.246,7.04,35.246,7.04,35.246C7.04,35.246,7.04,23.005,7.04,23.005C7.04,23.005,12.47,23.005,12.47,23.005C12.47,23.005,-0.65,7.996,-0.65,7.996C-0.65,7.996,-13.77,23.005,-13.77,23.005C-13.77,23.005,-8.34,23.005,-8.34,23.005C-8.34,23.005,-8.34,35.246,-8.34,35.246C-8.34,35.246,-43.37,35.246,-43.37,35.246C-44.67,35.246,-45.72,34.185,-45.72,32.895C-45.72,32.895,-45.72,-32.905,-45.72,-32.905C-45.72,-34.195,-44.67,-35.255,-43.37,-35.255C-43.37,-35.255,-8.34,-35.255,-8.34,-35.255C-8.34,-35.255,-8.34,-20.245,-8.34,-20.245C-8.34,-20.245,7.04,-14.795,7.04,-14.795C7.04,-14.795,7.04,-35.255,7.04,-35.255C7.04,-35.255,43.3,-35.255,43.3,-35.255C43.73,-35.255,44.14,-35.135,44.49,-34.925C45.18,-34.515,45.65,-33.765,45.65,-32.905C45.65,-32.905,45.65,32.895,45.65,32.895Z" /></g><g id="Group 5" transform="matrix(1,0,0,1,47.88,11.23)"><path fill="#a47551" fill-opacity="1" d="M-5.13,4.78C-5.13,4.78,-5.13,-8.42,-5.13,-8.42C-5.13,-8.42,5.13,-8.42,5.13,-8.42C5.13,-8.42,5.13,8.42,5.13,8.42C5.13,8.42,-5.13,4.78,-5.13,4.78Z" /></g><g id="Group 4" transform="matrix(1,0,0,1,47.88,61.635)"><path fill="#a47551" fill-opacity="1" d="M0,-11.676C0,-11.676,7.47,-3.125,7.47,-3.125C7.47,-3.125,5.13,-3.125,5.13,-3.125C5.13,-3.125,5.13,11.676,5.13,11.676C5.13,11.676,-5.13,11.676,-5.13,11.676C-5.13,11.676,-5.13,-3.125,-5.13,-3.125C-5.13,-3.125,-7.47,-3.125,-7.47,-3.125C-7.47,-3.125,0,-11.676,0,-11.676Z" /></g><g id="Group 3" transform="matrix(1,0,0,1,48.285,0.27)"><path fill="#a47551" fill-opacity="1" d="M43.635,-0.01C8.105,-0.01,-41.635,0,-43.635,0.02C-43.445,-0.01,-43.255,-0.02,-43.055,-0.02C-43.055,-0.02,43.534,-0.02,43.534,-0.02C43.565,-0.02,43.605,-0.02,43.635,-0.01Z" /></g><g id="Group 2" transform="matrix(1,0,0,1,96.53,4.19)"><path fill="#a47551" fill-opacity="1" d="M0.28,1.05C0.28,1.05,0.28,1.16,0.28,1.16C0.28,1.16,0.21,1,0.21,1C0.21,1,0.21,0.97,0.21,0.97C0.21,0.21,0.03,-0.51,-0.28,-1.16C-0.28,-1.16,-0.24,-1.16,-0.24,-1.16C0.091,-0.49,0.28,0.26,0.28,1.05Z" /></g><g id="Group 1" transform="matrix(1,0,0,1,96.475,42.39)"><path fill="#a47551" fill-opacity="1" d="M0.265,-30.92C0.265,-30.92,0.335,-30.76,0.335,-30.76C0.335,-30.76,0.335,28.49,0.335,28.49C0.335,29.37,0.106,30.2,-0.295,30.92C-0.295,30.92,-0.335,30.92,-0.335,30.92C0.045,30.22,0.265,29.42,0.265,28.57C0.265,28.57,0.265,-30.92,0.265,-30.92Z" /></g></g></g></g><g id="Box/Box Receiing Outlines"><g transform="translate(97,248)"><animateTransform repeatCount="indefinite" type="translate" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="97 248; 150 248; 150 248; 157 248; 157 248" keyTimes="0; 0.073771; 0.467213; 0.540984; 1" keySplines="0.333 0 0.667 1; 0 0 1 1; 0 0 1 1; 0 0 1 1" fill="freeze" /><g transform="scale(1,1) translate(-49,-38.5)"><g opacity="0" id="Base/Box Receiing Outlines"><animate repeatCount="indefinite" attributeName="opacity" dur="4.070737s" begin="0s" fill="freeze" values="0; 1; 1" keyTimes="0; 0.057377; 1" keySplines="0.333 0 0.667 1; 0 0 1 1" calcMode="spline" /><g transform="translate(-13.75,78.009)"><g transform="scale(1,1)"><animateTransform repeatCount="indefinite" type="scale" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="1 1; 1 1; 0.84 0.84; 0.84 0.84" keyTimes="0; 0.467213; 0.532787; 1" keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1" fill="freeze" /><g transform="translate(-0.25,-3.259)"><g id="Group 1" transform="matrix(1,0,0,1,77.643,3.259)"><path fill="#e9e8e7" fill-opacity="1" d="M-74.385,3.008C-74.385,3.008,74.386,3.008,74.386,3.008C76.047,3.008,77.393,1.662,77.393,0.001C77.393,-1.66,76.047,-3.008,74.386,-3.008C74.386,-3.008,-74.385,-3.008,-74.385,-3.008C-76.047,-3.008,-77.393,-1.66,-77.393,0.001C-77.393,1.662,-76.047,3.008,-74.385,3.008Z" /></g></g></g></g></g></g></g></g><g opacity="1" visibility="hidden" id="Stars/Wallet money Outlines"><animate repeatCount="indefinite" begin="0s" calcMode="discrete" dur="4.070737s" values="hidden; visible; visible" keyTimes="0; 0.533034; 1" attributeName="visibility" /><animate repeatCount="indefinite" attributeName="opacity" dur="4.070737s" begin="0s" fill="freeze" values="1; 1; 0; 0" keyTimes="0; 0.762295; 0.827869; 1" keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1" calcMode="spline" /><g transform="translate(140,233)"><g transform="scale(1,1)"><animateTransform repeatCount="indefinite" type="scale" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="1 1; 1 1; 0 0; 1 1; 1 1" keyTimes="0; 0.057377; 0.639344; 0.811475; 1" keySplines="0 0 1 1; 0.167 0.167 0.667 1; 0.167 0.167 0.667 1; 0 0 1 1" fill="freeze" /><g transform="translate(-80,-48)"><g id="Group 7" transform="matrix(1,0,0,1,8.986,92.339)"><path fill="#871844" fill-opacity="1" d="M-0.988,0.988C-1.534,0.442,-1.534,-0.442,-0.988,-0.988C-0.442,-1.534,0.442,-1.534,0.988,-0.988C1.534,-0.442,1.534,0.442,0.988,0.988C0.442,1.534,-0.442,1.534,-0.988,0.988Z" /></g><g id="Group 6" transform="matrix(1,0,0,1,156.622,94.007)"><path fill="#871844" fill-opacity="1" d="M1.613,-0.001C1.613,0.89,0.89,1.613,0,1.613C-0.891,1.613,-1.613,0.89,-1.613,-0.001C-1.613,-0.891,-0.891,-1.613,0,-1.613C0.89,-1.613,1.613,-0.891,1.613,-0.001Z" /></g><g id="Group 5" transform="matrix(1,0,0,1,157.952,37.896)"><path fill="#871844" fill-opacity="1" d="M1.258,-0.478C1.522,0.216,1.173,0.994,0.478,1.258C-0.217,1.522,-0.994,1.173,-1.258,0.479C-1.522,-0.216,-1.173,-0.994,-0.478,-1.258C0.216,-1.522,0.993,-1.173,1.258,-0.478Z" /></g><g id="Group 4" transform="matrix(1,0,0,1,150.06,23.755)"><path fill="#871844" fill-opacity="1" d="M2.294,2.295C2.606,1.984,2.409,1.246,1.859,0.409C1.696,0.16,1.696,-0.16,1.859,-0.409C2.409,-1.246,2.606,-1.984,2.294,-2.295C1.983,-2.606,1.245,-2.41,0.408,-1.86C0.159,-1.697,-0.161,-1.697,-0.41,-1.86C-1.246,-2.41,-1.984,-2.606,-2.296,-2.295C-2.606,-1.984,-2.41,-1.246,-1.86,-0.409C-1.697,-0.16,-1.697,0.16,-1.86,0.409C-2.41,1.246,-2.606,1.984,-2.296,2.295C-1.984,2.606,-1.246,2.41,-0.41,1.86C-0.161,1.697,0.159,1.697,0.408,1.86C1.245,2.41,1.983,2.606,2.294,2.295Z" /></g><g id="Group 3" transform="matrix(1,0,0,1,2.89,80.594)"><path fill="#871844" fill-opacity="1" d="M0,2.64C0.357,2.64,0.669,2.102,0.834,1.305C0.883,1.068,1.068,0.884,1.305,0.835C2.102,0.669,2.64,0.357,2.64,0C2.64,-0.358,2.102,-0.67,1.305,-0.835C1.068,-0.884,0.883,-1.068,0.834,-1.305C0.669,-2.103,0.357,-2.64,0,-2.64C-0.358,-2.64,-0.669,-2.103,-0.835,-1.305C-0.884,-1.068,-1.068,-0.884,-1.305,-0.835C-2.103,-0.67,-2.64,-0.358,-2.64,0C-2.64,0.357,-2.103,0.669,-1.305,0.835C-1.068,0.884,-0.884,1.068,-0.835,1.305C-0.669,2.102,-0.358,2.64,0,2.64Z" /></g><g id="Group 2" transform="matrix(1,0,0,1,24.783,2.68)"><path fill="#871844" fill-opacity="1" d="M-1.787,1.163C-2.43,0.176,-2.15,-1.145,-1.163,-1.788C-0.176,-2.43,1.146,-2.151,1.788,-1.164C2.43,-0.176,2.151,1.144,1.164,1.787C0.177,2.43,-1.144,2.15,-1.787,1.163Z" /></g><g id="Group 1" transform="matrix(1,0,0,1,14.454,13.591)"><path fill="#871844" fill-opacity="1" d="M-1.364,-0.289C-1.205,-1.042,-0.465,-1.523,0.288,-1.364C1.042,-1.205,1.523,-0.465,1.364,0.288C1.204,1.041,0.465,1.523,-0.288,1.363C-1.042,1.204,-1.523,0.464,-1.364,-0.289Z" /></g></g></g></g></g><g visibility="hidden" id="Tick/Box Receiing Outlines"><animate repeatCount="indefinite" begin="0s" calcMode="discrete" dur="4.070737s" values="hidden; visible; visible" keyTimes="0; 0.590038; 1" attributeName="visibility" /><g transform="translate(156,165)"><g transform="scale(0,0)"><animateTransform repeatCount="indefinite" type="scale" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="0 0; 0 0; 1.15 1.15; 1 1; 1 1" keyTimes="0; 0.672131; 0.721311; 0.745901; 1" keySplines="0 0 1 1; 0.333 0 0.667 1; 0.333 0 0.667 1; 0 0 1 1" fill="freeze" /><g transform="translate(-28,-28)"><g id="Group 6" transform="matrix(1,0,0,1,27.95,27.945)"><path fill="#ffbf00" fill-opacity="1" d="M24.7,-0.005C24.7,13.635,13.639,24.695,0,24.695C-13.64,24.695,-24.7,13.635,-24.7,-0.005C-24.7,-13.645,-13.64,-24.695,0,-24.695C13.639,-24.695,24.7,-13.645,24.7,-0.005Z" /></g><g id="Group 5" transform="matrix(1,0,0,1,19.77,27.697)"><path fill="#ffb47a" fill-opacity="1" d="M-14.145,1.03C-14.145,11.8,-7.245,20.97,2.375,24.34C-8.425,21.7,-16.435,11.96,-16.435,0.35C-16.435,-13.29,-5.375,-24.34,8.265,-24.34C11.135,-24.34,13.885,-23.85,16.435,-22.95C14.555,-23.42,12.585,-23.66,10.555,-23.66C-3.085,-23.66,-14.145,-12.61,-14.145,1.03Z" /></g><g id="Group 4" transform="matrix(1,0,0,1,36.21,27.945)"><path fill="#b33266" fill-opacity="1" d="M16.44,-0.36C16.44,13.28,5.379,24.34,-8.26,24.34C-11.13,24.34,-13.88,23.85,-16.44,22.95C-14.55,23.41,-12.581,23.66,-10.55,23.66C3.089,23.66,14.15,12.6,14.15,-1.04C14.15,-11.81,7.25,-20.97,-2.38,-24.34C8.419,-21.71,16.44,-11.97,16.44,-0.36Z" /></g><g id="Group 3" transform="matrix(1,0,0,1,27.957,27.945)"><path fill="#871844" fill-opacity="1" fill-rule="evenodd" d="M13.691,-8.04C13.691,-8.04,13.362,-8.537,13.362,-8.537C12.383,-10.028,10.732,-10.915,8.95,-10.915C7.719,-10.915,6.518,-10.479,5.57,-9.692C5.57,-9.692,-2.856,-2.672,-2.856,-2.672C-3.016,-2.535,-3.185,-2.512,-3.299,-2.512C-3.421,-2.512,-3.651,-2.542,-3.827,-2.756C-3.827,-2.756,-5.257,-4.446,-5.257,-4.446C-6.266,-5.639,-7.734,-6.32,-9.294,-6.32C-10.594,-6.32,-11.848,-5.846,-12.811,-4.974C-14.937,-3.078,-15.182,0.126,-13.369,2.328C-13.369,2.328,-7.857,8.996,-7.857,8.996C-6.847,10.219,-5.364,10.915,-3.781,10.915C-2.558,10.915,-1.365,10.487,-0.424,9.707C-0.424,9.707,12.643,-1.059,12.643,-1.059C14.731,-2.779,15.182,-5.785,13.691,-8.04ZM11.183,-2.833C11.183,-2.833,-1.885,7.94,-1.885,7.94C-3.154,8.988,-5.035,8.812,-6.09,7.535C-6.09,7.535,-11.595,0.868,-11.595,0.868C-12.62,-0.371,-12.483,-2.198,-11.282,-3.269C-10.028,-4.393,-8.093,-4.255,-7.008,-2.971C-7.008,-2.971,-5.586,-1.273,-5.586,-1.273C-4.523,-0.019,-2.65,0.141,-1.388,-0.906C-1.388,-0.906,7.038,-7.933,7.038,-7.933C8.407,-9.072,10.471,-8.767,11.451,-7.275C11.451,-7.275,11.779,-6.778,11.779,-6.778C12.62,-5.509,12.36,-3.804,11.183,-2.833Z" /></g><g id="Group 2" transform="matrix(1,0,0,1,27.957,27.903)"><path fill="#ffffff" fill-opacity="1" d="M11.183,-2.791C11.183,-2.791,-1.885,7.982,-1.885,7.982C-3.154,9.03,-5.035,8.854,-6.09,7.577C-6.09,7.577,-11.595,0.91,-11.595,0.91C-12.62,-0.329,-12.483,-2.156,-11.282,-3.227C-10.028,-4.351,-8.093,-4.213,-7.008,-2.929C-7.008,-2.929,-5.586,-1.231,-5.586,-1.231C-4.523,0.023,-2.65,0.183,-1.388,-0.864C-1.388,-0.864,7.038,-7.891,7.038,-7.891C8.407,-9.03,10.471,-8.725,11.451,-7.233C11.451,-7.233,11.779,-6.736,11.779,-6.736C12.62,-5.467,12.36,-3.762,11.183,-2.791Z" /></g><g id="Group 1" transform="matrix(1,0,0,1,27.95,27.945)"><path fill="#871844" fill-opacity="1" fill-rule="evenodd" d="M0,-27.695C-15.27,-27.695,-27.7,-15.275,-27.7,-0.005C-27.7,15.275,-15.27,27.695,0,27.695C15.28,27.695,27.7,15.275,27.7,-0.005C27.7,-15.275,15.28,-27.695,0,-27.695ZM0,24.695C-13.64,24.695,-24.7,13.635,-24.7,-0.005C-24.7,-13.645,-13.64,-24.695,0,-24.695C13.64,-24.695,24.7,-13.645,24.7,-0.005C24.7,13.635,13.64,24.695,0,24.695Z" /></g></g></g></g></g></g></defs><g transform="matrix(1,0,0,1,-5,0)" id="Pre-comp 2"><g clip-path="url(#cp-300-400)"><g visibility="hidden"><animate repeatCount="indefinite" begin="0s" calcMode="discrete" dur="4.070737s" values="hidden; visible; visible" keyTimes="0; 0.098006; 1" attributeName="visibility" /><g transform="translate(156.66,281.27)"><g transform="scale(0.1,0.1)"><animateTransform repeatCount="indefinite" type="scale" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="0.1 0.1; 0.1 0.1; 1.15 1.15; 1 1; 1 1" keyTimes="0; 0.409836; 0.508197; 0.565574; 1" keySplines="0 0 1 1; 0.333 0 0.667 1; 0.333 0 0.667 1; 0 0 1 1" fill="freeze" /><g transform="translate(-77.16,-132.27)"><g transform="matrix(1,0,0,1,76.201,67.616)"><path fill="#f9b27b" fill-opacity="1" d="M48.096,67.365C65.099,53.436,75.951,32.28,75.951,8.585C75.951,-33.361,41.947,-67.365,0.001,-67.365C-41.946,-67.365,-75.951,-33.361,-75.951,8.585C-75.951,32.28,-65.099,53.436,-48.096,67.365C-33.71,67.126,-17.35,66.99,0.001,66.99C17.352,66.99,33.71,67.126,48.096,67.365Z" /></g></g></g></g></g><g opacity="0" visibility="hidden"><animate repeatCount="indefinite" begin="0s" calcMode="discrete" dur="4.070737s" values="hidden; visible; visible" keyTimes="0; 0.098006; 1" attributeName="visibility" /><animate repeatCount="indefinite" attributeName="opacity" dur="4.070737s" begin="0s" fill="freeze" values="0; 0; 1; 1; 0; 0" keyTimes="0; 0.098361; 0.139344; 0.295082; 0.352459; 1" keySplines="0 0 1 1; 0.333 0 0.667 1; 0.333 0 0.667 1; 0.333 0 0.667 1; 0 0 1 1" calcMode="spline" /><g transform="translate(150,155)"><animateTransform repeatCount="indefinite" type="translate" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="150 155; 150 155; 150 242; 150 242" keyTimes="0; 0.098361; 0.327869; 1" keySplines="0 0 1 1; 0.333 0 0.667 1; 0 0 1 1" fill="freeze" /><g transform="scale(1,1) translate(-14,-23)"><g transform="matrix(1,0,0,1,14,22.76)"><path fill="#871844" fill-opacity="1" fill-rule="evenodd" d="M12.72,2.21C11.95,0.87,10.716,-0.063,9.274,-0.442C8.765,-0.576,8.41,-1.03,8.41,-1.556C8.41,-1.556,8.41,-16.04,8.41,-16.04C8.41,-19.613,5.513,-22.51,1.94,-22.51C1.94,-22.51,-1.42,-22.51,-1.42,-22.51C-4.984,-22.51,-7.9,-19.594,-7.9,-16.03C-7.9,-16.03,-7.9,-1.651,-7.9,-1.651C-7.9,-1.096,-8.296,-0.63,-8.841,-0.52C-10.505,-0.185,-11.95,0.874,-12.76,2.41C-13.75,4.28,-13.62,6.53,-12.42,8.29C-12.42,8.29,-4.56,19.76,-4.56,19.76C-3.38,21.48,-1.43,22.51,0.66,22.51C2.95,22.51,5,21.33,6.14,19.34C6.14,19.34,12.73,7.91,12.73,7.91C13.75,6.12,13.75,4,12.72,2.21ZM10.13,6.41C10.13,6.41,3.54,17.85,3.54,17.85C2.32,19.97,-0.7,20.09,-2.09,18.07C-2.09,18.07,-9.94,6.59,-9.94,6.59C-11.17,4.8,-9.89,2.37,-7.72,2.37C-7.72,2.37,-6.06,2.37,-6.06,2.37C-5.419,2.37,-4.9,1.851,-4.9,1.21C-4.9,1.21,-4.9,-16.04,-4.9,-16.04C-4.9,-17.956,-3.347,-19.51,-1.43,-19.51C-1.43,-19.51,3.1,-19.51,3.1,-19.51C4.37,-19.51,5.41,-18.48,5.41,-17.2C5.41,-17.2,5.41,1.21,5.41,1.21C5.41,1.851,5.929,2.37,6.57,2.37C6.57,2.37,7.8,2.37,7.8,2.37C9.87,2.37,11.16,4.61,10.13,6.41Z" /></g><g transform="matrix(1,0,0,1,13.995,23.05)"><path fill="#ffbf00" fill-opacity="1" d="M10.135,6.12C10.135,6.12,3.545,17.56,3.545,17.56C2.325,19.68,-0.695,19.8,-2.085,17.78C-2.085,17.78,-9.935,6.3,-9.935,6.3C-11.165,4.51,-9.885,2.08,-7.715,2.08C-7.715,2.08,-6.055,2.08,-6.055,2.08C-5.414,2.08,-4.895,1.561,-4.895,0.92C-4.895,0.92,-4.895,-16.33,-4.895,-16.33C-4.895,-18.246,-3.342,-19.8,-1.425,-19.8C-1.425,-19.8,3.105,-19.8,3.105,-19.8C4.375,-19.8,5.415,-18.77,5.415,-17.49C5.415,-17.49,5.415,0.92,5.415,0.92C5.415,1.561,5.934,2.08,6.575,2.08C6.575,2.08,7.805,2.08,7.805,2.08C9.875,2.08,11.165,4.32,10.135,6.12Z" /></g><g transform="matrix(1,0,0,1,18.07,34.145)"><path fill="#b33266" fill-opacity="1" d="M6.06,-4.975C6.06,-4.975,-0.53,6.465,-0.53,6.465C-1.75,8.585,-4.77,8.705,-6.16,6.685C-6.16,6.685,-6.86,5.655,-6.86,5.655C-5.33,6.915,-2.93,6.585,-1.87,4.745C-1.87,4.745,4.72,-6.695,4.72,-6.695C5.1,-7.355,5.16,-8.065,4.99,-8.705C6.26,-8.025,6.86,-6.365,6.06,-4.975Z" /></g><g transform="matrix(1,0,0,1,18.63,13.765)"><path fill="#b33266" fill-opacity="1" d="M0.78,-8.218C0.78,-8.218,0.78,10.515,0.78,10.515C0.78,10.515,0.406,10.194,0.406,10.194C-0.317,9.573,-0.735,8.467,-0.735,7.512C-0.735,7.512,-0.735,-10.091,-0.735,-10.091C-0.735,-10.232,-0.746,-10.374,-0.78,-10.515C0.135,-10.134,0.78,-9.252,0.78,-8.218Z" /></g><g transform="matrix(1,0,0,1,11.259,22.76)"><path fill="#ffb47a" fill-opacity="1" d="M8.27,-17.215C7.99,-17.345,7.67,-17.415,7.34,-17.415C7.34,-17.415,1.66,-17.415,1.66,-17.415C0.38,-17.415,-0.66,-16.385,-0.66,-15.105C-0.66,-15.105,-0.66,4.465,-0.66,4.465C-0.66,4.465,-3.48,4.465,-3.48,4.465C-5.65,4.465,-6.93,6.895,-5.7,8.685C-5.7,8.685,1.45,19.135,1.45,19.135C1.21,18.945,1,18.715,0.81,18.445C0.81,18.445,-7.04,6.965,-7.04,6.965C-8.27,5.175,-6.99,2.745,-4.82,2.745C-4.82,2.745,-2,2.745,-2,2.745C-2,2.745,-2,-16.825,-2,-16.825C-2,-18.105,-0.96,-19.135,0.32,-19.135C0.32,-19.135,6,-19.135,6,-19.135C7.14,-19.135,8.09,-18.305,8.27,-17.215Z" /></g></g></g></g><g opacity="0" visibility="hidden"><animate repeatCount="indefinite" begin="0s" calcMode="discrete" dur="4.070737s" values="hidden; visible; visible" keyTimes="0; 0.246016; 1" attributeName="visibility" /><animate repeatCount="indefinite" attributeName="opacity" dur="4.070737s" begin="0s" fill="freeze" values="0; 0; 1; 1; 0; 0" keyTimes="0; 0.245902; 0.286885; 0.442623; 0.5; 1" keySplines="0 0 1 1; 0.333 0 0.667 1; 0.333 0 0.667 1; 0.333 0 0.667 1; 0 0 1 1" calcMode="spline" /><g transform="translate(150,155)"><animateTransform repeatCount="indefinite" type="translate" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="150 155; 150 155; 150 242; 150 242" keyTimes="0; 0.245902; 0.47541; 1" keySplines="0 0 1 1; 0.333 0 0.667 1; 0 0 1 1" fill="freeze" /><g transform="scale(1,1) translate(-14,-23)"><g transform="matrix(1,0,0,1,14,22.76)"><path fill="#871844" fill-opacity="1" fill-rule="evenodd" d="M12.72,2.21C11.95,0.87,10.716,-0.063,9.274,-0.442C8.765,-0.576,8.41,-1.03,8.41,-1.556C8.41,-1.556,8.41,-16.04,8.41,-16.04C8.41,-19.613,5.513,-22.51,1.94,-22.51C1.94,-22.51,-1.42,-22.51,-1.42,-22.51C-4.984,-22.51,-7.9,-19.594,-7.9,-16.03C-7.9,-16.03,-7.9,-1.651,-7.9,-1.651C-7.9,-1.096,-8.296,-0.63,-8.841,-0.52C-10.505,-0.185,-11.95,0.874,-12.76,2.41C-13.75,4.28,-13.62,6.53,-12.42,8.29C-12.42,8.29,-4.56,19.76,-4.56,19.76C-3.38,21.48,-1.43,22.51,0.66,22.51C2.95,22.51,5,21.33,6.14,19.34C6.14,19.34,12.73,7.91,12.73,7.91C13.75,6.12,13.75,4,12.72,2.21ZM10.13,6.41C10.13,6.41,3.54,17.85,3.54,17.85C2.32,19.97,-0.7,20.09,-2.09,18.07C-2.09,18.07,-9.94,6.59,-9.94,6.59C-11.17,4.8,-9.89,2.37,-7.72,2.37C-7.72,2.37,-6.06,2.37,-6.06,2.37C-5.419,2.37,-4.9,1.851,-4.9,1.21C-4.9,1.21,-4.9,-16.04,-4.9,-16.04C-4.9,-17.956,-3.347,-19.51,-1.43,-19.51C-1.43,-19.51,3.1,-19.51,3.1,-19.51C4.37,-19.51,5.41,-18.48,5.41,-17.2C5.41,-17.2,5.41,1.21,5.41,1.21C5.41,1.851,5.929,2.37,6.57,2.37C6.57,2.37,7.8,2.37,7.8,2.37C9.87,2.37,11.16,4.61,10.13,6.41Z" /></g><g transform="matrix(1,0,0,1,13.995,23.05)"><path fill="#ffbf00" fill-opacity="1" d="M10.135,6.12C10.135,6.12,3.545,17.56,3.545,17.56C2.325,19.68,-0.695,19.8,-2.085,17.78C-2.085,17.78,-9.935,6.3,-9.935,6.3C-11.165,4.51,-9.885,2.08,-7.715,2.08C-7.715,2.08,-6.055,2.08,-6.055,2.08C-5.414,2.08,-4.895,1.561,-4.895,0.92C-4.895,0.92,-4.895,-16.33,-4.895,-16.33C-4.895,-18.246,-3.342,-19.8,-1.425,-19.8C-1.425,-19.8,3.105,-19.8,3.105,-19.8C4.375,-19.8,5.415,-18.77,5.415,-17.49C5.415,-17.49,5.415,0.92,5.415,0.92C5.415,1.561,5.934,2.08,6.575,2.08C6.575,2.08,7.805,2.08,7.805,2.08C9.875,2.08,11.165,4.32,10.135,6.12Z" /></g><g transform="matrix(1,0,0,1,18.07,34.145)"><path fill="#b33266" fill-opacity="1" d="M6.06,-4.975C6.06,-4.975,-0.53,6.465,-0.53,6.465C-1.75,8.585,-4.77,8.705,-6.16,6.685C-6.16,6.685,-6.86,5.655,-6.86,5.655C-5.33,6.915,-2.93,6.585,-1.87,4.745C-1.87,4.745,4.72,-6.695,4.72,-6.695C5.1,-7.355,5.16,-8.065,4.99,-8.705C6.26,-8.025,6.86,-6.365,6.06,-4.975Z" /></g><g transform="matrix(1,0,0,1,18.63,13.765)"><path fill="#b33266" fill-opacity="1" d="M0.78,-8.218C0.78,-8.218,0.78,10.515,0.78,10.515C0.78,10.515,0.406,10.194,0.406,10.194C-0.317,9.573,-0.735,8.467,-0.735,7.512C-0.735,7.512,-0.735,-10.091,-0.735,-10.091C-0.735,-10.232,-0.746,-10.374,-0.78,-10.515C0.135,-10.134,0.78,-9.252,0.78,-8.218Z" /></g><g transform="matrix(1,0,0,1,11.259,22.76)"><path fill="#ffb47a" fill-opacity="1" d="M8.27,-17.215C7.99,-17.345,7.67,-17.415,7.34,-17.415C7.34,-17.415,1.66,-17.415,1.66,-17.415C0.38,-17.415,-0.66,-16.385,-0.66,-15.105C-0.66,-15.105,-0.66,4.465,-0.66,4.465C-0.66,4.465,-3.48,4.465,-3.48,4.465C-5.65,4.465,-6.93,6.895,-5.7,8.685C-5.7,8.685,1.45,19.135,1.45,19.135C1.21,18.945,1,18.715,0.81,18.445C0.81,18.445,-7.04,6.965,-7.04,6.965C-8.27,5.175,-6.99,2.745,-4.82,2.745C-4.82,2.745,-2,2.745,-2,2.745C-2,2.745,-2,-16.825,-2,-16.825C-2,-18.105,-0.96,-19.135,0.32,-19.135C0.32,-19.135,6,-19.135,6,-19.135C7.14,-19.135,8.09,-18.305,8.27,-17.215Z" /></g></g></g></g><g><g transform="translate(97,248)"><animateTransform repeatCount="indefinite" type="translate" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="97 248; 150 248; 150 248; 157 248; 157 248" keyTimes="0; 0.073771; 0.467213; 0.540984; 1" keySplines="0.333 0 0.667 1; 0 0 1 1; 0 0 1 1; 0 0 1 1" fill="freeze" /><g transform="scale(1,1) translate(-49,-38.5)"><g opacity="0"><animate repeatCount="indefinite" attributeName="opacity" dur="4.070737s" begin="0s" fill="freeze" values="0; 1; 1" keyTimes="0; 0.057377; 1" keySplines="0.333 0 0.667 1; 0 0 1 1" calcMode="spline" /><g transform="translate(93,38.5)"><g transform="scale(1,1)"><animateTransform repeatCount="indefinite" type="scale" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="1 1; 1 1; 0 1; 0 1" keyTimes="0; 0.459016; 0.540984; 1" keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1" fill="freeze" /><g transform="translate(0,-39)"><g transform="matrix(1,0,0,1,20.063,42.39)"><path fill="#ff8e3a" fill-opacity="1" d="M-16.179,-30.917C-16.179,-30.917,-8.824,-14.454,-8.824,-14.454C-7.55,-11.603,-4.709,-9.76,-1.585,-9.76C-1.585,-9.76,16.78,-9.76,16.78,-9.76C16.78,-9.76,16.78,28.566,16.78,28.566C16.78,29.862,15.725,30.917,14.43,30.917C14.43,30.917,-16.78,30.917,-16.78,30.917C-16.397,30.218,-16.179,29.417,-16.179,28.566C-16.179,28.566,-16.179,-30.917,-16.179,-30.917Z" /></g><g transform="matrix(1,0,0,1,22.189,33.759)"><path fill="#a47551" fill-opacity="1" d="M-8.61,-6.87C-7.748,-4.94,-5.826,-3.693,-3.712,-3.693C-3.712,-3.693,12.907,-3.693,12.907,-3.693C12.907,-3.693,14.654,-1.129,14.654,-1.129C14.654,-1.129,14.654,14.555,14.654,14.555C14.654,14.555,-8.521,5.656,-8.521,5.656C-10.699,4.82,-12.253,2.867,-12.58,0.557C-12.58,0.557,-14.654,-14.113,-14.654,-14.113C-14.654,-14.113,-12.044,-14.555,-12.044,-14.555C-12.044,-14.555,-8.61,-6.87,-8.61,-6.87Z" /></g><g transform="matrix(1,0,0,1,29.766,16.549)"><path fill="#ff8e3a" fill-opacity="1" d="M-16.187,10.34C-16.187,10.34,-25.882,-11.359,-25.882,-11.359C-25.882,-11.359,-25.882,-11.385,-25.882,-11.385C-25.882,-12.149,-26.063,-12.871,-26.375,-13.517C-26.375,-13.517,12.252,-13.517,12.252,-13.517C13.846,-13.517,15.297,-12.576,15.948,-11.12C15.948,-11.12,26.208,11.84,26.208,11.84C26.375,12.215,26.342,12.63,26.12,12.974C25.895,13.32,25.531,13.517,25.121,13.517C25.121,13.517,-11.289,13.517,-11.289,13.517C-13.403,13.517,-15.325,12.27,-16.187,10.34Z" /></g><g transform="matrix(1,0,0,1,29.766,16.549)"><path fill="#d8b69d" fill-opacity="1" d="M14.483,-7.092C13.833,-8.548,12.381,-9.488,10.788,-9.488C10.788,-9.488,-25.046,-9.488,-25.046,-9.488C-25.046,-9.488,-25.882,-11.359,-25.882,-11.359C-25.882,-11.359,-25.882,-11.385,-25.882,-11.385C-25.882,-12.15,-26.063,-12.87,-26.375,-13.516C-26.375,-13.516,12.253,-13.516,12.253,-13.516C13.846,-13.516,15.297,-12.575,15.948,-11.119C15.948,-11.119,26.208,11.842,26.208,11.842C26.375,12.217,26.342,12.629,26.12,12.973C25.895,13.319,25.531,13.516,25.121,13.516C25.121,13.516,23.691,13.516,23.691,13.516C23.691,13.516,14.483,-7.092,14.483,-7.092Z" /></g><g transform="matrix(1,0,0,1,29.542,38.06)"><path fill="#871844" fill-opacity="1" fill-rule="evenodd" d="M28.771,-10.716C28.771,-10.716,18.512,-33.676,18.512,-33.676C17.449,-36.055,15.08,-37.591,12.477,-37.591C12.477,-37.591,6.402,-37.591,6.402,-37.591C5.943,-37.733,5.455,-37.81,4.951,-37.81C4.951,-37.81,-9.913,-37.808,-29.292,-37.805C-29.056,-36.669,-28.876,-35.516,-28.751,-34.347C-28.429,-33.946,-28.221,-33.449,-28.221,-32.896C-28.221,-32.896,-28.221,32.896,-28.221,32.896C-28.221,32.949,-28.235,32.999,-28.238,33.051C-28.186,33.678,-28.139,34.306,-28.111,34.939C-28.069,35.884,-28.088,36.845,-28.135,37.81C-28.135,37.81,4.951,37.81,4.951,37.81C7.66,37.81,9.865,35.605,9.865,32.896C9.865,32.896,9.865,-5.431,9.865,-5.431C9.865,-5.431,25.344,-5.431,25.344,-5.431C26.62,-5.431,27.799,-6.07,28.494,-7.142C29.189,-8.214,29.292,-9.55,28.771,-10.716ZM7.301,32.896C7.301,34.192,6.246,35.247,4.951,35.247C4.951,35.247,-26.26,35.247,-26.26,35.247C-25.877,34.547,-25.658,33.747,-25.658,32.896C-25.658,32.896,-25.658,-26.586,-25.658,-26.586C-25.658,-26.586,-18.303,-10.124,-18.303,-10.124C-17.03,-7.273,-14.188,-5.431,-11.064,-5.431C-11.064,-5.431,7.301,-5.431,7.301,-5.431C7.301,-5.431,7.301,32.896,7.301,32.896ZM26.344,-8.537C26.119,-8.192,25.754,-7.994,25.344,-7.994C25.344,-7.994,-11.064,-7.994,-11.064,-7.994C-13.178,-7.994,-15.101,-9.241,-15.964,-11.17C-15.964,-11.17,-25.658,-32.87,-25.658,-32.87C-25.658,-32.87,-25.658,-32.896,-25.658,-32.896C-25.658,-33.661,-25.84,-34.382,-26.152,-35.027C-26.152,-35.027,12.477,-35.027,12.477,-35.027C14.071,-35.027,15.521,-34.086,16.171,-32.631C16.171,-32.631,26.432,-9.67,26.432,-9.67C26.599,-9.295,26.567,-8.882,26.344,-8.537Z" /></g><g transform="matrix(1,0,0,1,20.063,68.729)"><path fill="#a47551" fill-opacity="1" d="M14.43,4.577C14.43,4.577,-16.78,4.577,-16.78,4.577C-16.397,3.878,-16.179,3.078,-16.179,2.227C-16.179,2.227,-16.179,-4.577,-16.179,-4.577C-16.179,-4.577,16.78,-4.577,16.78,-4.577C16.78,-4.577,16.78,2.227,16.78,2.227C16.78,3.523,15.725,4.577,14.43,4.577Z" /></g></g></g></g></g></g></g></g><g><g transform="translate(97,248)"><animateTransform repeatCount="indefinite" type="translate" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="97 248; 150 248; 150 248; 157 248; 157 248" keyTimes="0; 0.073771; 0.467213; 0.540984; 1" keySplines="0.333 0 0.667 1; 0 0 1 1; 0 0 1 1; 0 0 1 1" fill="freeze" /><g transform="scale(1,1) translate(-49,-38.5)"><g opacity="0"><animate repeatCount="indefinite" attributeName="opacity" dur="4.070737s" begin="0s" fill="freeze" values="0; 1; 1" keyTimes="0; 0.057377; 1" keySplines="0.333 0 0.667 1; 0 0 1 1" calcMode="spline" /><g transform="translate(3,14.5)"><g transform="scale(1,1)"><animateTransform repeatCount="indefinite" type="scale" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="1 1; 1 1; 0 1; 0 1" keyTimes="0; 0.459016; 0.540984; 1" keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1" fill="freeze" /><g transform="translate(-20,-11)"><g transform="matrix(1,0,0,1,9.924,11.722)"><path fill="#a47551" fill-opacity="1" d="M6.934,-7.098C6.934,-7.098,6.934,7.098,6.934,7.098C6.934,7.098,-6.622,7.098,-6.622,7.098C-6.666,7.098,-6.799,7.098,-6.867,6.935C-6.934,6.771,-6.84,6.677,-6.809,6.646C-6.809,6.646,6.934,-7.098,6.934,-7.098Z" /></g><g transform="matrix(1,0,0,1,9.836,10.907)"><path fill="#871844" fill-opacity="1" fill-rule="evenodd" d="M9.538,-9.224C8.636,-9.566,7.854,-10.053,7.201,-10.656C7.138,-10.424,7.087,-10.189,7.059,-9.944C7.059,-9.944,-8.534,5.65,-8.534,5.65C-9.346,6.461,-9.586,7.671,-9.147,8.732C-8.707,9.792,-7.682,10.478,-6.534,10.478C-6.534,10.478,7.023,10.478,7.023,10.478C7.023,10.478,7.023,10.656,7.023,10.656C7.869,10.43,8.726,10.248,9.586,10.094C9.586,10.094,9.586,-8.348,9.586,-8.348C9.571,-8.59,9.549,-8.83,9.538,-9.072C9.536,-9.123,9.54,-9.173,9.538,-9.224ZM7.023,7.913C7.023,7.913,-6.534,7.913,-6.534,7.913C-6.578,7.913,-6.711,7.913,-6.779,7.75C-6.846,7.586,-6.752,7.492,-6.721,7.461C-6.721,7.461,7.023,-6.283,7.023,-6.283C7.023,-6.283,7.023,7.913,7.023,7.913Z" /></g></g></g></g></g></g></g></g><g opacity="0"><animate repeatCount="indefinite" attributeName="opacity" dur="4.070737s" begin="0s" fill="freeze" values="0; 1; 1" keyTimes="0; 0.057377; 1" keySplines="0.333 0 0.667 1; 0 0 1 1" calcMode="spline" /><g transform="translate(97,248)"><animateTransform repeatCount="indefinite" type="translate" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="97 248; 150 248; 150 248; 157 248; 157 248" keyTimes="0; 0.073771; 0.467213; 0.540984; 1" keySplines="0.333 0 0.667 1; 0 0 1 1; 0 0 1 1; 0 0 1 1" fill="freeze" /><g transform="scale(1,1) translate(-49,-38.5)"><g transform="matrix(1,0,0,1,47.88,11.23)"><path fill="#d2d1d0" fill-opacity="1" d="M-5.127,-8.416C-5.127,-8.416,5.127,-8.416,5.127,-8.416C5.127,-8.416,5.127,8.416,5.127,8.416C5.127,8.416,-5.127,4.78,-5.127,4.78C-5.127,4.78,-5.127,-8.416,-5.127,-8.416Z" /></g><g transform="matrix(1,0,0,1,47.88,61.633)"><path fill="#d2d1d0" fill-opacity="1" d="M7.472,-3.126C7.472,-3.126,5.127,-3.126,5.127,-3.126C5.127,-3.126,5.127,11.673,5.127,11.673C5.127,11.673,-5.128,11.673,-5.128,11.673C-5.128,11.673,-5.128,-3.126,-5.128,-3.126C-5.128,-3.126,-7.472,-3.126,-7.472,-3.126C-7.472,-3.126,-0.001,-11.673,-0.001,-11.673C-0.001,-11.673,7.472,-3.126,7.472,-3.126Z" /></g><g transform="matrix(1,0,0,1,48.493,38.06)"><path fill="#ff8e3a" fill-opacity="1" d="M-43.333,-35.247C-43.333,-35.247,-8.305,-35.247,-8.305,-35.247C-8.305,-35.247,-8.305,-35.193,-8.305,-35.193C-8.305,-35.193,-8.305,-20.239,-8.305,-20.239C-8.305,-20.239,7.077,-14.786,7.077,-14.786C7.077,-14.786,7.077,-35.247,7.077,-35.247C7.077,-35.247,43.333,-35.247,43.333,-35.247C43.768,-35.247,44.174,-35.125,44.523,-34.919C45.217,-34.51,45.684,-33.757,45.684,-32.896C45.684,-32.896,45.684,32.895,45.684,32.895C45.684,34.191,44.628,35.247,43.333,35.247C43.333,35.247,7.077,35.247,7.077,35.247C7.077,35.247,7.077,23.011,7.077,23.011C7.077,23.011,12.503,23.011,12.503,23.011C12.503,23.011,-0.613,8.005,-0.613,8.005C-0.613,8.005,-13.73,23.011,-13.73,23.011C-13.73,23.011,-8.305,23.011,-8.305,23.011C-8.305,23.011,-8.305,35.193,-8.305,35.193C-8.305,35.193,-8.305,35.247,-8.305,35.247C-8.305,35.247,-43.333,35.247,-43.333,35.247C-44.629,35.247,-45.684,34.191,-45.684,32.895C-45.684,32.895,-45.684,-32.896,-45.684,-32.896C-45.684,-34.192,-44.629,-35.247,-43.333,-35.247Z" /></g><g transform="matrix(1,0,0,1,74.873,68.729)"><path fill="#a47551" fill-opacity="1" d="M16.953,4.577C16.953,4.577,-19.303,4.577,-19.303,4.577C-19.303,4.577,-19.303,-4.577,-19.303,-4.577C-19.303,-4.577,19.303,-4.577,19.303,-4.577C19.303,-4.577,19.303,2.227,19.303,2.227C19.303,3.523,18.248,4.577,16.953,4.577Z" /></g><g transform="matrix(1,0,0,1,21.499,68.729)"><path fill="#a47551" fill-opacity="1" d="M18.689,4.524C18.689,4.524,18.689,4.578,18.689,4.578C18.689,4.578,-16.339,4.578,-16.339,4.578C-17.635,4.578,-18.689,3.523,-18.689,2.227C-18.689,2.227,-18.689,-4.578,-18.689,-4.578C-18.689,-4.578,18.689,-4.578,18.689,-4.578C18.689,-4.578,18.689,4.524,18.689,4.524Z" /></g><g transform="matrix(1,0,0,1,74.873,38.06)"><path fill="#d8b69d" fill-opacity="1" d="M15.275,-28.567C15.275,-29.428,14.808,-30.18,14.115,-30.589C13.765,-30.795,13.36,-30.917,12.924,-30.917C12.924,-30.917,-19.303,-30.917,-19.303,-30.917C-19.303,-30.917,-19.303,-35.247,-19.303,-35.247C-19.303,-35.247,16.954,-35.247,16.954,-35.247C17.388,-35.247,17.794,-35.127,18.143,-34.92C18.837,-34.511,19.303,-33.757,19.303,-32.896C19.303,-32.896,19.303,32.895,19.303,32.895C19.303,34.191,18.249,35.247,16.954,35.247C16.954,35.247,15.275,35.247,15.275,35.247C15.275,35.247,15.275,-28.567,15.275,-28.567Z" /></g><g transform="matrix(1,0,0,1,21.499,5.005)"><path fill="#d8b69d" fill-opacity="1" d="M-16.339,-2.192C-16.339,-2.192,18.689,-2.192,18.689,-2.192C18.689,-2.192,18.689,-2.139,18.689,-2.139C18.689,-2.139,18.689,2.192,18.689,2.192C18.689,2.192,-18.689,2.139,-18.689,2.139C-18.689,2.139,-18.689,0.158,-18.689,0.158C-18.689,-1.138,-17.635,-2.192,-16.339,-2.192Z" /></g><g transform="matrix(1,0,0,1,27.953,29.516)"><path fill="#a47551" fill-opacity="1" d="M19.441,1.098C19.441,1.098,-19.442,1.098,-19.442,1.098C-20.049,1.098,-20.54,0.606,-20.54,-0.001C-20.54,-0.608,-20.049,-1.098,-19.442,-1.098C-19.442,-1.098,19.441,-1.098,19.441,-1.098C20.048,-1.098,20.54,-0.608,20.54,-0.001C20.54,0.606,20.048,1.098,19.441,1.098Z" /></g><g transform="matrix(1,0,0,1,17.683,33.911)"><path fill="#a47551" fill-opacity="1" d="M9.171,1.098C9.171,1.098,-9.172,1.098,-9.172,1.098C-9.779,1.098,-10.27,0.606,-10.27,-0.001C-10.27,-0.607,-9.779,-1.098,-9.172,-1.098C-9.172,-1.098,9.171,-1.098,9.171,-1.098C9.778,-1.098,10.27,-0.607,10.27,-0.001C10.27,0.606,9.778,1.098,9.171,1.098Z" /></g><g transform="matrix(1,0,0,1,12.548,38.306)"><path fill="#a47551" fill-opacity="1" d="M4.036,1.098C4.036,1.098,-4.037,1.098,-4.037,1.098C-4.644,1.098,-5.135,0.606,-5.135,-0.001C-5.135,-0.607,-4.644,-1.098,-4.037,-1.098C-4.037,-1.098,4.036,-1.098,4.036,-1.098C4.643,-1.098,5.135,-0.607,5.135,-0.001C5.135,0.606,4.643,1.098,4.036,1.098Z" /></g><g transform="matrix(1,0,0,1,48.53,38.065)"><path fill="#871844" fill-opacity="1" fill-rule="evenodd" d="M48.21,-32.875C48.21,-32.875,48.21,-32.905,48.21,-32.905C48.21,-33.665,48.03,-34.385,47.72,-35.035C47.72,-35.035,47.76,-35.035,47.76,-35.035C46.96,-36.655,45.31,-37.775,43.39,-37.805C7.86,-37.805,-41.88,-37.795,-43.88,-37.775C-44,-37.765,-44.13,-37.745,-44.25,-37.725C-44.43,-37.695,-44.61,-37.645,-44.78,-37.595C-46.81,-36.965,-48.28,-35.065,-48.28,-32.825C-48.28,-32.825,-48.28,32.815,-48.28,32.815C-48.28,32.985,-48.27,33.155,-48.25,33.325C-48.02,35.675,-46.15,37.545,-43.81,37.775C-43.64,37.795,-43.47,37.805,-43.3,37.805C-43.3,37.805,43.29,37.805,43.29,37.805C45.16,37.805,46.79,36.775,47.65,35.246C47.65,35.246,47.61,35.246,47.61,35.246C47.99,34.545,48.21,33.746,48.21,32.895C48.21,32.895,48.21,-26.595,48.21,-26.595C48.21,-26.595,48.28,-26.435,48.28,-26.435C48.28,-26.435,48.28,-32.715,48.28,-32.715C48.28,-32.715,48.21,-32.875,48.21,-32.875ZM-5.78,-35.255C-5.78,-35.255,4.48,-35.255,4.48,-35.255C4.48,-35.255,4.48,-18.415,4.48,-18.415C4.48,-18.415,-5.78,-22.055,-5.78,-22.055C-5.78,-22.055,-5.78,-35.255,-5.78,-35.255ZM4.48,20.445C4.48,20.445,4.48,35.246,4.48,35.246C4.48,35.246,-5.78,35.246,-5.78,35.246C-5.78,35.246,-5.78,20.445,-5.78,20.445C-5.78,20.445,-8.12,20.445,-8.12,20.445C-8.12,20.445,-0.65,11.895,-0.65,11.895C-0.65,11.895,6.82,20.445,6.82,20.445C6.82,20.445,4.48,20.445,4.48,20.445ZM45.65,32.895C45.65,34.185,44.59,35.246,43.3,35.246C43.3,35.246,7.04,35.246,7.04,35.246C7.04,35.246,7.04,23.005,7.04,23.005C7.04,23.005,12.47,23.005,12.47,23.005C12.47,23.005,-0.65,7.996,-0.65,7.996C-0.65,7.996,-13.77,23.005,-13.77,23.005C-13.77,23.005,-8.34,23.005,-8.34,23.005C-8.34,23.005,-8.34,35.246,-8.34,35.246C-8.34,35.246,-43.37,35.246,-43.37,35.246C-44.67,35.246,-45.72,34.185,-45.72,32.895C-45.72,32.895,-45.72,-32.905,-45.72,-32.905C-45.72,-34.195,-44.67,-35.255,-43.37,-35.255C-43.37,-35.255,-8.34,-35.255,-8.34,-35.255C-8.34,-35.255,-8.34,-20.245,-8.34,-20.245C-8.34,-20.245,7.04,-14.795,7.04,-14.795C7.04,-14.795,7.04,-35.255,7.04,-35.255C7.04,-35.255,43.3,-35.255,43.3,-35.255C43.73,-35.255,44.14,-35.135,44.49,-34.925C45.18,-34.515,45.65,-33.765,45.65,-32.905C45.65,-32.905,45.65,32.895,45.65,32.895Z" /></g><g transform="matrix(1,0,0,1,47.88,11.23)"><path fill="#a47551" fill-opacity="1" d="M-5.13,4.78C-5.13,4.78,-5.13,-8.42,-5.13,-8.42C-5.13,-8.42,5.13,-8.42,5.13,-8.42C5.13,-8.42,5.13,8.42,5.13,8.42C5.13,8.42,-5.13,4.78,-5.13,4.78Z" /></g><g transform="matrix(1,0,0,1,47.88,61.635)"><path fill="#a47551" fill-opacity="1" d="M0,-11.676C0,-11.676,7.47,-3.125,7.47,-3.125C7.47,-3.125,5.13,-3.125,5.13,-3.125C5.13,-3.125,5.13,11.676,5.13,11.676C5.13,11.676,-5.13,11.676,-5.13,11.676C-5.13,11.676,-5.13,-3.125,-5.13,-3.125C-5.13,-3.125,-7.47,-3.125,-7.47,-3.125C-7.47,-3.125,0,-11.676,0,-11.676Z" /></g><g transform="matrix(1,0,0,1,48.285,0.27)"><path fill="#a47551" fill-opacity="1" d="M43.635,-0.01C8.105,-0.01,-41.635,0,-43.635,0.02C-43.445,-0.01,-43.255,-0.02,-43.055,-0.02C-43.055,-0.02,43.534,-0.02,43.534,-0.02C43.565,-0.02,43.605,-0.02,43.635,-0.01Z" /></g><g transform="matrix(1,0,0,1,96.53,4.19)"><path fill="#a47551" fill-opacity="1" d="M0.28,1.05C0.28,1.05,0.28,1.16,0.28,1.16C0.28,1.16,0.21,1,0.21,1C0.21,1,0.21,0.97,0.21,0.97C0.21,0.21,0.03,-0.51,-0.28,-1.16C-0.28,-1.16,-0.24,-1.16,-0.24,-1.16C0.091,-0.49,0.28,0.26,0.28,1.05Z" /></g><g transform="matrix(1,0,0,1,96.475,42.39)"><path fill="#a47551" fill-opacity="1" d="M0.265,-30.92C0.265,-30.92,0.335,-30.76,0.335,-30.76C0.335,-30.76,0.335,28.49,0.335,28.49C0.335,29.37,0.106,30.2,-0.295,30.92C-0.295,30.92,-0.335,30.92,-0.335,30.92C0.045,30.22,0.265,29.42,0.265,28.57C0.265,28.57,0.265,-30.92,0.265,-30.92Z" /></g></g></g></g><g><g transform="translate(97,248)"><animateTransform repeatCount="indefinite" type="translate" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="97 248; 150 248; 150 248; 157 248; 157 248" keyTimes="0; 0.073771; 0.467213; 0.540984; 1" keySplines="0.333 0 0.667 1; 0 0 1 1; 0 0 1 1; 0 0 1 1" fill="freeze" /><g transform="scale(1,1) translate(-49,-38.5)"><g opacity="0"><animate repeatCount="indefinite" attributeName="opacity" dur="4.070737s" begin="0s" fill="freeze" values="0; 1; 1" keyTimes="0; 0.057377; 1" keySplines="0.333 0 0.667 1; 0 0 1 1" calcMode="spline" /><g transform="translate(-13.75,78.009)"><g transform="scale(1,1)"><animateTransform repeatCount="indefinite" type="scale" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="1 1; 1 1; 0.84 0.84; 0.84 0.84" keyTimes="0; 0.467213; 0.532787; 1" keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1" fill="freeze" /><g transform="translate(-0.25,-3.259)"><g transform="matrix(1,0,0,1,77.643,3.259)"><path fill="#e9e8e7" fill-opacity="1" d="M-74.385,3.008C-74.385,3.008,74.386,3.008,74.386,3.008C76.047,3.008,77.393,1.662,77.393,0.001C77.393,-1.66,76.047,-3.008,74.386,-3.008C74.386,-3.008,-74.385,-3.008,-74.385,-3.008C-76.047,-3.008,-77.393,-1.66,-77.393,0.001C-77.393,1.662,-76.047,3.008,-74.385,3.008Z" /></g></g></g></g></g></g></g></g><g opacity="1" visibility="hidden"><animate repeatCount="indefinite" begin="0s" calcMode="discrete" dur="4.070737s" values="hidden; visible; visible" keyTimes="0; 0.533034; 1" attributeName="visibility" /><animate repeatCount="indefinite" attributeName="opacity" dur="4.070737s" begin="0s" fill="freeze" values="1; 1; 0; 0" keyTimes="0; 0.762295; 0.827869; 1" keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1" calcMode="spline" /><g transform="translate(140,233)"><g transform="scale(1,1)"><animateTransform repeatCount="indefinite" type="scale" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="1 1; 1 1; 0 0; 1 1; 1 1" keyTimes="0; 0.057377; 0.639344; 0.811475; 1" keySplines="0 0 1 1; 0.167 0.167 0.667 1; 0.167 0.167 0.667 1; 0 0 1 1" fill="freeze" /><g transform="translate(-80,-48)"><g transform="matrix(1,0,0,1,8.986,92.339)"><path fill="#871844" fill-opacity="1" d="M-0.988,0.988C-1.534,0.442,-1.534,-0.442,-0.988,-0.988C-0.442,-1.534,0.442,-1.534,0.988,-0.988C1.534,-0.442,1.534,0.442,0.988,0.988C0.442,1.534,-0.442,1.534,-0.988,0.988Z" /></g><g transform="matrix(1,0,0,1,156.622,94.007)"><path fill="#871844" fill-opacity="1" d="M1.613,-0.001C1.613,0.89,0.89,1.613,0,1.613C-0.891,1.613,-1.613,0.89,-1.613,-0.001C-1.613,-0.891,-0.891,-1.613,0,-1.613C0.89,-1.613,1.613,-0.891,1.613,-0.001Z" /></g><g transform="matrix(1,0,0,1,157.952,37.896)"><path fill="#871844" fill-opacity="1" d="M1.258,-0.478C1.522,0.216,1.173,0.994,0.478,1.258C-0.217,1.522,-0.994,1.173,-1.258,0.479C-1.522,-0.216,-1.173,-0.994,-0.478,-1.258C0.216,-1.522,0.993,-1.173,1.258,-0.478Z" /></g><g transform="matrix(1,0,0,1,150.06,23.755)"><path fill="#871844" fill-opacity="1" d="M2.294,2.295C2.606,1.984,2.409,1.246,1.859,0.409C1.696,0.16,1.696,-0.16,1.859,-0.409C2.409,-1.246,2.606,-1.984,2.294,-2.295C1.983,-2.606,1.245,-2.41,0.408,-1.86C0.159,-1.697,-0.161,-1.697,-0.41,-1.86C-1.246,-2.41,-1.984,-2.606,-2.296,-2.295C-2.606,-1.984,-2.41,-1.246,-1.86,-0.409C-1.697,-0.16,-1.697,0.16,-1.86,0.409C-2.41,1.246,-2.606,1.984,-2.296,2.295C-1.984,2.606,-1.246,2.41,-0.41,1.86C-0.161,1.697,0.159,1.697,0.408,1.86C1.245,2.41,1.983,2.606,2.294,2.295Z" /></g><g transform="matrix(1,0,0,1,2.89,80.594)"><path fill="#871844" fill-opacity="1" d="M0,2.64C0.357,2.64,0.669,2.102,0.834,1.305C0.883,1.068,1.068,0.884,1.305,0.835C2.102,0.669,2.64,0.357,2.64,0C2.64,-0.358,2.102,-0.67,1.305,-0.835C1.068,-0.884,0.883,-1.068,0.834,-1.305C0.669,-2.103,0.357,-2.64,0,-2.64C-0.358,-2.64,-0.669,-2.103,-0.835,-1.305C-0.884,-1.068,-1.068,-0.884,-1.305,-0.835C-2.103,-0.67,-2.64,-0.358,-2.64,0C-2.64,0.357,-2.103,0.669,-1.305,0.835C-1.068,0.884,-0.884,1.068,-0.835,1.305C-0.669,2.102,-0.358,2.64,0,2.64Z" /></g><g transform="matrix(1,0,0,1,24.783,2.68)"><path fill="#871844" fill-opacity="1" d="M-1.787,1.163C-2.43,0.176,-2.15,-1.145,-1.163,-1.788C-0.176,-2.43,1.146,-2.151,1.788,-1.164C2.43,-0.176,2.151,1.144,1.164,1.787C0.177,2.43,-1.144,2.15,-1.787,1.163Z" /></g><g transform="matrix(1,0,0,1,14.454,13.591)"><path fill="#871844" fill-opacity="1" d="M-1.364,-0.289C-1.205,-1.042,-0.465,-1.523,0.288,-1.364C1.042,-1.205,1.523,-0.465,1.364,0.288C1.204,1.041,0.465,1.523,-0.288,1.363C-1.042,1.204,-1.523,0.464,-1.364,-0.289Z" /></g></g></g></g></g><g visibility="hidden"><animate repeatCount="indefinite" begin="0s" calcMode="discrete" dur="4.070737s" values="hidden; visible; visible" keyTimes="0; 0.590038; 1" attributeName="visibility" /><g transform="translate(156,165)"><g transform="scale(0,0)"><animateTransform repeatCount="indefinite" type="scale" attributeName="transform" dur="4.070737s" begin="0s" calcMode="spline" values="0 0; 0 0; 1.15 1.15; 1 1; 1 1" keyTimes="0; 0.672131; 0.721311; 0.745901; 1" keySplines="0 0 1 1; 0.333 0 0.667 1; 0.333 0 0.667 1; 0 0 1 1" fill="freeze" /><g transform="translate(-28,-28)"><g transform="matrix(1,0,0,1,27.95,27.945)"><path fill="#ffbf00" fill-opacity="1" d="M24.7,-0.005C24.7,13.635,13.639,24.695,0,24.695C-13.64,24.695,-24.7,13.635,-24.7,-0.005C-24.7,-13.645,-13.64,-24.695,0,-24.695C13.639,-24.695,24.7,-13.645,24.7,-0.005Z" /></g><g transform="matrix(1,0,0,1,19.77,27.697)"><path fill="#ffb47a" fill-opacity="1" d="M-14.145,1.03C-14.145,11.8,-7.245,20.97,2.375,24.34C-8.425,21.7,-16.435,11.96,-16.435,0.35C-16.435,-13.29,-5.375,-24.34,8.265,-24.34C11.135,-24.34,13.885,-23.85,16.435,-22.95C14.555,-23.42,12.585,-23.66,10.555,-23.66C-3.085,-23.66,-14.145,-12.61,-14.145,1.03Z" /></g><g transform="matrix(1,0,0,1,36.21,27.945)"><path fill="#b33266" fill-opacity="1" d="M16.44,-0.36C16.44,13.28,5.379,24.34,-8.26,24.34C-11.13,24.34,-13.88,23.85,-16.44,22.95C-14.55,23.41,-12.581,23.66,-10.55,23.66C3.089,23.66,14.15,12.6,14.15,-1.04C14.15,-11.81,7.25,-20.97,-2.38,-24.34C8.419,-21.71,16.44,-11.97,16.44,-0.36Z" /></g><g transform="matrix(1,0,0,1,27.957,27.945)"><path fill="#871844" fill-opacity="1" fill-rule="evenodd" d="M13.691,-8.04C13.691,-8.04,13.362,-8.537,13.362,-8.537C12.383,-10.028,10.732,-10.915,8.95,-10.915C7.719,-10.915,6.518,-10.479,5.57,-9.692C5.57,-9.692,-2.856,-2.672,-2.856,-2.672C-3.016,-2.535,-3.185,-2.512,-3.299,-2.512C-3.421,-2.512,-3.651,-2.542,-3.827,-2.756C-3.827,-2.756,-5.257,-4.446,-5.257,-4.446C-6.266,-5.639,-7.734,-6.32,-9.294,-6.32C-10.594,-6.32,-11.848,-5.846,-12.811,-4.974C-14.937,-3.078,-15.182,0.126,-13.369,2.328C-13.369,2.328,-7.857,8.996,-7.857,8.996C-6.847,10.219,-5.364,10.915,-3.781,10.915C-2.558,10.915,-1.365,10.487,-0.424,9.707C-0.424,9.707,12.643,-1.059,12.643,-1.059C14.731,-2.779,15.182,-5.785,13.691,-8.04ZM11.183,-2.833C11.183,-2.833,-1.885,7.94,-1.885,7.94C-3.154,8.988,-5.035,8.812,-6.09,7.535C-6.09,7.535,-11.595,0.868,-11.595,0.868C-12.62,-0.371,-12.483,-2.198,-11.282,-3.269C-10.028,-4.393,-8.093,-4.255,-7.008,-2.971C-7.008,-2.971,-5.586,-1.273,-5.586,-1.273C-4.523,-0.019,-2.65,0.141,-1.388,-0.906C-1.388,-0.906,7.038,-7.933,7.038,-7.933C8.407,-9.072,10.471,-8.767,11.451,-7.275C11.451,-7.275,11.779,-6.778,11.779,-6.778C12.62,-5.509,12.36,-3.804,11.183,-2.833Z" /></g><g transform="matrix(1,0,0,1,27.957,27.903)"><path fill="#ffffff" fill-opacity="1" d="M11.183,-2.791C11.183,-2.791,-1.885,7.982,-1.885,7.982C-3.154,9.03,-5.035,8.854,-6.09,7.577C-6.09,7.577,-11.595,0.91,-11.595,0.91C-12.62,-0.329,-12.483,-2.156,-11.282,-3.227C-10.028,-4.351,-8.093,-4.213,-7.008,-2.929C-7.008,-2.929,-5.586,-1.231,-5.586,-1.231C-4.523,0.023,-2.65,0.183,-1.388,-0.864C-1.388,-0.864,7.038,-7.891,7.038,-7.891C8.407,-9.03,10.471,-8.725,11.451,-7.233C11.451,-7.233,11.779,-6.736,11.779,-6.736C12.62,-5.467,12.36,-3.762,11.183,-2.791Z" /></g><g transform="matrix(1,0,0,1,27.95,27.945)"><path fill="#871844" fill-opacity="1" fill-rule="evenodd" d="M0,-27.695C-15.27,-27.695,-27.7,-15.275,-27.7,-0.005C-27.7,15.275,-15.27,27.695,0,27.695C15.28,27.695,27.7,15.275,27.7,-0.005C27.7,-15.275,15.28,-27.695,0,-27.695ZM0,24.695C-13.64,24.695,-24.7,13.635,-24.7,-0.005C-24.7,-13.645,-13.64,-24.695,0,-24.695C13.64,-24.695,24.7,-13.645,24.7,-0.005C24.7,13.635,13.64,24.695,0,24.695Z" /></g></g></g></g></g></g></g></svg>
+            </div>
+
+          </div>
+
+          <h3 class="confirm-title" id="confirm-title">Packing your order…</h3>
+          <p class="confirm-sub" id="confirm-sub">Placing your shoes safely in the box.</p>
+
+          <div class="confirm-details" id="confirm-details" hidden>
+            <div class="confirm-detail-row">
+              <span>Order number</span>
+              <strong id="order-id-value">—</strong>
+            </div>
+            <div class="confirm-detail-row">
+              <span>Estimated delivery</span>
+              <strong>2–4 business days</strong>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary confirm-continue-btn" id="confirm-continue-btn" hidden>
+            Continue Shopping
+          </button>
+        </div>
+      </div>
+
     </div>
   </aside>
 
@@ -771,6 +949,7 @@
   <!-- ==================== SCRIPTS ==================== -->
   <script src="js/products.js"></script>
   <script src="js/cart.js"></script>
+  <script src="js/checkout.js"></script>
   <script src="js/main.js"></script>
 
 </body>

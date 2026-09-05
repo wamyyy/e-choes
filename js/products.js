@@ -1,5 +1,5 @@
 /* =====================================================
-   NexSole — Product Catalog (19 Distinct Shoe Products)
+   CasaShoes — Product Catalog (19 Distinct Shoe Products)
    Every shoe model & colorway is 100% isolated into its own
    individual buyable product with only its own matching angle photos.
    ===================================================== */
