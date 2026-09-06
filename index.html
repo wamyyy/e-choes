@@ -8,6 +8,23 @@
   <meta property="og:description" content="Step into premium footwear. Shop sneakers, boots, formal shoes and more at CasaShoes.">
   <title>CasaShoes | Premium Footwear Store</title>
 
+  <!-- ==================== PWA: Manifest & Theme ==================== -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#FF5E2C">
+
+  <!-- ==================== PWA: iOS Safari support ====================
+       iOS ignores manifest.json for standalone mode — these tags are
+       required for "Add to Home Screen" to launch full-screen there. -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CasaShoes">
+  <link rel="apple-touch-icon" href="images/icons/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/icons/apple-touch-icon.png">
+
+  <!-- Generic favicon / Android -->
+  <link rel="icon" type="image/png" sizes="192x192" href="images/icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/icons/icon-512.png">
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -139,8 +156,84 @@
           </span>
         </button>
       </div>
+
+      <!-- ==================== PWA INSTALL ROW ====================
+           Hidden by default; js/pwa-install.js reveals it only when
+           the app is actually installable (or on iOS, always shows
+           it since iOS has no beforeinstallprompt event). -->
+      <div class="settings-row" id="pwa-install-row" hidden>
+        <div class="settings-row-text">
+          <span class="settings-row-title">Install App</span>
+          <span class="settings-row-sub">Full-screen, app-like experience</span>
+        </div>
+        <button type="button" class="pwa-install-btn" id="pwa-install-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v13"/><polyline points="7 11 12 16 17 11"/><path d="M5 21h14"/>
+          </svg>
+          Install
+        </button>
+      </div>
     </div>
   </aside>
+
+  <!-- ==================== PWA: iOS "Add to Home Screen" sheet ====================
+       iOS Safari has no beforeinstallprompt event, so we show manual
+       instructions instead when an iOS user taps Install. -->
+  <div class="pwa-ios-overlay" id="pwa-ios-overlay"></div>
+  <div class="pwa-ios-sheet" id="pwa-ios-sheet" role="dialog" aria-modal="true" aria-label="Install CasaShoes on iOS">
+    <button type="button" class="pwa-ios-close" id="pwa-ios-close" aria-label="Close">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <div class="pwa-ios-icon">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3v13"/><polyline points="7 8 12 3 17 8"/><path d="M5 21h14a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-3"/><path d="M8 11H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2"/>
+      </svg>
+    </div>
+    <h3>Install CasaShoes</h3>
+    <p>Add the app to your Home Screen for a full-screen, app-like experience with no address bar.</p>
+    <ol class="pwa-ios-steps">
+      <li>
+        <span class="pwa-ios-step-icon">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v13"/><polyline points="8 6 12 2 16 6"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/>
+          </svg>
+        </span>
+        Tap the <strong>Share</strong> icon in Safari's toolbar
+      </li>
+      <li>
+        <span class="pwa-ios-step-icon">＋</span>
+        Scroll down and tap <strong>"Add to Home Screen"</strong>
+      </li>
+      <li>
+        <span class="pwa-ios-step-icon">✓</span>
+        Tap <strong>"Add"</strong> in the top-right corner
+      </li>
+    </ol>
+  </div>
+
+  <!-- ==================== PROMO POPUP ==================== -->
+  <div class="promo-overlay" id="promo-overlay"></div>
+  <div class="promo-popup" id="promo-popup" role="dialog" aria-label="Special offer" aria-modal="true">
+    <button type="button" class="promo-close-btn" id="promo-close-btn" aria-label="Close offer">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <div class="promo-popup-img-wrap">
+      <picture>
+        <source type="image/avif" srcset="images/promo-2-shoes.avif">
+        <source type="image/webp" srcset="images/promo-2-shoes.webp">
+        <img src="images/promo-2-shoes.png" width="1024" height="1024" alt="Bundle offer — Nike Air and Adidas Samba for 299 DH" loading="lazy" decoding="async">
+      </picture>
+    </div>
+    <div class="promo-popup-footer">
+      <a href="#categories" class="btn btn-primary promo-shop-btn" id="promo-shop-btn">
+        Shop This Bundle →
+      </a>
+    </div>
+  </div>
 
   <!-- ==================== SEARCH OVERLAY ==================== -->
   <div class="search-overlay" id="search-overlay" role="dialog" aria-label="Search" aria-modal="true">
@@ -552,13 +645,19 @@
           </div>
 
           <div class="countdown-visual" aria-hidden="true">
-            <img
-              src="images/promo-2-shoes-249dh.png"
-              alt="Nike Air Force 1 and Adidas Samba bundle deal, 249 DH"
-              class="countdown-sneaker-img"
-              loading="lazy"
-              style="object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4)); background: #fff; border-radius: 16px; padding: 10px;"
-            >
+            <picture>
+              <source type="image/avif" srcset="images/promo-2-shoes-249dh.avif">
+              <source type="image/webp" srcset="images/promo-2-shoes-249dh.webp">
+              <img
+                src="images/promo-2-shoes-249dh.png"
+                width="1024" height="1024"
+                alt="Nike Air Force 1 and Adidas Samba bundle deal, 249 DH"
+                class="countdown-sneaker-img"
+                loading="lazy"
+                decoding="async"
+                style="object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4)); background: #fff; border-radius: 16px; padding: 10px;"
+              >
+            </picture>
           </div>
 
         </div>
@@ -784,6 +883,7 @@
         </div>
 
         <div class="cart-footer">
+          <div class="cart-savings" id="cart-savings" hidden></div>
           <div class="cart-total">
             <span class="cart-total-label">Total</span>
             <span class="cart-total-amount">0.00 DH</span>
@@ -948,9 +1048,13 @@
 
   <!-- ==================== SCRIPTS ==================== -->
   <script src="js/products.js"></script>
+  <script src="js/image-manifest.js"></script>
+  <script src="js/image-optim.js"></script>
+  <script src="js/dark-photos.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/checkout.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/pwa-install.js"></script>
 
 </body>
 </html>

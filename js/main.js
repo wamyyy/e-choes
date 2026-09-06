@@ -221,13 +221,14 @@
 
       resultsEl.innerHTML = matches.slice(0, 8).map(p => `
         <div class="search-result-item" data-id="${p.id}" role="button" tabindex="0">
-          <img class="search-result-img" src="${p.image}" alt="${p.name}" loading="lazy">
+          ${window.NEXSOLE.imageOptim.buildPicture(p.image, p.name, { imgClass: 'search-result-img', wrapperClass: 'search-result-img-wrap' })}
           <div class="search-result-info">
             <div class="search-result-name">${p.name}</div>
             <div class="search-result-price">${p.price.toFixed(2)} DH · <span style="font-size:0.75rem;color:var(--clr-gray-400);">${(p.images || []).length} photos</span></div>
           </div>
         </div>
       `).join('');
+      window.NEXSOLE.imageOptim.syncCachedImages(resultsEl);
 
       resultsEl.querySelectorAll('.search-result-item').forEach(item => {
         const handler = () => {
@@ -387,6 +388,8 @@
         gridEl.querySelectorAll('.product-card').forEach(card => card.classList.add('showing'));
         bindProductCardEvents(gridEl);
         updateFavButtons();
+        window.NEXSOLE?.imageOptim?.syncCachedImages(gridEl);
+        window.NEXSOLE?.darkPhotos?.applyPhotoTheme(document.body.getAttribute('data-theme') === 'dark');
       }, 180);
     }
 
@@ -462,20 +465,12 @@
     const oldPriceHtml = product.oldPrice
       ? `<span class="old-price">${product.oldPrice.toFixed(2)} DH</span>`
       : '';
-    const photoCount = (product.images || [product.image]).length;
 
     return `
       <div class="product-card reveal" style="transition-delay: ${index * 0.05}s" data-id="${product.id}">
         <div class="product-card-img-wrapper">
           ${badgeHtml}
-          <span class="product-photo-badge" title="${photoCount} angle photos available">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-              <circle cx="12" cy="13" r="4"/>
-            </svg>
-            ${photoCount} Photos
-          </span>
-          <img class="product-card-img" src="${product.image}" alt="${product.name}" loading="lazy">
+          ${window.NEXSOLE.imageOptim.buildPicture(product.image, product.name, { imgClass: 'product-card-img', eager: index < 4 })}
           <button class="product-fav-btn" data-product-id="${product.id}" aria-label="Favorite ${product.name}">
             <svg viewBox="0 0 24 24" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
           </button>
@@ -572,7 +567,7 @@
     lightboxState.currentIndex = startIndex;
     lightboxState.isOpen = true;
 
-    imgEl.src = images[startIndex];
+    imgEl.src = window.NEXSOLE.imageOptim.bestSrc(images[startIndex]);
     if (counterEl) counterEl.textContent = `${startIndex + 1} / ${images.length}`;
 
     lightbox.classList.add('open');
@@ -605,7 +600,7 @@
       imgEl.style.opacity = '0.3';
       imgEl.style.transform = 'scale(0.96)';
       setTimeout(() => {
-        imgEl.src = lightboxState.images[index];
+        imgEl.src = window.NEXSOLE.imageOptim.bestSrc(lightboxState.images[index]);
         imgEl.style.opacity = '1';
         imgEl.style.transform = 'scale(1)';
       }, 120);
@@ -723,7 +718,7 @@
     // Thumbnails HTML
     const thumbnailsHtml = galleryImages.map((imgSrc, idx) => `
       <button class="modal-thumb-btn ${idx === 0 ? 'active' : ''}" data-index="${idx}" aria-label="Photo ${idx + 1} of ${galleryImages.length}">
-        <img src="${imgSrc}" alt="${product.name} angle ${idx + 1}" loading="lazy">
+        ${window.NEXSOLE.imageOptim.buildPicture(imgSrc, `${product.name} angle ${idx + 1}`, { imgClass: 'modal-thumb-img', eager: idx === 0 })}
       </button>
     `).join('');
 
@@ -741,7 +736,7 @@
         <div class="modal-gallery-wrapper">
           <!-- Main Stage Image Container -->
           <div class="modal-main-img-container" id="modal-main-img-wrapper" role="button" tabindex="0" title="Click to view fullscreen">
-            <img class="product-modal-img" id="modal-main-img" src="${galleryImages[0]}" alt="${product.name}">
+            <img class="product-modal-img" id="modal-main-img" src="${window.NEXSOLE.imageOptim.bestSrc(galleryImages[0])}" alt="${product.name}" decoding="async" fetchpriority="high">
             
             <!-- Zoom Hint Badge -->
             <div class="modal-zoom-badge" aria-hidden="true">
@@ -821,12 +816,6 @@
           </div>
         </div>
 
-        <!-- Short Description -->
-        <p class="modal-desc-preview">${product.description}</p>
-
-        <!-- Divider -->
-        <div class="modal-divider"></div>
-
         <!-- Color Selection -->
         ${colorSelectorHtml}
 
@@ -883,6 +872,12 @@
             </button>
           </div>
         </div>
+
+        <!-- Short Description -->
+        <p class="modal-desc-preview">${product.description}</p>
+
+        <!-- Divider -->
+        <div class="modal-divider"></div>
 
         <!-- Trust Badges Bar -->
         <div class="modal-trust-bar">
@@ -991,6 +986,8 @@
     const nextBtn       = modal.querySelector('#modal-next-btn');
     const thumbBtns     = modal.querySelectorAll('.modal-thumb-btn');
 
+    window.NEXSOLE.imageOptim.syncCachedImages(modal);
+
     function setGalleryPhoto(index) {
       if (index < 0) index = galleryImages.length - 1;
       if (index >= galleryImages.length) index = 0;
@@ -1000,7 +997,7 @@
         mainImgEl.style.opacity = '0.3';
         mainImgEl.style.transform = 'scale(0.96)';
         setTimeout(() => {
-          mainImgEl.src = galleryImages[index];
+          mainImgEl.src = window.NEXSOLE.imageOptim.bestSrc(galleryImages[index]);
           mainImgEl.style.opacity = '1';
           mainImgEl.style.transform = 'scale(1)';
         }, 120);
@@ -1100,12 +1097,28 @@
     const qtyEl  = modal.querySelector('#modal-qty-value');
     const minusB = modal.querySelector('#modal-qty-minus');
     const plusB  = modal.querySelector('#modal-qty-plus');
+    const priceTagEl = modal.querySelector('.btn-price-tag');
+
+    function updateLivePrice() {
+      if (!priceTagEl) return;
+      const cartApi = window.NEXSOLE?.cart;
+      if (cartApi && typeof cartApi.calculateBundlePrice === 'function') {
+        const existingCount = cartApi.getCartCount();
+        const marginal = cartApi.calculateBundlePrice(existingCount + qty) - cartApi.calculateBundlePrice(existingCount);
+        priceTagEl.textContent = `${marginal.toFixed(2)} DH`;
+      } else {
+        priceTagEl.textContent = `${(product.price * qty).toFixed(2)} DH`;
+      }
+    }
 
     function updateQtyButtons() {
       if (qtyEl) qtyEl.textContent = qty;
       if (minusB) minusB.disabled = qty <= 1;
       if (plusB) plusB.disabled = qty >= MAX_STOCK;
+      updateLivePrice();
     }
+
+    updateLivePrice();
 
     minusB?.addEventListener('click', () => {
       if (qty > 1) {
@@ -1256,6 +1269,8 @@
           const id = parseInt(btn.dataset.productId);
           btn.classList.toggle('favorited', window.NEXSOLE?.cart?.isFavorite(id) ?? false);
         });
+        window.NEXSOLE?.imageOptim?.syncCachedImages(gridEl);
+        window.NEXSOLE?.darkPhotos?.applyPhotoTheme(document.body.getAttribute('data-theme') === 'dark');
       }, 200);
     }
 
@@ -1438,11 +1453,12 @@
     visual.innerHTML = imgSrcs.map((src, i) => `
       <div class="editorial-img-item reveal ${i === 0 ? 'reveal-left' : 'reveal-right'}"
            style="transition-delay: ${i * 0.15}s">
-        <img src="${src}" alt="Style editorial photo" loading="lazy">
+        ${window.NEXSOLE.imageOptim.buildPicture(src, 'Style editorial photo', { imgClass: 'editorial-img' })}
         <div class="editorial-img-overlay"></div>
       </div>
     `).join('');
 
+    window.NEXSOLE.imageOptim.syncCachedImages(visual);
     initScrollReveal(visual.querySelectorAll('.reveal, .reveal-left, .reveal-right'));
   }
 
@@ -1632,13 +1648,14 @@
     function applyTheme(theme) {
       document.body.setAttribute('data-theme', theme);
       toggle?.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
+      window.NEXSOLE?.darkPhotos?.applyPhotoTheme(theme === 'dark');
     }
 
-    // Restore saved preference (or system preference as fallback)
+    // Restore saved preference — light mode is the default unless the
+    // visitor has explicitly chosen dark mode before.
     let saved = null;
     try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) { /* ignore */ }
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+    applyTheme(saved === 'dark' ? 'dark' : 'light');
 
     toggle?.addEventListener('click', () => {
       const isDark = document.body.getAttribute('data-theme') === 'dark';
@@ -1646,6 +1663,43 @@
       applyTheme(next);
       try { localStorage.setItem(STORAGE_KEY, next); } catch (e) { /* ignore */ }
     });
+  }
+
+  /* ===================================================
+     PROMO POPUP
+     =================================================== */
+  function initPromoPopup() {
+    const overlay = document.getElementById('promo-overlay');
+    const popup   = document.getElementById('promo-popup');
+    const closeBtn = document.getElementById('promo-close-btn');
+    const shopBtn  = document.getElementById('promo-shop-btn');
+    const SESSION_KEY = 'nexsole-promo-seen';
+
+    if (!overlay || !popup) return;
+
+    let alreadySeen = false;
+    try { alreadySeen = sessionStorage.getItem(SESSION_KEY) === '1'; } catch (e) { /* ignore */ }
+    if (alreadySeen) return;
+
+    function openPromo() {
+      overlay.classList.add('open');
+      popup.classList.add('open');
+    }
+
+    function closePromo() {
+      overlay.classList.remove('open');
+      popup.classList.remove('open');
+      try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) { /* ignore */ }
+    }
+
+    closeBtn?.addEventListener('click', closePromo);
+    overlay?.addEventListener('click', closePromo);
+    shopBtn?.addEventListener('click', closePromo);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && popup.classList.contains('open')) closePromo();
+    });
+
+    setTimeout(openPromo, 1500);
   }
 
   /* ===================================================
@@ -1666,6 +1720,7 @@
     initModalEvents();
     initSmoothScroll();
     initSettingsPanel();
+    initPromoPopup();
 
     // Init cart
     window.NEXSOLE?.cart?.init();

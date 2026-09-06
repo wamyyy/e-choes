@@ -31,7 +31,6 @@
     }
     saveCart();
     updateCartUI();
-    showToast(`${product.name} added to cart!`, 'success');
     animateBadge();
   }
 
@@ -51,7 +50,30 @@
     renderCartItems();
   }
 
+  /* --- Bundle pricing ---
+     Pair 1  = 199 DH
+     Pair 2  = +100 DH  (199+100 = 299)
+     Pair 3  = +199... rounds to +200 DH (299+200 = 499)
+     Pair 4  = +100 DH  (499+100 = 599)
+     ...then it keeps alternating +100 / +200 for each extra pair
+     (1=199, 2=299, 3=499, 4=599, 5=799, 6=899, ...)
+     Applies to the total number of pairs in the cart,
+     regardless of which product(s) they are. */
+  function calculateBundlePrice(count) {
+    if (count <= 0) return 0;
+    let total = 199;
+    for (let i = 2; i <= count; i++) {
+      total += (i % 2 === 0) ? 100 : 200;
+    }
+    return total;
+  }
+
   function getCartTotal() {
+    return calculateBundlePrice(getCartCount());
+  }
+
+  // Sum of items at their normal (non-bundle) price — used to show savings.
+  function getCartBaseTotal() {
     return cart.reduce((sum, i) => sum + i.price * i.qty, 0);
   }
 
@@ -90,6 +112,7 @@
     const badge = document.querySelector('.cart-badge');
     const countEl = document.querySelector('.cart-items-count');
     const totalEl = document.querySelector('.cart-total-amount');
+    const savingsEl = document.getElementById('cart-savings');
 
     if (badge) {
       badge.textContent = count;
@@ -97,6 +120,17 @@
     }
     if (countEl) countEl.textContent = count;
     if (totalEl) totalEl.textContent = `${getCartTotal().toFixed(2)} DH`;
+
+    if (savingsEl) {
+      const savings = getCartBaseTotal() - getCartTotal();
+      if (savings > 0) {
+        savingsEl.hidden = false;
+        savingsEl.innerHTML = `<span>Bundle savings</span><span>-${savings.toFixed(2)} DH</span>`;
+      } else {
+        savingsEl.hidden = true;
+        savingsEl.innerHTML = '';
+      }
+    }
   }
 
   function updateFavoriteButtons() {
@@ -242,6 +276,8 @@
     showToast,
     getCartCount,
     getCartTotal,
+    getCartBaseTotal,
+    calculateBundlePrice,
     clearCart,
     updateFavoriteButtons,
     renderCartItems,
