@@ -261,45 +261,133 @@
 
   <!-- ==================== ACCOUNT MODAL ==================== -->
   <div class="account-overlay" id="account-overlay" role="dialog" aria-label="Account" aria-modal="true">
-    <div class="account-box">
+    <div class="account-box" id="account-box">
       <button class="account-close" id="account-close" aria-label="Close account form">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
         </svg>
       </button>
 
-      <div class="account-tabs" role="tablist">
-        <button class="account-tab active" id="account-tab-login" role="tab" aria-selected="true">Sign In</button>
-        <button class="account-tab" id="account-tab-signup" role="tab" aria-selected="false">Sign Up</button>
-      </div>
-
-      <form class="account-form" id="account-form" autocomplete="off">
-        <label class="account-label" for="account-username">Username</label>
-        <input class="account-input" type="text" id="account-username" name="username" placeholder="Enter your username" required>
-
-        <label class="account-label" for="account-password">Password</label>
-        <input class="account-input" type="password" id="account-password" name="password" placeholder="Enter your password" required>
-
-        <div class="account-confirm-group" id="account-confirm-group" hidden>
-          <label class="account-label" for="account-password-confirm">Confirm Password</label>
-          <input class="account-input" type="password" id="account-password-confirm" name="password-confirm" placeholder="Re-enter your password">
-          <p class="account-error" id="account-password-error" hidden>Passwords don't match.</p>
+      <!-- AUTH VIEW (Sign In / Sign Up) -->
+      <div id="account-auth-view">
+        <div class="account-tabs" role="tablist">
+          <button class="account-tab active" id="account-tab-login" role="tab" aria-selected="true">Sign In</button>
+          <button class="account-tab" id="account-tab-signup" role="tab" aria-selected="false">Sign Up</button>
         </div>
 
-        <button type="submit" class="btn btn-primary account-submit" id="account-submit">Sign In</button>
-      </form>
+        <div class="account-demo-notice">
+          <span>Demo Account: <strong>user</strong> / <strong>user</strong></span>
+          <button type="button" class="btn-demo-fill" id="btn-demo-fill">Auto Fill</button>
+        </div>
 
-      <div class="account-divider"><span>or</span></div>
+        <form class="account-form" id="account-form" autocomplete="off">
+          <label class="account-label" for="account-username">Username</label>
+          <input class="account-input" type="text" id="account-username" name="username" placeholder="Enter your username" value="user" required>
 
-      <button type="button" class="account-google-btn" id="account-google-btn">
-        <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true">
-          <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
-          <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
-          <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0124 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
-          <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 01-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
-        </svg>
-        <span>Continue with Google</span>
-      </button>
+          <label class="account-label" for="account-password">Password</label>
+          <input class="account-input" type="password" id="account-password" name="password" placeholder="Enter your password" value="user" required>
+
+          <div class="account-confirm-group" id="account-confirm-group" hidden>
+            <label class="account-label" for="account-password-confirm">Confirm Password</label>
+            <input class="account-input" type="password" id="account-password-confirm" name="password-confirm" placeholder="Re-enter your password">
+          </div>
+
+          <p class="account-error" id="account-password-error" hidden></p>
+
+          <button type="submit" class="btn btn-primary account-submit" id="account-submit">Sign In</button>
+        </form>
+
+        <div class="account-divider"><span>or</span></div>
+
+        <button type="button" class="account-google-btn" id="account-google-btn">
+          <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true">
+            <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+            <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+            <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0124 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+            <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 01-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+          </svg>
+          <span>Continue with Google</span>
+        </button>
+      </div>
+
+      <!-- DASHBOARD VIEW (Logged In Window) -->
+      <div id="account-dash-view" hidden>
+        <!-- User Profile Header -->
+        <div class="dash-user-header">
+          <div class="dash-avatar-wrapper">
+            <div class="dash-avatar" id="dash-avatar">U</div>
+            <span class="dash-online-dot" title="Active session"></span>
+          </div>
+          <div class="dash-user-info">
+            <h3 class="dash-username" id="dash-username">user</h3>
+          </div>
+          <button type="button" class="btn-logout" id="btn-logout" title="Log Out">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span>Log Out</span>
+          </button>
+        </div>
+
+        <!-- Dashboard Navigation Tabs -->
+        <div class="dash-tabs" role="tablist">
+          <button class="dash-tab active" id="dash-tab-orders" data-dash-tab="orders">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 01-8 0"/>
+            </svg>
+            <span>Orders</span>
+          </button>
+          <button class="dash-tab" id="dash-tab-favorites" data-dash-tab="favorites">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+            </svg>
+            <span>Favorites</span>
+          </button>
+          <button class="dash-tab" id="dash-tab-security" data-dash-tab="security">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0110 0v4"/>
+            </svg>
+            <span>New Password</span>
+          </button>
+        </div>
+
+        <!-- Dashboard Content Panels -->
+        <div class="dash-content">
+          <!-- Orders Panel -->
+          <div class="dash-panel active" id="dash-panel-orders">
+            <div class="orders-list" id="orders-list"></div>
+          </div>
+
+          <!-- Favorites Panel -->
+          <div class="dash-panel" id="dash-panel-favorites" hidden>
+            <div class="favorites-list" id="favorites-list"></div>
+          </div>
+
+          <!-- Security / Change Password Panel -->
+          <div class="dash-panel" id="dash-panel-security" hidden>
+            <form class="account-form" id="pwd-change-form" autocomplete="off">
+              <label class="account-label" for="pwd-current">Current Password</label>
+              <input class="account-input" type="password" id="pwd-current" placeholder="Enter current password" required>
+
+              <label class="account-label" for="pwd-new">New Password</label>
+              <input class="account-input" type="password" id="pwd-new" placeholder="Enter new password (min 4 chars)" required>
+
+              <label class="account-label" for="pwd-confirm">Confirm New Password</label>
+              <input class="account-input" type="password" id="pwd-confirm" placeholder="Confirm new password" required>
+
+              <p class="account-error" id="pwd-error" hidden></p>
+              <p class="account-success" id="pwd-success" hidden>Password updated successfully!</p>
+
+              <button type="submit" class="btn btn-primary account-submit" style="margin-top: 0.75rem;">Update Password</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -942,6 +1030,49 @@
               <label class="checkout-label" for="checkout-email">Email</label>
               <input class="checkout-input" type="email" id="checkout-email" name="email" placeholder="you@gmail.com" required>
               <p class="checkout-error" data-error-for="email" hidden>Please enter a valid email address.</p>
+            </div>
+
+            <!-- ===== SHIPPING ADDRESS SECTION ===== -->
+            <div class="checkout-shipping-card">
+              <div class="checkout-shipping-header">
+                <span class="checkout-shipping-title">SHIPPING ADDRESS</span>
+                <div class="checkout-shipping-divider"></div>
+              </div>
+
+              <div class="checkout-field">
+                <label class="checkout-label" for="checkout-street">STREET ADDRESS</label>
+                <input class="checkout-input" type="text" id="checkout-street" name="street" placeholder="N° 12, Rue Ibn Battouta" required>
+                <p class="checkout-error" data-error-for="street" hidden>Please enter your street address.</p>
+              </div>
+
+              <div class="checkout-field">
+                <label class="checkout-label" for="checkout-apartment">APARTMENT, QUARTIER, ETC. (OPTIONAL)</label>
+                <input class="checkout-input" type="text" id="checkout-apartment" name="apartment" placeholder="Résidence Al Amal, Appt 3">
+              </div>
+
+              <div class="checkout-field checkout-city-field">
+                <label class="checkout-label" for="checkout-city">CITY — VILLE</label>
+                <div class="city-autocomplete-wrapper" id="city-autocomplete-wrapper">
+                  <input
+                    class="checkout-input"
+                    type="text"
+                    id="checkout-city"
+                    name="city"
+                    placeholder="Tapez la première lettre (ex: C, R, M)..."
+                    autocomplete="off"
+                    required
+                  >
+                  <button type="button" class="city-dropdown-toggle" id="city-dropdown-toggle" aria-label="Toggle city list">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                  </button>
+                  <div class="city-autocomplete-dropdown" id="city-autocomplete-dropdown" hidden>
+                    <div class="city-options-list" id="city-options-list"></div>
+                  </div>
+                </div>
+                <p class="checkout-error" data-error-for="city" hidden>Please select or type your city.</p>
+              </div>
             </div>
 
             <div class="checkout-summary" id="checkout-summary">

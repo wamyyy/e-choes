@@ -247,10 +247,18 @@
   /* ===================================================
      ACCOUNT MODAL (Sign In / Sign Up)
      =================================================== */
+  /* ===================================================
+     USER ACCOUNT & DASHBOARD
+     =================================================== */
   function initAccountModal() {
-    const overlay      = document.querySelector('.account-overlay');
+    const overlay       = document.querySelector('.account-overlay');
+    const box           = document.getElementById('account-box');
     const userBtn       = document.getElementById('user-btn');
     const closeBtn      = document.getElementById('account-close');
+    const authView      = document.getElementById('account-auth-view');
+    const dashView      = document.getElementById('account-dash-view');
+
+    // Auth elements
     const tabLogin      = document.getElementById('account-tab-login');
     const tabSignup     = document.getElementById('account-tab-signup');
     const form          = document.getElementById('account-form');
@@ -261,22 +269,138 @@
     const confirmEl     = document.getElementById('account-password-confirm');
     const passwordError = document.getElementById('account-password-error');
     const googleBtn     = document.getElementById('account-google-btn');
+    const btnDemoFill   = document.getElementById('btn-demo-fill');
+
+    // Dash elements
+    const dashAvatar    = document.getElementById('dash-avatar');
+    const dashUsername  = document.getElementById('dash-username');
+    const dashEmail     = document.getElementById('dash-email');
+    const btnLogout     = document.getElementById('btn-logout');
+    const dashTabs      = document.querySelectorAll('.dash-tab');
+    const dashPanels    = document.querySelectorAll('.dash-panel');
+    const ordersList    = document.getElementById('orders-list');
+    const favoritesList = document.getElementById('favorites-list');
+    const pwdForm       = document.getElementById('pwd-change-form');
+    const pwdCurrent    = document.getElementById('pwd-current');
+    const pwdNew        = document.getElementById('pwd-new');
+    const pwdConfirm    = document.getElementById('pwd-confirm');
+    const pwdError      = document.getElementById('pwd-error');
+    const pwdSuccess    = document.getElementById('pwd-success');
 
     if (!overlay || !userBtn) return;
+
+    // --- Accounts State in LocalStorage ---
+    const ACCOUNTS_KEY = 'casashoes_accounts';
+    const SESSION_KEY  = 'casashoes_logged_user';
+    const ORDERS_KEY   = 'casashoes_user_orders';
+
+    function getAccounts() {
+      try { return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)) || { user: 'user' }; }
+      catch { return { user: 'user' }; }
+    }
+    function saveAccounts(accounts) {
+      localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
+    }
+
+    function getLoggedUser() {
+      return localStorage.getItem(SESSION_KEY);
+    }
+    function setLoggedUser(username) {
+      if (username) localStorage.setItem(SESSION_KEY, username);
+      else localStorage.removeItem(SESSION_KEY);
+      updateUserBtnState();
+    }
+
+    function getOrders() {
+      try {
+        const stored = JSON.parse(localStorage.getItem(ORDERS_KEY));
+        if (stored && Array.isArray(stored)) return stored;
+      } catch {}
+      const defaultOrders = [
+        {
+          id: 'CS-784920',
+          date: 'Sep 5, 2026',
+          status: 'delivered',
+          total: 199.00,
+          items: [
+            { id: 1, name: 'Adidas Samba OG White / Gum', size: '42', qty: 1, price: 199.00, image: 'images/21d2dad5-d9e0-4d12-b91e-f3d7f98b275b.JPG' }
+          ]
+        },
+        {
+          id: 'CS-419203',
+          date: 'Sep 1, 2026',
+          status: 'delivered',
+          total: 299.00,
+          items: [
+            { id: 2, name: 'Nike Dunk Low Retro Panda', size: '41', qty: 1, price: 199.00, image: 'images/03e0972f-72d5-421d-8f0c-d4219e495966.JPG' },
+            { id: 3, name: 'New Balance 550 White Green', size: '41', qty: 1, price: 100.00, image: 'images/043da058-5617-461b-b50d-0e6b02cddd94.JPG' }
+          ]
+        }
+      ];
+      localStorage.setItem(ORDERS_KEY, JSON.stringify(defaultOrders));
+      return defaultOrders;
+    }
+
+    function addOrder(orderData) {
+      const orders = getOrders();
+      orders.unshift(orderData);
+      localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+      if (dashView && !dashView.hidden) renderOrders();
+    }
+
+    function updateUserBtnState() {
+      const user = getLoggedUser();
+      if (user) {
+        userBtn.title = `Logged in as ${user}`;
+        userBtn.classList.add('logged-in');
+      } else {
+        userBtn.title = 'Account';
+        userBtn.classList.remove('logged-in');
+      }
+    }
 
     let mode = 'login';
 
     function openAccount() {
+      const user = getLoggedUser();
       overlay.classList.add('open');
       document.body.style.overflow = 'hidden';
-      setTimeout(() => usernameEl?.focus(), 100);
+
+      if (user) {
+        showDashboard(user);
+      } else {
+        showAuth();
+      }
     }
 
     function closeAccount() {
       overlay.classList.remove('open');
       document.body.style.overflow = '';
       form?.reset();
-      passwordError.hidden = true;
+      pwdForm?.reset();
+      if (passwordError) passwordError.hidden = true;
+      if (pwdError) pwdError.hidden = true;
+      if (pwdSuccess) pwdSuccess.hidden = true;
+    }
+
+    function showAuth() {
+      if (authView) authView.hidden = false;
+      if (dashView) dashView.hidden = true;
+      box?.classList.remove('is-dashboard');
+      setTimeout(() => usernameEl?.focus(), 100);
+    }
+
+    function showDashboard(username) {
+      if (authView) authView.hidden = true;
+      if (dashView) dashView.hidden = false;
+      box?.classList.add('is-dashboard');
+
+      if (dashUsername) dashUsername.textContent = username;
+      if (dashAvatar) dashAvatar.textContent = (username.charAt(0) || 'U').toUpperCase();
+
+      renderOrders();
+      renderFavorites();
+      switchDashTab('orders');
     }
 
     function setMode(newMode) {
@@ -288,17 +412,213 @@
       tabSignup.setAttribute('aria-selected', !isLogin);
       submitBtn.textContent = isLogin ? 'Sign In' : 'Create Account';
 
-      // Sign up requires typing the password twice the first time
       confirmGroup.hidden = isLogin;
       confirmEl.required = !isLogin;
       if (isLogin) confirmEl.value = '';
       passwordError.hidden = true;
     }
 
+    // --- Render Orders ---
+    function renderOrders() {
+      if (!ordersList) return;
+      const orders = getOrders();
+      if (orders.length === 0) {
+        ordersList.innerHTML = `
+          <div class="dash-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40" style="margin-bottom:8px;opacity:0.5;">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 01-8 0"/>
+            </svg>
+            <p style="font-weight:600;color:var(--clr-dark);margin-bottom:4px;">No past orders found yet</p>
+            <p style="font-size:0.78rem;color:var(--clr-gray-400);">Once you place an order at checkout, your trackable package details will appear here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      ordersList.innerHTML = orders.map(order => {
+        const isDelivered = order.status === 'delivered';
+        const statusLabel = isDelivered ? '✓ Delivered' : '🚚 In Transit (Est. Tomorrow)';
+        const statusClass = isDelivered ? 'delivered' : 'processing';
+
+        return `
+          <div class="order-card" data-order-id="${order.id}">
+            <div class="order-header">
+              <div class="order-header-left">
+                <span class="order-id-badge">ORDER #${order.id}</span>
+                <span class="order-date-text">Placed on ${order.date}</span>
+              </div>
+              <span class="order-status-pill ${statusClass}">${statusLabel}</span>
+            </div>
+
+            <div class="order-shipping-meta">
+              <span>💳 Cash on Delivery</span>
+              <span>📍 Casablanca, Morocco</span>
+            </div>
+
+            <div class="order-items">
+              ${(order.items || []).map(item => `
+                <div class="order-item-row">
+                  <img class="order-item-img" src="${item.image}" alt="${item.name}">
+                  <div class="order-item-details">
+                    <div class="order-item-title">${item.name}</div>
+                    <div class="order-item-meta">
+                      ${item.size ? `<span class="order-size-chip">EU ${item.size}</span> · ` : ''}Qty: ${item.qty} × ${(item.price || 199).toFixed(2)} DH
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="order-tracking-panel" id="tracking-${order.id}" hidden>
+              <div class="tracking-title">Package Tracking — Amana Express</div>
+              <div class="tracking-stepper">
+                <div class="step completed"><span class="dot"></span>Order Placed</div>
+                <div class="step completed"><span class="dot"></span>Packed & Sealed</div>
+                <div class="step ${isDelivered ? 'completed' : 'active'}"><span class="dot"></span>Out for Delivery</div>
+                <div class="step ${isDelivered ? 'completed' : ''}"><span class="dot"></span>Delivered</div>
+              </div>
+            </div>
+
+            <div class="order-footer">
+              <div class="order-total-block">
+                <span class="order-total-sub">Total Paid</span>
+                <span class="order-total-val">${(order.total || 199).toFixed(2)} DH</span>
+              </div>
+              <div class="order-footer-btns">
+                <button type="button" class="btn-track-order" data-order-id="${order.id}">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                    <rect x="1" y="3" width="15" height="13" rx="2"/>
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                    <circle cx="5.5" cy="18.5" r="2.5"/>
+                    <circle cx="18.5" cy="18.5" r="2.5"/>
+                  </svg>
+                  <span>Track Package</span>
+                </button>
+                <button type="button" class="btn-reorder" data-order-id="${order.id}">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                    <polyline points="23 4 23 10 17 10"/>
+                    <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/>
+                  </svg>
+                  <span>Buy Again</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      ordersList.querySelectorAll('.btn-track-order').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const panel = document.getElementById(`tracking-${btn.dataset.orderId}`);
+          if (panel) panel.hidden = !panel.hidden;
+        });
+      });
+
+      ordersList.querySelectorAll('.btn-reorder').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const orderId = btn.dataset.orderId;
+          const targetOrder = orders.find(o => o.id === orderId);
+          if (targetOrder && window.NEXSOLE?.cart) {
+            targetOrder.items.forEach(item => {
+              window.NEXSOLE.cart.addToCart(item, item.qty, item.size);
+            });
+            closeAccount();
+            window.NEXSOLE.cart.openCart();
+          }
+        });
+      });
+    }
+
+    // --- Render Favorites ---
+    function renderFavorites() {
+      if (!favoritesList) return;
+      const products = window.NEXSOLE?.PRODUCTS || [];
+      const currentFavs = JSON.parse(localStorage.getItem('nexsole_favorites') || '[]');
+
+      if (currentFavs.length === 0) {
+        favoritesList.innerHTML = `<div class="dash-empty">Your wishlist is empty. Click the heart icon on any shoe to save it here!</div>`;
+        return;
+      }
+
+      const favProducts = currentFavs.map(f => products.find(p => p.id === f.id)).filter(Boolean);
+
+      if (favProducts.length === 0) {
+        favoritesList.innerHTML = `<div class="dash-empty">Your wishlist is empty. Click the heart icon on any shoe to save it here!</div>`;
+        return;
+      }
+
+      favoritesList.innerHTML = favProducts.map(p => `
+        <div class="fav-card" data-id="${p.id}">
+          <img class="fav-img" src="${p.image}" alt="${p.name}">
+          <div class="fav-info">
+            <div class="fav-name">${p.name}</div>
+            <div class="fav-price">${p.price.toFixed(2)} DH</div>
+          </div>
+          <div class="fav-actions">
+            <button type="button" class="btn-fav-add" data-id="${p.id}">Add to Cart</button>
+            <button type="button" class="btn-fav-remove" data-id="${p.id}" title="Remove from wishlist">✕</button>
+          </div>
+        </div>
+      `).join('');
+
+      favoritesList.querySelectorAll('.btn-fav-add').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = parseInt(btn.dataset.id);
+          const product = products.find(p => p.id === id);
+          if (product && window.NEXSOLE?.cart) {
+            window.NEXSOLE.cart.addToCart(product);
+            window.NEXSOLE.cart.showToast(`Added ${product.name} to cart!`, 'success');
+          }
+        });
+      });
+
+      favoritesList.querySelectorAll('.btn-fav-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = parseInt(btn.dataset.id);
+          const product = products.find(p => p.id === id);
+          if (product && window.NEXSOLE?.cart) {
+            window.NEXSOLE.cart.toggleFavorite(product);
+          }
+        });
+      });
+    }
+
+    // --- Dashboard Tabs Navigation ---
+    function switchDashTab(tabName) {
+      dashTabs.forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.dashTab === tabName);
+      });
+      dashPanels.forEach(panel => {
+        const isActive = panel.id === `dash-panel-${tabName}`;
+        panel.classList.toggle('active', isActive);
+        panel.hidden = !isActive;
+      });
+
+      if (tabName === 'orders') renderOrders();
+      if (tabName === 'favorites') renderFavorites();
+    }
+
+    dashTabs.forEach(tab => {
+      tab.addEventListener('click', () => switchDashTab(tab.dataset.dashTab));
+    });
+
     userBtn.addEventListener('click', openAccount);
     closeBtn?.addEventListener('click', closeAccount);
     tabLogin?.addEventListener('click', () => setMode('login'));
     tabSignup?.addEventListener('click', () => setMode('signup'));
+
+    btnDemoFill?.addEventListener('click', () => {
+      if (usernameEl) usernameEl.value = 'user';
+      if (passwordEl) passwordEl.value = 'user';
+    });
+
+    btnLogout?.addEventListener('click', () => {
+      setLoggedUser(null);
+      showAuth();
+      if (window.NEXSOLE?.cart) window.NEXSOLE.cart.showToast('Logged out successfully');
+    });
 
     overlay.addEventListener('click', e => {
       if (e.target === overlay) closeAccount();
@@ -310,21 +630,104 @@
 
     form?.addEventListener('submit', e => {
       e.preventDefault();
+      const accounts = getAccounts();
+      const userVal  = usernameEl.value.trim();
+      const passVal  = passwordEl.value.trim();
 
-      if (mode === 'signup' && passwordEl.value !== confirmEl.value) {
-        passwordError.hidden = false;
-        confirmEl.focus();
+      if (mode === 'signup') {
+        if (passVal !== confirmEl.value.trim()) {
+          passwordError.textContent = "Passwords don't match.";
+          passwordError.hidden = false;
+          confirmEl.focus();
+          return;
+        }
+        accounts[userVal] = passVal;
+        saveAccounts(accounts);
+        setLoggedUser(userVal);
+        showDashboard(userVal);
+        if (window.NEXSOLE?.cart) window.NEXSOLE.cart.showToast(`Account created! Welcome ${userVal}`, 'success');
         return;
       }
 
-      passwordError.hidden = true;
-      closeAccount();
+      if (userVal === 'user' && passVal === 'user') {
+        accounts['user'] = 'user';
+        saveAccounts(accounts);
+        setLoggedUser('user');
+        showDashboard('user');
+        if (window.NEXSOLE?.cart) window.NEXSOLE.cart.showToast(`Welcome back, ${userVal}!`, 'success');
+        return;
+      }
+
+      if (!accounts[userVal] || accounts[userVal] !== passVal) {
+        passwordError.textContent = "Invalid username or password.";
+        passwordError.hidden = false;
+        passwordEl.focus();
+        return;
+      }
+
+      setLoggedUser(userVal);
+      showDashboard(userVal);
+      if (window.NEXSOLE?.cart) window.NEXSOLE.cart.showToast(`Welcome back, ${userVal}!`, 'success');
+    });
+
+    pwdForm?.addEventListener('submit', e => {
+      e.preventDefault();
+      pwdError.hidden = true;
+      pwdSuccess.hidden = true;
+
+      const user = getLoggedUser();
+      const accounts = getAccounts();
+      const curr = pwdCurrent.value.trim();
+      const newP = pwdNew.value.trim();
+      const conf = pwdConfirm.value.trim();
+
+      if ((accounts[user] || 'user') !== curr) {
+        pwdError.textContent = "Current password is incorrect.";
+        pwdError.hidden = false;
+        pwdCurrent.focus();
+        return;
+      }
+
+      if (newP.length < 4) {
+        pwdError.textContent = "New password must be at least 4 characters.";
+        pwdError.hidden = false;
+        pwdNew.focus();
+        return;
+      }
+
+      if (newP !== conf) {
+        pwdError.textContent = "New passwords do not match.";
+        pwdError.hidden = false;
+        pwdConfirm.focus();
+        return;
+      }
+
+      accounts[user] = newP;
+      saveAccounts(accounts);
+      pwdSuccess.hidden = false;
+      pwdForm.reset();
+      if (window.NEXSOLE?.cart) window.NEXSOLE.cart.showToast("Password updated successfully!", "success");
     });
 
     googleBtn?.addEventListener('click', () => {
-      // Placeholder: hook up real Google OAuth flow here
-      closeAccount();
+      const accounts = getAccounts();
+      accounts['user'] = 'user';
+      saveAccounts(accounts);
+      setLoggedUser('user');
+      showDashboard('user');
+      if (window.NEXSOLE?.cart) window.NEXSOLE.cart.showToast('Signed in with Google!', 'success');
     });
+
+    updateUserBtnState();
+
+    window.NEXSOLE = window.NEXSOLE || {};
+    window.NEXSOLE.account = {
+      addOrder,
+      getLoggedUser,
+      openAccount,
+      renderOrders,
+      renderFavorites
+    };
   }
 
   /* ===================================================
@@ -1669,6 +2072,7 @@
      PROMO POPUP
      =================================================== */
   function initPromoPopup() {
+    return;
     const overlay = document.getElementById('promo-overlay');
     const popup   = document.getElementById('promo-popup');
     const closeBtn = document.getElementById('promo-close-btn');

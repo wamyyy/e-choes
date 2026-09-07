@@ -7,8 +7,74 @@
 (function () {
   'use strict';
 
-  const FIELDS = ['firstname', 'lastname', 'phone', 'email'];
+  const FIELDS = ['firstname', 'lastname', 'phone', 'email', 'street', 'city'];
   let sceneTimers = [];
+
+  const CITY_REGION_MAP = {
+    'casablanca': { region: 'Casablanca-Settat', postal: '20000' },
+    'rabat': { region: 'Rabat-Salé-Kénitra', postal: '10000' },
+    'marrakech': { region: 'Marrakech-Safi', postal: '40000' },
+    'fès': { region: 'Fès-Meknès', postal: '30000' },
+    'fes': { region: 'Fès-Meknès', postal: '30000' },
+    'tanger': { region: 'Tanger-Tétouan-Al Hoceïma', postal: '90000' },
+    'agadir': { region: 'Souss-Massa', postal: '80000' },
+    'meknès': { region: 'Fès-Meknès', postal: '50000' },
+    'meknes': { region: 'Fès-Meknès', postal: '50000' },
+    'salé': { region: 'Rabat-Salé-Kénitra', postal: '11000' },
+    'sale': { region: 'Rabat-Salé-Kénitra', postal: '11000' },
+    'oujda': { region: "L'Oriental", postal: '60000' },
+    'kénitra': { region: 'Rabat-Salé-Kénitra', postal: '14000' },
+    'kenitra': { region: 'Rabat-Salé-Kénitra', postal: '14000' },
+    'tétouan': { region: 'Tanger-Tétouan-Al Hoceïma', postal: '93000' },
+    'tetouan': { region: 'Tanger-Tétouan-Al Hoceïma', postal: '93000' },
+    'safi': { region: 'Marrakech-Safi', postal: '46000' },
+    'essaouira': { region: 'Marrakech-Safi', postal: '44000' },
+    'el jadida': { region: 'Casablanca-Settat', postal: '24000' },
+    'nador': { region: "L'Oriental", postal: '62000' },
+    'al hoceïma': { region: 'Tanger-Tétouan-Al Hoceïma', postal: '32000' },
+    'al hoceima': { region: 'Tanger-Tétouan-Al Hoceïma', postal: '32000' },
+    'chefchaouen': { region: 'Tanger-Tétouan-Al Hoceïma', postal: '91000' },
+    'dakhla': { region: 'Dakhla-Oued Ed-Dahab', postal: '73000' },
+    'laâyoune': { region: 'Laâyoune-Sakia El Hamra', postal: '70000' },
+    'laayoune': { region: 'Laâyoune-Sakia El Hamra', postal: '70000' },
+    'mohammedia': { region: 'Casablanca-Settat', postal: '28800' },
+    'taza': { region: 'Fès-Meknès', postal: '35000' },
+    'khouribga': { region: 'Béni Mellal-Khénifra', postal: '25000' },
+    'béni mellal': { region: 'Béni Mellal-Khénifra', postal: '23000' },
+    'beni mellal': { region: 'Béni Mellal-Khénifra', postal: '23000' },
+    'settat': { region: 'Casablanca-Settat', postal: '26000' },
+    'berrechid': { region: 'Casablanca-Settat', postal: '26100' },
+    'errachidia': { region: 'Drâa-Tafilalet', postal: '52000' },
+    'ouarzazate': { region: 'Drâa-Tafilalet', postal: '45000' },
+    'taroudant': { region: 'Souss-Massa', postal: '83000' },
+    'guelmim': { region: 'Guelmim-Oued Noun', postal: '81000' },
+    'tiznit': { region: 'Souss-Massa', postal: '85000' },
+    'nakhila': { region: 'Casablanca-Settat', postal: '26050' },
+    'fnideq': { region: 'Tanger-Tétouan-Al Hoceïma', postal: '93200' },
+    "m'diq": { region: 'Tanger-Tétouan-Al Hoceïma', postal: '93250' },
+    'mdiq': { region: 'Tanger-Tétouan-Al Hoceïma', postal: '93250' },
+    'asilah': { region: 'Tanger-Tétouan-Al Hoceïma', postal: '90050' },
+    'larache': { region: 'Tanger-Tétouan-Al Hoceïma', postal: '92000' },
+    'khénifra': { region: 'Béni Mellal-Khénifra', postal: '54000' },
+    'khenifra': { region: 'Béni Mellal-Khénifra', postal: '54000' },
+    'midelt': { region: 'Drâa-Tafilalet', postal: '54350' },
+    'sefrou': { region: 'Fès-Meknès', postal: '31000' },
+    'tiflet': { region: 'Rabat-Salé-Kénitra', postal: '15400' },
+    'khémisset': { region: 'Rabat-Salé-Kénitra', postal: '15000' },
+    'khemisset': { region: 'Rabat-Salé-Kénitra', postal: '15000' },
+    'sidi kacem': { region: 'Rabat-Salé-Kénitra', postal: '16000' },
+    'sidi slimane': { region: 'Rabat-Salé-Kénitra', postal: '14200' },
+    'el kelaâ des sraghna': { region: 'Marrakech-Safi', postal: '43000' },
+    'el kelaa des sraghna': { region: 'Marrakech-Safi', postal: '43000' },
+    'benguerir': { region: 'Marrakech-Safi', postal: '42150' },
+    'oued zem': { region: 'Béni Mellal-Khénifra', postal: '25300' },
+    'fquih ben salah': { region: 'Béni Mellal-Khénifra', postal: '23200' },
+    'oualidia': { region: 'Casablanca-Settat', postal: '24252' },
+    'tan-tan': { region: 'Guelmim-Oued Noun', postal: '82000' },
+    'tan tan': { region: 'Guelmim-Oued Noun', postal: '82000' },
+    'smara': { region: 'Laâyoune-Sakia El Hamra', postal: '72000' },
+    'boujdour': { region: 'Laâyoune-Sakia El Hamra', postal: '71000' }
+  };
 
   /* --- Helpers --- */
   function $(id) { return document.getElementById(id); }
@@ -92,7 +158,17 @@
 
     const emailClean = data.email.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailClean)) {
-      showError('email', 'Please enter a valid email address (e.g. name@gmail.com).');
+      showError('email', 'Please enter a valid email address.');
+      ok = false;
+    }
+
+    if (!data.street.trim()) {
+      showError('street', 'Please enter your street address.');
+      ok = false;
+    }
+
+    if (!data.city.trim()) {
+      showError('city', 'Please select your city.');
       ok = false;
     }
 
@@ -109,7 +185,10 @@
       firstname: form.firstname.value,
       lastname: form.lastname.value,
       phone: form.phone.value,
-      email: form.email.value
+      email: form.email.value,
+      street: form.street?.value || '',
+      apartment: form.apartment?.value || '',
+      city: form.city?.value || ''
     };
 
     if (!validate(data)) {
@@ -121,7 +200,6 @@
     const btn = $('checkout-submit-btn');
     if (btn) { btn.disabled = true; btn.classList.add('loading'); }
 
-    // Brief, cheap "processing" delay for perceived feedback (no network call).
     setTimeout(() => {
       if (btn) { btn.disabled = false; btn.classList.remove('loading'); }
       placeOrder(data);
@@ -133,8 +211,30 @@
   }
 
   function placeOrder(data) {
+    const orderId = genOrderId();
     const idEl = $('order-id-value');
-    if (idEl) idEl.textContent = genOrderId();
+    if (idEl) idEl.textContent = orderId;
+
+    const fullAddress = [
+      data.street,
+      data.apartment,
+      data.city,
+      'Morocco'
+    ].filter(Boolean).join(', ');
+
+    const cartApi = window.NEXSOLE && window.NEXSOLE.cart;
+    const accountApi = window.NEXSOLE && window.NEXSOLE.account;
+    if (accountApi && accountApi.addOrder) {
+      accountApi.addOrder({
+        id: orderId,
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        status: 'processing',
+        total: cartApi ? cartApi.getCartTotal() : 0,
+        address: fullAddress,
+        items: JSON.parse(localStorage.getItem('nexsole_cart') || '[]')
+      });
+    }
+
     setStep('confirm');
     runConfirmAnimation(data);
   }
@@ -195,6 +295,144 @@
     FIELDS.forEach(clearError);
   }
 
+  const CITIES_LIST = [
+    "Casablanca", "Rabat", "Marrakech", "Fès", "Tanger", "Agadir", "Meknès", "Salé",
+    "Oujda", "Kénitra", "Tétouan", "Safi", "Essaouira", "El Jadida", "Nador", "Al Hoceïma",
+    "Chefchaouen", "Dakhla", "Laâyoune", "Mohammedia", "Taza", "Khouribga", "Béni Mellal",
+    "Settat", "Berrechid", "Errachidia", "Ouarzazate", "Taroudant", "Guelmim", "Tiznit",
+    "Nakhila", "Fnideq", "M'diq", "Asilah", "Larache", "Khénifra", "Midelt", "Sefrou",
+    "Tiflet", "Khémisset", "Sidi Kacem", "Sidi Slimane", "El Kelaâ des Sraghna",
+    "Benguerir", "Oued Zem", "Fquih Ben Salah", "Oualidia", "Tan-Tan", "Smara", "Boujdour"
+  ];
+
+  function autoFillCityDetails(cityName) {
+    if (!cityName) return;
+    const key = cityName.toLowerCase().trim();
+    const info = CITY_REGION_MAP[key];
+    if (info) {
+      const regionEl = $('checkout-region');
+      const postalEl = $('checkout-postal');
+      if (regionEl) regionEl.value = info.region;
+      if (postalEl && !postalEl.value.trim()) postalEl.value = info.postal;
+    }
+  }
+
+  function initCityAutocomplete() {
+    const input = $('checkout-city');
+    const wrapper = $('city-autocomplete-wrapper');
+    const toggleBtn = $('city-dropdown-toggle');
+    const dropdown = $('city-autocomplete-dropdown');
+    const optionsList = $('city-options-list');
+
+    if (!input || !dropdown || !optionsList) return;
+
+    let highlightedIndex = -1;
+
+    function openDropdown() {
+      dropdown.hidden = false;
+      wrapper?.classList.add('is-open');
+    }
+
+    function closeDropdown() {
+      dropdown.hidden = true;
+      wrapper?.classList.remove('is-open');
+      highlightedIndex = -1;
+    }
+
+    function selectCity(city) {
+      input.value = city;
+      clearError('city');
+      autoFillCityDetails(city);
+      closeDropdown();
+    }
+
+    function renderOptions(query = '') {
+      const q = query.trim().toLowerCase();
+      let matches = CITIES_LIST;
+
+      if (q) {
+        matches = CITIES_LIST.filter(city => city.toLowerCase().includes(q));
+      }
+
+      if (matches.length === 0) {
+        optionsList.innerHTML = `<div class="city-option-empty">Aucune ville trouvée pour "${escapeText(query)}"</div>`;
+        openDropdown();
+        return;
+      }
+
+      optionsList.innerHTML = matches.map((city, idx) => {
+        let label = city;
+        if (q) {
+          const startIdx = city.toLowerCase().indexOf(q);
+          if (startIdx > -1) {
+            const before = city.substring(0, startIdx);
+            const match = city.substring(startIdx, startIdx + q.length);
+            const after = city.substring(startIdx + q.length);
+            label = `${before}<span class="city-match-highlight">${match}</span>${after}`;
+          }
+        }
+        return `
+          <div class="city-option-item ${idx === highlightedIndex ? 'highlighted' : ''}" data-city="${city}">
+            <span>${label}</span>
+          </div>
+        `;
+      }).join('');
+
+      optionsList.querySelectorAll('.city-option-item').forEach(item => {
+        item.addEventListener('click', () => {
+          selectCity(item.dataset.city);
+        });
+      });
+
+      openDropdown();
+    }
+
+    input.addEventListener('focus', () => {
+      renderOptions(input.value);
+    });
+
+    input.addEventListener('input', () => {
+      renderOptions(input.value);
+      autoFillCityDetails(input.value);
+    });
+
+    toggleBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (dropdown.hidden) {
+        input.focus();
+        renderOptions(input.value);
+      } else {
+        closeDropdown();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!wrapper?.contains(e.target)) {
+        closeDropdown();
+      }
+    });
+
+    input.addEventListener('keydown', (e) => {
+      const items = optionsList.querySelectorAll('.city-option-item');
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        highlightedIndex = (highlightedIndex + 1) % Math.max(1, items.length);
+        renderOptions(input.value);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        highlightedIndex = (highlightedIndex - 1 + items.length) % Math.max(1, items.length);
+        renderOptions(input.value);
+      } else if (e.key === 'Enter') {
+        if (!dropdown.hidden && highlightedIndex > -1 && items[highlightedIndex]) {
+          e.preventDefault();
+          selectCity(items[highlightedIndex].dataset.city);
+        }
+      } else if (e.key === 'Escape') {
+        closeDropdown();
+      }
+    });
+  }
+
   /* --- Init --- */
   function init() {
     $('cart-checkout-btn')?.addEventListener('click', goToCheckout);
@@ -204,7 +442,10 @@
 
     FIELDS.forEach(name => {
       $(`checkout-${name}`)?.addEventListener('input', () => clearError(name));
+      $(`checkout-${name}`)?.addEventListener('change', () => clearError(name));
     });
+
+    initCityAutocomplete();
   }
 
   window.NEXSOLE = window.NEXSOLE || {};

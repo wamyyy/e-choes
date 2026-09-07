@@ -93,13 +93,15 @@
     const idx = favorites.findIndex(f => f.id === product.id);
     if (idx > -1) {
       favorites.splice(idx, 1);
-      showToast(`Removed from favorites`);
     } else {
       favorites.push({ id: product.id, name: product.name });
       showToast(`Added to favorites!`, 'success');
     }
     saveFavorites();
     updateFavoriteButtons();
+    if (window.NEXSOLE?.account?.renderFavorites) {
+      window.NEXSOLE.account.renderFavorites();
+    }
   }
 
   function isFavorite(id) {
@@ -228,18 +230,8 @@
   }
 
   /* --- Toast --- */
-  function showToast(message, type = '') {
-    let toast = document.querySelector('.toast');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.className = 'toast';
-      document.body.appendChild(toast);
-    }
-    toast.textContent = message;
-    toast.className = `toast ${type}`;
-    toast.classList.add('show');
-    clearTimeout(toast._timer);
-    toast._timer = setTimeout(() => toast.classList.remove('show'), 2800);
+  function showToast() {
+    return;
   }
 
   /* --- Init --- */
