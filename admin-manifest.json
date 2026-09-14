@@ -1,0 +1,24 @@
+{
+  "name": "EL WAMY Admin Dashboard",
+  "short_name": "EL WAMY",
+  "description": "Admin Orders Management Dashboard for EL WAMY.",
+  "start_url": "./admin.html?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "background_color": "#F8FAFC",
+  "theme_color": "#2563EB",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["business", "productivity", "management"],
+  "icons": [
+    {
+      "src": "images/elwamy-logo.jpg",
+      "sizes": "any",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
+

@@ -200,9 +200,9 @@
     const btn = $('checkout-submit-btn');
     if (btn) { btn.disabled = true; btn.classList.add('loading'); }
 
-    setTimeout(() => {
+    setTimeout(async () => {
       if (btn) { btn.disabled = false; btn.classList.remove('loading'); }
-      placeOrder(data);
+      await placeOrder(data);
     }, 450);
   }
 
@@ -210,7 +210,7 @@
     return 'CS-' + Math.floor(100000 + Math.random() * 900000);
   }
 
-  function placeOrder(data) {
+  async function placeOrder(data) {
     const orderId = genOrderId();
     const idEl = $('order-id-value');
     if (idEl) idEl.textContent = orderId;
@@ -224,15 +224,124 @@
 
     const cartApi = window.NEXSOLE && window.NEXSOLE.cart;
     const accountApi = window.NEXSOLE && window.NEXSOLE.account;
+    const rawCart = JSON.parse(localStorage.getItem('nexsole_cart') || '[]');
+    const cartTotal = cartApi ? cartApi.getCartTotal() : 0;
+
+    let authUserId = null;
+    if (window.sbClient) {
+      try {
+        const { data: userData } = await window.sbClient.auth.getUser();
+        if (userData && userData.user) {
+          authUserId = userData.user.id;
+        }
+      } catch (e) {}
+    }
+
     if (accountApi && accountApi.addOrder) {
       accountApi.addOrder({
         id: orderId,
         date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        status: 'processing',
-        total: cartApi ? cartApi.getCartTotal() : 0,
+        status: 'pending',
+        total: cartTotal,
         address: fullAddress,
-        items: JSON.parse(localStorage.getItem('nexsole_cart') || '[]')
+        items: rawCart
       });
+    }
+
+    // Sync to Admin Orders Management Dashboard & Supabase
+    try {
+      const numericId = orderId.replace(/[^0-9]/g, '') || String(Math.floor(1000 + Math.random() * 9000));
+      const now = new Date();
+      const adminOrder = {
+        id: orderId,
+        order_number: '#' + numericId,
+        created_at: now.toISOString(),
+        date_display: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ', ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+        agent_name: 'Admin Auto',
+        agent_avatar: 'AD',
+        agent_color: 'bg-blue-100 text-blue-700',
+        tracking_code: 'AMN-' + Math.floor(10000 + Math.random() * 90000) + '-MA',
+        tracking_carrier: 'Amana Express',
+        firstname: data.firstname,
+        lastname: data.lastname,
+        client_name: (data.firstname + ' ' + data.lastname).trim(),
+        client_email: data.email,
+        client_phone: data.phone,
+        client_city: data.city || 'Casablanca',
+        client_street: data.street || '',
+        client_apartment: data.apartment || '',
+        client_address: fullAddress,
+        status: 'Pending',
+        category: 'Sneakers',
+        total_amount: cartTotal,
+        payment_method: 'Cash On Delivery',
+        notes: 'Placed via customer checkout form',
+        items: rawCart.map(item => ({
+          name: item.name || 'CasaShoes Item',
+          size: item.size || '42',
+          quantity: item.quantity || item.qty || 1,
+          price: item.price || cartTotal,
+          image: item.image || 'images/af1_red_outline_pair.jpg'
+        }))
+      };
+
+      // Save into Admin Orders LocalStorage
+      const existing = JSON.parse(localStorage.getItem('casashoes_admin_orders') || '[]');
+      existing.unshift(adminOrder);
+      localStorage.setItem('casashoes_admin_orders', JSON.stringify(existing));
+      localStorage.setItem('casashoes_last_placed_order', JSON.stringify(adminOrder));
+
+      // Broadcast real-time event to Admin Dashboard
+      if ('BroadcastChannel' in window) {
+        const bc = new BroadcastChannel('casashoes_realtime_orders');
+        bc.postMessage({ type: 'NEW_ORDER', order: adminOrder });
+      }
+
+      // Insert directly into Supabase orders and order_items tables
+      if (window.sbClient) {
+        try {
+          const { error: orderErr } = await window.sbClient
+            .from('orders')
+            .insert({
+              id: orderId,
+              customer_id: authUserId,
+              customer_name: adminOrder.client_name,
+              customer_phone: adminOrder.client_phone,
+              customer_city: adminOrder.client_city,
+              customer_address: adminOrder.client_address,
+              customer_notes: adminOrder.notes,
+              total_amount: cartTotal,
+              status: 'pending',
+              payment_method: 'cod'
+            });
+
+          if (orderErr) {
+            console.warn('[Checkout] Supabase orders insert error:', orderErr);
+          } else if (rawCart.length > 0) {
+            const orderItems = rawCart.map(item => ({
+              order_id: orderId,
+              product_id: Number(item.id) || 1,
+              product_name: item.name || 'CasaShoes Item',
+              product_price: Number(item.price) || 199,
+              size: String(item.size || '42'),
+              quantity: Number(item.quantity || item.qty || 1),
+              image: item.image || ''
+            }));
+
+            const { error: itemsErr } = await window.sbClient
+              .from('order_items')
+              .insert(orderItems);
+
+            if (itemsErr) {
+              console.warn('[Checkout] Supabase order_items insert error:', itemsErr);
+            }
+          }
+        } catch (sbErr) {
+          console.warn('[Checkout] Supabase push error:', sbErr);
+        }
+      }
+    } catch (e) {
+      console.warn('[Checkout] Admin sync warning:', e);
     }
 
     setStep('confirm');

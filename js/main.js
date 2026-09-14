@@ -269,7 +269,6 @@
     const confirmEl     = document.getElementById('account-password-confirm');
     const passwordError = document.getElementById('account-password-error');
     const googleBtn     = document.getElementById('account-google-btn');
-    const btnDemoFill   = document.getElementById('btn-demo-fill');
 
     // Dash elements
     const dashAvatar    = document.getElementById('dash-avatar');
@@ -289,10 +288,40 @@
 
     if (!overlay || !userBtn) return;
 
-    // --- Accounts State in LocalStorage ---
+    // --- Accounts State in LocalStorage & Supabase ---
     const ACCOUNTS_KEY = 'casashoes_accounts';
     const SESSION_KEY  = 'casashoes_logged_user';
     const ORDERS_KEY   = 'casashoes_user_orders';
+
+    let currentSupabaseUser = null;
+
+    // Check active Supabase session on initialization
+    if (window.sbClient) {
+      window.sbClient.auth.getUser().then(({ data }) => {
+        if (data && data.user) {
+          currentSupabaseUser = data.user;
+          const displayName = data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'User';
+          setLoggedUser(displayName);
+          if (dashEmail) dashEmail.textContent = data.user.email || '';
+          updateUserBtnState();
+        }
+      }).catch(() => {});
+
+      window.sbClient.auth.onAuthStateChange((event, session) => {
+        if (session && session.user) {
+          currentSupabaseUser = session.user;
+          const displayName = session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User';
+          setLoggedUser(displayName);
+          if (dashEmail) dashEmail.textContent = session.user.email || '';
+          updateUserBtnState();
+        } else if (event === 'SIGNED_OUT') {
+          currentSupabaseUser = null;
+          setLoggedUser(null);
+          if (dashEmail) dashEmail.textContent = '';
+          updateUserBtnState();
+        }
+      });
+    }
 
     function getAccounts() {
       try { return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)) || { user: 'user' }; }
@@ -311,38 +340,50 @@
       updateUserBtnState();
     }
 
-    function getOrders() {
+    async function getOrders() {
+      // 1. Fetch authenticated user's orders from Supabase if logged in
+      if (window.sbClient && currentSupabaseUser) {
+        try {
+          const { data: dbOrders, error } = await window.sbClient
+            .from('orders')
+            .select('*, order_items(*)')
+            .eq('customer_id', currentSupabaseUser.id)
+            .order('created_at', { ascending: false });
+
+          if (!error && dbOrders && dbOrders.length > 0) {
+            const formatted = dbOrders.map(o => ({
+              id: o.id,
+              date: new Date(o.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+              status: (o.status || '').toLowerCase() === 'delivered' ? 'delivered' : 'processing',
+              total: Number(o.total_amount || 0),
+              address: o.customer_address,
+              items: (o.order_items || []).map(i => ({
+                id: i.product_id,
+                name: i.product_name,
+                size: i.size,
+                qty: i.quantity,
+                price: Number(i.product_price),
+                image: i.image || 'images/af1_red_outline_pair.jpg'
+              }))
+            }));
+            localStorage.setItem(ORDERS_KEY, JSON.stringify(formatted));
+            return formatted;
+          }
+        } catch (e) {
+          console.warn('[Account] Supabase getOrders error:', e);
+        }
+      }
+
+      // 2. Fallback to LocalStorage orders
       try {
         const stored = JSON.parse(localStorage.getItem(ORDERS_KEY));
         if (stored && Array.isArray(stored)) return stored;
       } catch {}
-      const defaultOrders = [
-        {
-          id: 'CS-784920',
-          date: 'Sep 5, 2026',
-          status: 'delivered',
-          total: 199.00,
-          items: [
-            { id: 1, name: 'Adidas Samba OG White / Gum', size: '42', qty: 1, price: 199.00, image: 'images/21d2dad5-d9e0-4d12-b91e-f3d7f98b275b.JPG' }
-          ]
-        },
-        {
-          id: 'CS-419203',
-          date: 'Sep 1, 2026',
-          status: 'delivered',
-          total: 299.00,
-          items: [
-            { id: 2, name: 'Nike Dunk Low Retro Panda', size: '41', qty: 1, price: 199.00, image: 'images/03e0972f-72d5-421d-8f0c-d4219e495966.JPG' },
-            { id: 3, name: 'New Balance 550 White Green', size: '41', qty: 1, price: 100.00, image: 'images/043da058-5617-461b-b50d-0e6b02cddd94.JPG' }
-          ]
-        }
-      ];
-      localStorage.setItem(ORDERS_KEY, JSON.stringify(defaultOrders));
-      return defaultOrders;
+      return [];
     }
 
-    function addOrder(orderData) {
-      const orders = getOrders();
+    async function addOrder(orderData) {
+      const orders = await getOrders();
       orders.unshift(orderData);
       localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
       if (dashView && !dashView.hidden) renderOrders();
@@ -397,6 +438,9 @@
 
       if (dashUsername) dashUsername.textContent = username;
       if (dashAvatar) dashAvatar.textContent = (username.charAt(0) || 'U').toUpperCase();
+      if (dashEmail && currentSupabaseUser) {
+        dashEmail.textContent = currentSupabaseUser.email || '';
+      }
 
       renderOrders();
       renderFavorites();
@@ -419,9 +463,9 @@
     }
 
     // --- Render Orders ---
-    function renderOrders() {
+    async function renderOrders() {
       if (!ordersList) return;
-      const orders = getOrders();
+      const orders = await getOrders();
       if (orders.length === 0) {
         ordersList.innerHTML = `
           <div class="dash-empty">
@@ -609,12 +653,11 @@
     tabLogin?.addEventListener('click', () => setMode('login'));
     tabSignup?.addEventListener('click', () => setMode('signup'));
 
-    btnDemoFill?.addEventListener('click', () => {
-      if (usernameEl) usernameEl.value = 'user';
-      if (passwordEl) passwordEl.value = 'user';
-    });
-
-    btnLogout?.addEventListener('click', () => {
+    btnLogout?.addEventListener('click', async () => {
+      if (window.sbClient) {
+        try { await window.sbClient.auth.signOut(); } catch (e) {}
+      }
+      currentSupabaseUser = null;
       setLoggedUser(null);
       showAuth();
       if (window.NEXSOLE?.cart) window.NEXSOLE.cart.showToast('Logged out successfully');
@@ -628,7 +671,7 @@
       if (e.key === 'Escape' && overlay.classList.contains('open')) closeAccount();
     });
 
-    form?.addEventListener('submit', e => {
+    form?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const accounts = getAccounts();
       const userVal  = usernameEl.value.trim();
@@ -641,12 +684,89 @@
           confirmEl.focus();
           return;
         }
+
+        if (passVal.length < 6) {
+          passwordError.textContent = "Password must be at least 6 characters.";
+          passwordError.hidden = false;
+          passwordEl.focus();
+          return;
+        }
+
+        if (window.sbClient) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Creating account...';
+          const email = userVal.includes('@') ? userVal : `${userVal.toLowerCase().replace(/[^a-z0-9]/g, '')}@casashoes.ma`;
+          try {
+            const { data, error } = await window.sbClient.auth.signUp({
+              email: email,
+              password: passVal,
+              options: {
+                data: {
+                  full_name: userVal
+                }
+              }
+            });
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Create Account';
+
+            if (error) {
+              passwordError.textContent = error.message;
+              passwordError.hidden = false;
+              return;
+            }
+
+            if (data?.user) {
+              currentSupabaseUser = data.user;
+              accounts[userVal] = passVal;
+              saveAccounts(accounts);
+              setLoggedUser(userVal);
+              showDashboard(userVal);
+              if (window.NEXSOLE?.cart) window.NEXSOLE.cart.showToast(`Account created! Welcome ${userVal}`, 'success');
+              return;
+            }
+          } catch (err) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Create Account';
+          }
+        }
+
         accounts[userVal] = passVal;
         saveAccounts(accounts);
         setLoggedUser(userVal);
         showDashboard(userVal);
         if (window.NEXSOLE?.cart) window.NEXSOLE.cart.showToast(`Account created! Welcome ${userVal}`, 'success');
         return;
+      }
+
+      // Sign In mode
+      if (window.sbClient) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Signing in...';
+        const email = userVal.includes('@') ? userVal : `${userVal.toLowerCase().replace(/[^a-z0-9]/g, '')}@casashoes.ma`;
+        try {
+          const { data, error } = await window.sbClient.auth.signInWithPassword({
+            email: email,
+            password: passVal
+          });
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign In';
+
+          if (!error && data?.user) {
+            currentSupabaseUser = data.user;
+            const displayName = data.user.user_metadata?.full_name || userVal;
+            setLoggedUser(displayName);
+            showDashboard(displayName);
+            if (window.NEXSOLE?.cart) window.NEXSOLE.cart.showToast(`Welcome back, ${displayName}!`, 'success');
+            return;
+          } else if (error && userVal.includes('@')) {
+            passwordError.textContent = error.message || "Invalid email or password.";
+            passwordError.hidden = false;
+            return;
+          }
+        } catch (err) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign In';
+        }
       }
 
       if (userVal === 'user' && passVal === 'user') {
@@ -670,7 +790,7 @@
       if (window.NEXSOLE?.cart) window.NEXSOLE.cart.showToast(`Welcome back, ${userVal}!`, 'success');
     });
 
-    pwdForm?.addEventListener('submit', e => {
+    pwdForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
       pwdError.hidden = true;
       pwdSuccess.hidden = true;
@@ -681,15 +801,8 @@
       const newP = pwdNew.value.trim();
       const conf = pwdConfirm.value.trim();
 
-      if ((accounts[user] || 'user') !== curr) {
-        pwdError.textContent = "Current password is incorrect.";
-        pwdError.hidden = false;
-        pwdCurrent.focus();
-        return;
-      }
-
-      if (newP.length < 4) {
-        pwdError.textContent = "New password must be at least 4 characters.";
+      if (newP.length < 6) {
+        pwdError.textContent = "New password must be at least 6 characters.";
         pwdError.hidden = false;
         pwdNew.focus();
         return;
@@ -702,6 +815,32 @@
         return;
       }
 
+      if (window.sbClient && currentSupabaseUser) {
+        try {
+          const { error } = await window.sbClient.auth.updateUser({ password: newP });
+          if (error) {
+            pwdError.textContent = error.message;
+            pwdError.hidden = false;
+            return;
+          }
+          pwdSuccess.hidden = false;
+          pwdForm.reset();
+          if (window.NEXSOLE?.cart) window.NEXSOLE.cart.showToast("Password updated successfully!", "success");
+          return;
+        } catch (err) {
+          pwdError.textContent = "Failed to update password.";
+          pwdError.hidden = false;
+          return;
+        }
+      }
+
+      if ((accounts[user] || 'user') !== curr) {
+        pwdError.textContent = "Current password is incorrect.";
+        pwdError.hidden = false;
+        pwdCurrent.focus();
+        return;
+      }
+
       accounts[user] = newP;
       saveAccounts(accounts);
       pwdSuccess.hidden = false;
@@ -709,7 +848,21 @@
       if (window.NEXSOLE?.cart) window.NEXSOLE.cart.showToast("Password updated successfully!", "success");
     });
 
-    googleBtn?.addEventListener('click', () => {
+    googleBtn?.addEventListener('click', async () => {
+      if (window.sbClient) {
+        try {
+          const { error } = await window.sbClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+              redirectTo: window.location.origin + window.location.pathname
+            }
+          });
+          if (error) throw error;
+          return;
+        } catch (e) {
+          console.warn('[Google Auth Notice]:', e);
+        }
+      }
       const accounts = getAccounts();
       accounts['user'] = 'user';
       saveAccounts(accounts);

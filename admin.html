@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>EL WAMY — Admin Dashboard</title>
+
+  <!-- PWA & Mobile Meta Tags -->
+  <link rel="manifest" href="admin-manifest.json">
+  <meta name="theme-color" content="#2563EB">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="EL WAMY">
+  <link rel="apple-touch-icon" href="images/elwamy-logo.jpg">
+  <link rel="icon" type="image/jpeg" href="images/elwamy-logo.jpg">
+
+  <!-- Supabase JS Client v2 & Configuration -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+
+  <!-- Protected Route Guard (No database required, .env & crypto authenticated) -->
+  <script src="js/admin-auth.js"></script>
+  <script>
+    if (!window.AdminAuth || !window.AdminAuth.isAuthenticated()) {
+      window.location.replace('admin-login.html');
+    }
+  </script>
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Outfit', 'sans-serif']
+          },
+          boxShadow: {
+            'card': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03)',
+            'card-hover': '0 4px 12px 0 rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04)'
+          }
+        }
+      }
+    }
+  </script>
+
+
+  <style>
+    /* ── Mobile-First Reset ── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      min-width: 0; /* prevent flex/grid children from ever overflowing */
+    }
+
+    /* ── Prevent horizontal scroll at root level ── */
+    html {
+      scroll-behavior: smooth;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+      overflow-x: hidden;
+      max-width: 100%;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      overflow-x: hidden;
+      max-width: 100%;
+      min-height: 100dvh; /* dynamic viewport height — respects mobile browser chrome */
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+
+    /* ── Responsive media ── */
+    img, video, canvas, svg {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ── Minimum 44px touch targets ── */
+    button, a, input, select, textarea {
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+
+    /* ── Inline/icon exceptions ── */
+    span, label, p, h1, h2, h3, h4, h5, h6 {
+      min-height: unset;
+    }
+
+    /* ── Inputs & selects: prevent iOS zoom (needs >= 16px font) ── */
+    input, select, textarea {
+      font-size: max(16px, 1rem);
+      max-width: 100%;
+    }
+
+    /* ── Scrollbar styling ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    /* ── Touch manipulation utility ── */
+    .touch-manipulation { touch-action: manipulation; }
+
+    /* ── Admin: desktop table only scrolls inside its own box, never the page ── */
+    .table-scroll-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* ── Stats grid: fluid columns that wrap cleanly ── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
+      gap: 0.75rem;
+    }
+
+    /* ── Mobile card status buttons: 3-column grid, always fits ── */
+    .status-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.375rem;
+    }
+
+    /* ── Prevent modal from overflowing viewport ── */
+    .modal-backdrop > div {
+      max-width: min(576px, calc(100vw - 1.5rem));
+      max-height: 90dvh;
+      overflow-y: auto;
+    }
+
+    /* ── Fluid modal body ── */
+    #modal-order-details .py-4 {
+      max-height: clamp(60vh, 75vh, 85dvh);
+    }
+
+    /* ─── 320px — Tiny phones ─── */
+    @media (max-width: 320px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .status-btn-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.25rem;
+      }
+
+      /* Status button text smaller */
+      .btn-status-action span {
+        font-size: 0.62rem;
+      }
+    }
+
+    /* ─── 375px — iPhone SE / 14 ─── */
+    @media (max-width: 375px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    /* ─── 425px — iPhone Pro Max / Galaxy ─── */
+    @media (max-width: 425px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      /* Header: stack on very small screens */
+      header .flex.items-center.gap-3 {
+        gap: 0.5rem;
+      }
+    }
+
+    /* ─── 768px — Tablet Portrait ─── */
+    @media (max-width: 768px) {
+      main {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      /* Tabs: smaller text on mobile */
+      #view-tab-active span,
+      #view-tab-archived span {
+        font-size: 0.7rem;
+      }
+
+      /* Pagination: stack vertically */
+      .pagination-bar {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+      }
+    }
+
+    /* ─── 1024px+ — Desktop ─── */
+    @media (min-width: 1024px) {
+      .metrics-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body class="min-h-full font-sans text-slate-800 antialiased flex flex-col bg-[#F8FAFC]">
+
+  <!-- ==================== TOP NAVIGATION / HEADER ==================== -->
+  <header class="sticky top-0 z-30 bg-white border-b border-slate-200/80 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-14 gap-3">
+
+        <!-- Left: Minimal page title (no logo/brand name) -->
+        <div class="flex items-center gap-2 shrink-0">
+          <div class="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center shadow-sm shadow-blue-500/30 shrink-0">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            </svg>
+          </div>
+          <div class="hidden sm:block">
+            <p class="text-sm font-bold text-slate-900 leading-none">Orders</p>
+            <p class="text-[10px] text-slate-400 font-medium mt-0.5">Management</p>
+          </div>
+        </div>
+
+        <!-- Center: Global Search Bar (desktop) -->
+        <div class="flex-1 max-w-md hidden md:block">
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </div>
+            <input 
+              id="global-search-input"
+              type="search" 
+              placeholder="Search by client, email, phone, city, order ID..." 
+              class="w-full pl-10 pr-10 py-2 bg-slate-50 hover:bg-slate-100/80 focus:bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            >
+            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <kbd class="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 bg-white border border-slate-200 rounded shadow-xs">/</kbd>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Sound Alerts + Store + Profile — always visible, even on mobile -->
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          
+          <!-- 🔊 Sound Alerts Toggle -->
+          <button id="btn-sound-toggle" 
+            class="flex items-center gap-1.5 px-2.5 py-2 rounded-xl border border-blue-200 bg-blue-50 text-blue-700 text-xs font-bold hover:bg-blue-100 active:scale-95 transition-all shadow-xs touch-manipulation" 
+            title="Toggle Real-Time Audio Bell & Desktop Alerts">
+            <span id="sound-toggle-indicator" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+            <svg class="w-4 h-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+            </svg>
+            <span id="sound-toggle-label" class="whitespace-nowrap hidden sm:inline">Alerts ON</span>
+          </button>
+
+          <!-- 🛍️ Storefront Quick Link -->
+          <a href="index.html" 
+            class="flex items-center gap-1.5 px-2.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold active:scale-95 transition-all shadow-xs touch-manipulation" 
+            title="Open Storefront">
+            <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+            </svg>
+            <span class="hidden sm:inline">Store</span>
+          </a>
+
+          <!-- 👤 Admin Profile Avatar -->
+          <div class="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-sm cursor-pointer hover:bg-slate-700 transition-colors touch-manipulation" title="Admin Profile">
+            AD
+          </div>
+
+          <!-- 🚪 Logout Button -->
+          <button 
+            id="btn-admin-logout"
+            onclick="if(window.AdminAuth) window.AdminAuth.logout();"
+            class="flex items-center gap-1.5 px-2.5 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 active:bg-rose-200 text-rose-700 text-xs font-bold active:scale-95 transition-all shadow-xs touch-manipulation" 
+            title="Log Out from Admin Dashboard"
+          >
+            <svg class="w-4 h-4 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+            </svg>
+            <span class="hidden sm:inline">Logout</span>
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Mobile Search Bar -->
+      <div class="py-2.5 md:hidden border-t border-slate-100">
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <input 
+            type="search" 
+            oninput="document.getElementById('global-search-input').value = this.value; document.getElementById('global-search-input').dispatchEvent(new Event('input'))"
+            placeholder="Search orders by client, phone, email, city..." 
+            class="w-full pl-9 pr-4 py-2 bg-slate-100 focus:bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ==================== MAIN CONTENT AREA ==================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-12">
+
+    <div class="space-y-6">
+
+      <!-- ==================== METRICS / STATS CARDS SECTION ==================== -->
+      <section aria-label="Order Metrics">
+        <div class="metrics-grid">
+          
+          <!-- 1. Total Orders -->
+          <div id="card-metric-total" class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-card hover:shadow-card-hover transition-all cursor-pointer group">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-500 group-hover:text-slate-700 transition-colors">Total Orders</span>
+              <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+            </div>
+            <div class="mt-2.5 flex items-baseline justify-between">
+              <span id="metric-total-orders" class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display">0</span>
+              <span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700">All</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1 font-medium">Click to show all</p>
+          </div>
+
+          <!-- 2. Confirmed -->
+          <div id="card-metric-confirmed" class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-card hover:shadow-card-hover transition-all cursor-pointer group">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-500 group-hover:text-slate-700 transition-colors">Confirmed</span>
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            </div>
+            <div class="mt-2.5 flex items-baseline justify-between">
+              <span id="metric-confirmed-orders" class="text-2xl sm:text-3xl font-extrabold text-emerald-600 font-display">0</span>
+              <span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700">Filter</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1 font-medium">Ready for dispatch</p>
+          </div>
+
+          <!-- 3. Delivered (Archived) -->
+          <div id="card-metric-delivered" class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-card hover:shadow-card-hover transition-all cursor-pointer group">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-500 group-hover:text-slate-700 transition-colors">Delivered</span>
+              <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+            </div>
+            <div class="mt-2.5 flex items-baseline justify-between">
+              <span id="metric-delivered-orders" class="text-2xl sm:text-3xl font-extrabold text-blue-600 font-display">0</span>
+              <span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700">Archived</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1 font-medium">Completed delivery</p>
+          </div>
+
+          <!-- 4. Pending -->
+          <div id="card-metric-pending" class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-card hover:shadow-card-hover transition-all cursor-pointer group">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-500 group-hover:text-slate-700 transition-colors">Pending</span>
+              <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+            </div>
+            <div class="mt-2.5 flex items-baseline justify-between">
+              <span id="metric-pending-orders" class="text-2xl sm:text-3xl font-extrabold text-amber-600 font-display">0</span>
+              <span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700">Filter</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1 font-medium">New orders awaiting call</p>
+          </div>
+
+          <!-- 5. Cancelled -->
+          <div id="card-metric-cancelled" class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-card hover:shadow-card-hover transition-all cursor-pointer group">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-500 group-hover:text-slate-700 transition-colors">Cancelled</span>
+              <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+            </div>
+            <div class="mt-2.5 flex items-baseline justify-between">
+              <span id="metric-cancelled-orders" class="text-2xl sm:text-3xl font-extrabold text-rose-600 font-display">0</span>
+              <span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-rose-50 text-rose-700">Filter</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1 font-medium">Customer dropped</p>
+          </div>
+
+          <!-- 6. Delivery Rate % -->
+          <div class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-card">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-500">Delivery Rate</span>
+              <span class="w-2 h-2 rounded-full bg-cyan-500"></span>
+            </div>
+            <div class="mt-2.5 flex items-baseline justify-between">
+              <span id="metric-delivery-rate" class="text-2xl sm:text-3xl font-extrabold text-cyan-700 font-display">0%</span>
+              <span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-cyan-50 text-cyan-700">Rate</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1 font-medium">Delivered ratio</p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==================== VIEW TABS: ACTIVE ORDERS vs ARCHIVED ORDERS ==================== -->
+      <section class="bg-white rounded-2xl border border-slate-200/90 shadow-card overflow-hidden">
+        
+        <!-- Tab Bar: Active vs Archived (Hidden on mobile, uses bottom nav instead) -->
+        <div class="hidden md:flex items-center justify-between px-4 pt-3 border-b border-slate-200 bg-slate-50/50">
+          <div class="flex items-center gap-2">
+            <!-- Active Orders Tab -->
+            <button id="view-tab-active" class="flex items-center gap-2 px-4 py-2.5 text-xs font-bold border-b-2 border-blue-600 text-blue-600 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+              <span>Active Orders</span>
+              <span id="badge-active-count" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700">0</span>
+            </button>
+
+            <!-- Archived Orders Tab -->
+            <button id="view-tab-archived" class="flex items-center gap-2 px-4 py-2.5 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+              </svg>
+              <span>Archived (Delivered)</span>
+              <span id="badge-archived-count" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-700">0</span>
+            </button>
+          </div>
+
+          <!-- Quick Action Buttons: Export & Clear -->
+          <div class="flex items-center gap-2 pb-2">
+            <button id="btn-export-csv" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 transition-colors shadow-xs" title="Export as CSV">
+              <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+              </svg>
+              <span class="hidden sm:inline">Export CSV</span>
+            </button>
+
+            <button id="btn-clear-all-orders" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-rose-500 hover:bg-rose-50 text-xs font-semibold transition-colors" title="Clear All Orders">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+              <span class="hidden sm:inline">Clear</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ==================== INTERACTIVE ORDERS TABLE (DESKTOP) ==================== -->
+        <div class="hidden md:block table-scroll-container">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200/80 bg-slate-50/75 text-[11px] font-bold uppercase tracking-wider text-slate-500 select-none">
+                <th scope="col" class="py-3 px-4 w-36">
+                  <div class="flex items-center gap-2.5">
+                    <input type="checkbox" id="select-all-orders" class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
+                    <span class="cursor-pointer hover:text-slate-800 transition-colors flex items-center gap-1" data-sort="id">
+                      Order ID
+                    </span>
+                  </div>
+                </th>
+                <th scope="col" class="py-3 px-4 cursor-pointer hover:text-slate-800 transition-colors" data-sort="created_at">
+                  Date & Time
+                </th>
+                <th scope="col" class="py-3 px-4 cursor-pointer hover:text-slate-800 transition-colors" data-sort="client_name">
+                  Customer & Gmail
+                </th>
+                <th scope="col" class="py-3 px-4">
+                  Phone & City
+                </th>
+                <th scope="col" class="py-3 px-4 cursor-pointer hover:text-slate-800 transition-colors" data-sort="total_amount">
+                  Total
+                </th>
+                <th scope="col" class="py-3 px-4 cursor-pointer hover:text-slate-800 transition-colors" data-sort="status">
+                  Status
+                </th>
+                <th scope="col" class="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table-body" class="divide-y divide-slate-100 font-sans">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ==================== MOBILE CARDS FEED (< 768px) ==================== -->
+        <div class="block md:hidden p-3 space-y-3">
+          <div id="orders-mobile-container" class="space-y-3">
+            <!-- Rendered dynamically with 3-button status action: Confirmed, Delivered, Cancelled -->
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- ==================== MODAL: FULL ORDER DETAILS (MATCHING IMAGE 2 BLUEPRINT) ==================== -->
+  <div id="modal-order-details" class="modal-backdrop hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="relative bg-white rounded-3xl max-w-xl w-full p-5 sm:p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-blue-600"></span>
+          <div>
+            <h3 class="text-base font-bold text-slate-900 font-display flex items-center gap-2">
+              Order Details <span id="modal-detail-order-number" class="font-mono text-blue-600 font-extrabold text-sm">#0000</span>
+            </h3>
+            <p id="modal-detail-date" class="text-[11px] text-slate-400 font-medium">Timestamp</p>
+          </div>
+        </div>
+        <button class="btn-close-modal text-slate-400 hover:text-slate-700 p-1.5 rounded-xl hover:bg-slate-100" data-modal="modal-order-details">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body (Matching Image 2 Checkout Form Exactly!) -->
+      <div class="py-4 space-y-3.5 max-h-[75vh] overflow-y-auto pr-1">
+        
+        <!-- Row 1: First Name & Last Name (Matching Image 2) -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-800 mb-1 text-xs">First Name</label>
+            <div id="modal-detail-firstname" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl font-bold text-slate-900 text-sm shadow-xs select-all">
+              -
+            </div>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-800 mb-1 text-xs">Last Name</label>
+            <div id="modal-detail-lastname" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl font-bold text-slate-900 text-sm shadow-xs select-all">
+              -
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Phone Number (Matching Image 2) -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block font-bold text-slate-800 text-xs">Phone Number</label>
+            <div class="flex items-center gap-2">
+              <a id="modal-detail-phone-call" href="#" class="text-blue-600 hover:underline font-bold text-[11px]">📞 Call</a>
+              <a id="modal-detail-whatsapp" href="#" target="_blank" class="text-emerald-600 hover:underline font-bold text-[11px]">💬 WhatsApp</a>
+            </div>
+          </div>
+          <div id="modal-detail-phone" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl font-bold text-slate-900 text-sm font-mono shadow-xs select-all">
+            -
+          </div>
+        </div>
+
+        <!-- Row 3: Email (Matching Image 2) -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block font-bold text-slate-800 text-xs">Email</label>
+            <button id="btn-copy-email" class="text-blue-600 hover:underline text-[11px] font-bold">Copy Email</button>
+          </div>
+          <div id="modal-detail-email" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl font-medium text-slate-900 text-sm font-mono shadow-xs truncate select-all">
+            -
+          </div>
+        </div>
+
+        <!-- SHIPPING ADDRESS CONTAINER (Matching Image 2 exact structure & styling) -->
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-3 mt-1">
+          <div class="flex items-center justify-between border-b border-slate-200/80 pb-2">
+            <span class="text-xs font-black uppercase tracking-wider text-slate-800">SHIPPING ADDRESS</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700">Morocco</span>
+          </div>
+
+          <!-- STREET ADDRESS -->
+          <div>
+            <label class="block font-bold uppercase tracking-wider text-slate-700 mb-1 text-[11px]">STREET ADDRESS</label>
+            <div id="modal-detail-street" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl font-semibold text-slate-900 text-xs shadow-xs select-all">
+              -
+            </div>
+          </div>
+
+          <!-- APARTMENT, QUARTIER, ETC. (OPTIONAL) -->
+          <div>
+            <label class="block font-bold uppercase tracking-wider text-slate-700 mb-1 text-[11px]">APARTMENT, QUARTIER, ETC. (OPTIONAL)</label>
+            <div id="modal-detail-apartment" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl font-medium text-slate-800 text-xs shadow-xs select-all">
+              -
+            </div>
+          </div>
+
+          <!-- CITY — VILLE -->
+          <div>
+            <label class="block font-bold uppercase tracking-wider text-slate-700 mb-1 text-[11px]">CITY — VILLE</label>
+            <div id="modal-detail-city" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl font-bold text-slate-900 text-xs shadow-xs select-all">
+              -
+            </div>
+          </div>
+        </div>
+
+        <!-- SHOES ORDERED -->
+        <div class="pt-1">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Shoes Ordered</h4>
+          <div id="modal-detail-items-list" class="space-y-2">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- PAYMENT & TOTAL -->
+        <div class="flex items-center justify-between p-3.5 rounded-2xl bg-blue-50/60 border border-blue-200">
+          <div>
+            <span class="text-[10px] uppercase font-bold text-slate-500">Payment Method</span>
+            <p class="text-xs font-bold text-slate-900">Cash on Delivery (Paiement à la livraison)</p>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] uppercase font-bold text-slate-500">Total Price</span>
+            <p id="modal-detail-total" class="text-xl font-black text-slate-900 font-mono">0.00 DH</p>
+          </div>
+        </div>
+
+        <!-- STATUS CHANGER -->
+        <div class="p-3.5 rounded-2xl bg-white border border-slate-200 flex items-center justify-between gap-3">
+          <label for="modal-detail-status-select" class="text-xs font-bold text-slate-800">
+            Order Status:
+          </label>
+          <select id="modal-detail-status-select" class="text-xs font-bold rounded-xl border border-slate-300 px-3 py-2 bg-slate-50 text-slate-800 focus:ring-2 focus:ring-blue-500 cursor-pointer">
+            <option value="Confirmed">✓ Confirmed (Active)</option>
+            <option value="Delivered">🚚 Delivered (Move to Archive)</option>
+            <option value="Pending">⏳ Pending (Active)</option>
+            <option value="Cancelled">✕ Cancelled (Active)</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+        <button class="btn-close-modal px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50" data-modal="modal-order-details">
+          Close
+        </button>
+        <button id="btn-modal-save-status" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs">
+          Save Changes
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== TOAST NOTIFICATIONS ==================== -->
+  <div id="toast-container" class="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-50 flex flex-col gap-2 pointer-events-none *:pointer-events-auto"></div>
+
+  <!-- Scripts -->
+  <script src="js/admin-supabase.js"></script>
+  <script src="js/admin-dashboard.js"></script>
+</body>
+</html>
