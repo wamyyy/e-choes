@@ -14,12 +14,25 @@
   <link rel="apple-touch-icon" href="images/elwamy-logo.jpg">
   <link rel="icon" type="image/jpeg" href="images/elwamy-logo.jpg">
 
+  <!-- Invalidate stale Service Worker cache for Admin -->
+  <script>
+    if ('caches' in window) {
+      caches.keys().then(keys => {
+        keys.forEach(k => {
+          if (k.includes('admin') || k.startsWith('casashoes-v1') || k.startsWith('casashoes-v2') || k.startsWith('casashoes-v3')) {
+            caches.delete(k);
+          }
+        });
+      });
+    }
+  </script>
+
   <!-- Supabase JS Client v2 & Configuration -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-client.js"></script>
+  <script src="js/supabase-client.js?v=2.6"></script>
 
   <!-- Protected Route Guard (No database required, .env & crypto authenticated) -->
-  <script src="js/admin-auth.js"></script>
+  <script src="js/admin-auth.js?v=2.6"></script>
   <script>
     if (!window.AdminAuth || !window.AdminAuth.isAuthenticated()) {
       window.location.replace('admin-login.html');
@@ -212,7 +225,7 @@
 <body class="min-h-full font-sans text-slate-800 antialiased flex flex-col bg-[#F8FAFC]">
 
   <!-- ==================== TOP NAVIGATION / HEADER ==================== -->
-  <header class="sticky top-0 z-30 bg-white border-b border-slate-200/80 shadow-sm">
+  <header class="sticky top-0 z-30 bg-white border-b border-slate-200/80 shadow-sm" style="padding-top: env(safe-area-inset-top, 0px);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-14 gap-3">
 
@@ -648,7 +661,7 @@
   <div id="toast-container" class="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-50 flex flex-col gap-2 pointer-events-none *:pointer-events-auto"></div>
 
   <!-- Scripts -->
-  <script src="js/admin-supabase.js"></script>
-  <script src="js/admin-dashboard.js"></script>
+  <script src="js/admin-supabase.js?v=2.6"></script>
+  <script src="js/admin-dashboard.js?v=2.6"></script>
 </body>
 </html>

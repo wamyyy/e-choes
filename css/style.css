@@ -529,7 +529,8 @@ ul, ol {
   left: 0;
   right: 0;
   z-index: 1000;
-  height: var(--nav-height);
+  padding-top: env(safe-area-inset-top, 0px);
+  height: calc(var(--nav-height) + env(safe-area-inset-top, 0px));
   transition: background var(--transition-slow), box-shadow var(--transition-slow), height var(--transition-slow);
   background: rgba(255,255,255,0.0);
 }
@@ -539,7 +540,7 @@ ul, ol {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 2px 20px rgba(0,0,0,0.08);
-  height: var(--nav-height-sm);
+  height: calc(var(--nav-height-sm) + env(safe-area-inset-top, 0px));
 }
 
 .nav-inner {
@@ -2040,7 +2041,7 @@ body[data-theme="dark"] .promo-popup {
   position: relative;
   overflow: hidden;
   background: var(--clr-white);
-  padding-top: var(--nav-height);
+  padding-top: calc(var(--nav-height) + env(safe-area-inset-top, 0px));
 }
 
 .hero-bg-element {

@@ -13,6 +13,9 @@
   const STORAGE_KEY_SOUND = 'casashoes_sound_enabled';
   const BROADCAST_CHANNEL = 'casashoes_realtime_orders';
 
+  const SUPABASE_URL = 'https://aagwbecelhmdwmwsulzf.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhZ3diZWNlbGhtZHdtd3N1bHpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0MDcwMzEsImV4cCI6MjEwNDk4MzAzMX0.TdDThHk9WuOtgWSN5CvOlA5ToPGxz1cxcAk-SvcBs1s';
+
   class AdminDataService {
     constructor() {
       this.supabase = null;
@@ -22,9 +25,25 @@
       this.audioCtx = null;
       this.soundEnabled = localStorage.getItem(STORAGE_KEY_SOUND) !== 'false';
 
+      this.cleanMockData();
       this.initAudioContext();
       this.initBroadcastChannel();
       this.initSupabaseClient();
+    }
+
+    cleanMockData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_ORDERS);
+        if (raw) {
+          const list = JSON.parse(raw);
+          if (Array.isArray(list)) {
+            const filtered = list.filter(o => o && o.agent_name !== 'Jawad M.' && o.client_name !== 'Jawad' && o.tracking_carrier !== 'CTM Messagerie');
+            if (filtered.length !== list.length) {
+              localStorage.setItem(STORAGE_KEY_ORDERS, JSON.stringify(filtered));
+            }
+          }
+        }
+      } catch (e) {}
     }
 
     // --- Web Audio Bell / Chime Generator ---
@@ -158,13 +177,12 @@
       if (window.sbClient) {
         this.supabase = window.sbClient;
       } else if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-        const config = JSON.parse(localStorage.getItem('casashoes_sb_config') || '{}');
-        const url = config.url || window.CASASHOES_SUPABASE_URL || '';
-        const key = config.anonKey || window.CASASHOES_SUPABASE_KEY || '';
-        if (url && key) {
-          try {
-            this.supabase = window.supabase.createClient(url, key);
-          } catch (e) {}
+        try {
+          this.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: { persistSession: true, autoRefreshToken: true }
+          });
+        } catch (e) {
+          console.warn('[AdminDataService] Client create exception:', e);
         }
       }
 
@@ -321,8 +339,34 @@
       };
     }
 
+    async fetchFromSupabaseRest() {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/orders?select=*,order_items(*)&order=created_at.desc`, {
+          method: 'GET',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        });
+        if (res.ok) {
+          const rows = await res.json();
+          return rows;
+        }
+      } catch (err) {
+        console.warn('[AdminDataService] Direct REST fetch error:', err);
+      }
+      return null;
+    }
+
     async getOrders() {
-      // 1. Try fetching real orders directly from Supabase
+      let orders = null;
+
+      // 1. Ensure Supabase client is initialized
+      if (!this.supabase) {
+        this.initSupabaseClient();
+      }
+
+      // 2. Try fetching via Supabase JS client
       if (this.supabase) {
         try {
           const { data, error } = await this.supabase
@@ -330,20 +374,35 @@
             .select('*, order_items(*)')
             .order('created_at', { ascending: false });
 
-          if (!error && data && data.length > 0) {
-            const formatted = data.map(row => this.formatSupabaseOrder(row));
-            await this.saveOrdersLocal(formatted);
-            return formatted;
+          if (!error && Array.isArray(data)) {
+            orders = data.map(row => this.formatSupabaseOrder(row));
+          } else if (error) {
+            console.warn('[AdminDataService] Supabase client fetch error:', error.message, error.code);
           }
         } catch (err) {
-          console.warn('[AdminDataService] Error fetching orders from Supabase:', err);
+          console.warn('[AdminDataService] Supabase client fetch throw:', err);
         }
       }
 
-      // 2. Fallback to LocalStorage cache
+      // 3. Fallback to direct REST API fetch if SDK query returned null
+      if (!orders) {
+        const restRows = await this.fetchFromSupabaseRest();
+        if (Array.isArray(restRows)) {
+          orders = restRows.map(row => this.formatSupabaseOrder(row));
+        }
+      }
+
+      // 4. If Supabase succeeded, persist fresh orders and return
+      if (orders !== null) {
+        await this.saveOrdersLocal(orders);
+        return orders;
+      }
+
+      // 5. Fallback to LocalStorage cache (only when completely offline)
       try {
         const raw = localStorage.getItem(STORAGE_KEY_ORDERS);
-        return raw ? JSON.parse(raw) : [];
+        const cached = raw ? JSON.parse(raw) : [];
+        return cached.filter(o => o && o.agent_name !== 'Jawad M.' && o.client_name !== 'Jawad');
       } catch (e) {
         return [];
       }

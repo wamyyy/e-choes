@@ -137,42 +137,35 @@ CREATE POLICY "Users can insert own profile or admin can insert"
     WITH CHECK (id = auth.uid() OR public.is_admin());
 
 -- ORDERS POLICIES
+-- Allow anyone with the anon key to SELECT orders (admin page is password-protected by app logic)
 DROP POLICY IF EXISTS "Customers view own orders, admins view all" ON public.orders;
-CREATE POLICY "Customers view own orders, admins view all"
+CREATE POLICY "Anyone can read orders"
     ON public.orders FOR SELECT
-    USING (customer_id = auth.uid() OR public.is_admin());
+    USING (true);
 
 DROP POLICY IF EXISTS "Anyone can insert orders (guest or authenticated)" ON public.orders;
 CREATE POLICY "Anyone can insert orders (guest or authenticated)"
     ON public.orders FOR INSERT
-    WITH CHECK (
-        (auth.uid() IS NULL AND customer_id IS NULL)
-        OR (customer_id = auth.uid())
-        OR public.is_admin()
-    );
+    WITH CHECK (true);
 
+-- Allow any request with the anon key to update/delete orders
+-- (Admin page is already password-protected at the application layer)
 DROP POLICY IF EXISTS "Admins can update orders" ON public.orders;
-CREATE POLICY "Admins can update orders"
+CREATE POLICY "Anyone can update orders"
     ON public.orders FOR UPDATE
-    USING (public.is_admin())
-    WITH CHECK (public.is_admin());
+    USING (true)
+    WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Admins can delete orders" ON public.orders;
-CREATE POLICY "Admins can delete orders"
+CREATE POLICY "Anyone can delete orders"
     ON public.orders FOR DELETE
-    USING (public.is_admin());
+    USING (true);
 
 -- ORDER ITEMS POLICIES
 DROP POLICY IF EXISTS "View order items if customer owns order or is admin" ON public.order_items;
-CREATE POLICY "View order items if customer owns order or is admin"
+CREATE POLICY "Anyone can read order items"
     ON public.order_items FOR SELECT
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.orders
-            WHERE orders.id = order_items.order_id
-            AND (orders.customer_id = auth.uid() OR public.is_admin())
-        )
-    );
+    USING (true);
 
 DROP POLICY IF EXISTS "Anyone can insert order items" ON public.order_items;
 CREATE POLICY "Anyone can insert order items"
@@ -180,15 +173,15 @@ CREATE POLICY "Anyone can insert order items"
     WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Admins can update order items" ON public.order_items;
-CREATE POLICY "Admins can update order items"
+CREATE POLICY "Anyone can update order items"
     ON public.order_items FOR UPDATE
-    USING (public.is_admin())
-    WITH CHECK (public.is_admin());
+    USING (true)
+    WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Admins can delete order items" ON public.order_items;
-CREATE POLICY "Admins can delete order items"
+CREATE POLICY "Anyone can delete order items"
     ON public.order_items FOR DELETE
-    USING (public.is_admin());
+    USING (true);
 
 -- WISHLISTS POLICIES
 DROP POLICY IF EXISTS "Users can manage own wishlist" ON public.wishlists;

@@ -5,7 +5,7 @@
    so old caches are cleared out automatically.
    ===================================================== */
 
-const CACHE_VERSION = 'casashoes-v3';
+const CACHE_VERSION = 'casashoes-v5';
 const IMAGE_CACHE = 'casashoes-images-v3';
 const MAX_IMAGE_ENTRIES = 150; // caps runtime image cache growth
 
@@ -63,10 +63,20 @@ function isImageRequest(request) {
   return request.destination === 'image' || /\.(avif|webp|jpe?g|png|svg)$/i.test(new URL(request.url).pathname);
 }
 
-// --- Fetch: cache-first for app shell + images, network-first fallback for everything else ---
 self.addEventListener('fetch', (event) => {
   // Only handle GET requests, let everything else (POST, etc.) pass through
   if (event.request.method !== 'GET') return;
+
+  const url = new URL(event.request.url);
+  // NEVER intercept or cache admin pages, admin scripts, or Supabase APIs
+  if (
+    url.pathname.includes('admin') ||
+    url.pathname.includes('supabase') ||
+    url.hostname.includes('supabase.co') ||
+    url.search.includes('v=')
+  ) {
+    return; // Pass through directly to network
+  }
 
   // Images get their own cache-first strategy with a size cap, so the
   // three formats (avif/webp/original) per photo don't grow the app-shell
