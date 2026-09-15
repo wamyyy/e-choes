@@ -102,50 +102,24 @@
           return { success: false, message: 'Sign in failed. No user returned.' };
         }
 
-        // Query profiles table to verify role = 'admin'
-        let { data: profile, error: profErr } = await window.sbClient
+        // Query profiles table to verify role = 'admin'.
+        // NOTE: we deliberately do NOT attempt to auto-promote the user here
+        // (via RPC or a direct profiles update) — that was a security hole
+        // that let any signed-up visitor grant themselves admin access.
+        // Promotion must only ever be done by the project owner from the
+        // Supabase SQL Editor (SELECT public.promote_user_to_admin('email')),
+        // which now requires the service_role/SQL Editor connection.
+        const { data: profile, error: profErr } = await window.sbClient
           .from('profiles')
           .select('role, full_name')
           .eq('id', data.user.id)
           .maybeSingle();
 
-        // If profile doesn't exist yet, attempt to promote via RPC
-        if (!profile) {
-          try {
-            await window.sbClient.rpc('promote_user_to_admin', { target_email: cleanEmail });
-            const { data: retryProf } = await window.sbClient
-              .from('profiles')
-              .select('role, full_name')
-              .eq('id', data.user.id)
-              .maybeSingle();
-            profile = retryProf;
-          } catch (rpcErr) {}
-        }
-
-        if (!profile || profile.role !== 'admin') {
-          // Check if there are ANY admin profiles at all in the database
-          const { count } = await window.sbClient
-            .from('profiles')
-            .select('*', { count: 'exact', head: true })
-            .eq('role', 'admin');
-
-          if (count === 0) {
-            // First user bootstrap: auto-promote
-            try {
-              await window.sbClient
-                .from('profiles')
-                .update({ role: 'admin' })
-                .eq('id', data.user.id);
-              profile = { role: 'admin', full_name: data.user.user_metadata?.full_name || cleanEmail };
-            } catch (pErr) {}
-          }
-        }
-
         if (!profile || profile.role !== 'admin') {
           await window.sbClient.auth.signOut();
           return {
             success: false,
-            message: 'Account signed in, but role is "' + (profile?.role || 'customer') + '". Run: SELECT public.promote_user_to_admin(\'' + cleanEmail + '\'); in Supabase SQL editor.'
+            message: 'Account signed in, but this account is not an administrator. Ask an existing admin to run: SELECT public.promote_user_to_admin(\'' + cleanEmail + '\'); in the Supabase SQL Editor.'
           };
         }
 
@@ -195,16 +169,17 @@
           return { success: false, message: error.message };
         }
 
-        // Try promoting via RPC
-        try {
-          await window.sbClient.rpc('promote_user_to_admin', { target_email: cleanEmail });
-        } catch (e) {}
-
+        // NOTE: we no longer auto-promote here. A freshly registered account
+        // is just a normal ('customer') account until the site owner
+        // explicitly promotes it from the Supabase SQL Editor. This is what
+        // stops anyone who fills in this form from becoming an admin on
+        // their own — see prevent_role_self_escalation trigger + the
+        // REVOKE on promote_user_to_admin() in supabase-schema.sql.
         return { 
           success: true, 
           user: data.user,
           session: data.session,
-          message: 'Admin account created successfully! If email confirmation is disabled in Supabase, you can sign in now.'
+          message: 'Account created. It is NOT an admin yet — ask the site owner to run: SELECT public.promote_user_to_admin(\'' + cleanEmail + '\'); in the Supabase SQL Editor before you can sign in here.'
         };
       } catch (err) {
         return { success: false, message: err.message || 'Registration failed.' };
