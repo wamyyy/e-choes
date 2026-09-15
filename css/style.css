@@ -1116,7 +1116,7 @@ body[data-theme="dark"] .pwa-ios-step-icon {
   left: 50%;
   transform: translate(-50%, -50%) scale(0.92);
   width: 100%;
-  max-width: 420px;
+  max-width: min(420px, 100vw);
   max-height: 88vh;
   background: var(--clr-white);
   border-radius: var(--radius-lg);
@@ -1224,7 +1224,7 @@ body[data-theme="dark"] .promo-popup {
 .account-box {
   position: relative;
   width: 100%;
-  max-width: 380px;
+  max-width: min(380px, 100vw);
   background: var(--clr-white);
   border-radius: var(--radius-md);
   padding: var(--space-2xl) var(--space-xl) var(--space-xl);
@@ -1386,7 +1386,7 @@ body[data-theme="dark"] .promo-popup {
 
 /* --- Account Dashboard Window & Demo Notice --- */
 .account-box.is-dashboard {
-  max-width: 580px;
+  max-width: min(580px, 100vw);
   padding: var(--space-xl);
 }
 
@@ -1593,6 +1593,16 @@ body[data-theme="dark"] .promo-popup {
 .order-status-pill.processing {
   background: rgba(255, 94, 44, 0.12);
   color: var(--clr-primary);
+}
+
+.order-status-pill.cancelled {
+  background: rgba(228, 72, 60, 0.12);
+  color: #E4483C;
+}
+
+.tracking-cancelled {
+  color: #E4483C;
+  font-weight: var(--fw-bold);
 }
 
 .order-shipping-meta {
@@ -4176,7 +4186,7 @@ body[data-theme="dark"] .promo-popup {
 .product-modal {
   background: #ffffff;
   border-radius: 20px;
-  max-width: 1040px;
+  max-width: min(1040px, 100vw);
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
@@ -6471,14 +6481,16 @@ table {
   max-width: 100%;
 }
 
-/* Ensure modals/drawers never exceed viewport */
+/* Ensure modals/drawers never exceed viewport.
+   NOTE: .account-box, .product-modal and .promo-popup each define their
+   own intentional desktop max-width (e.g. 380px) using max-width: min(Xpx, 100vw)
+   directly in their own rules above — they are deliberately left out of this
+   list so this safeguard can't blow away that cap with a flat 100vw and make
+   them stretch full-bleed on desktop. */
 .modal-overlay,
 .cart-drawer,
-.product-modal,
-.account-box,
 .settings-panel,
-.mobile-menu,
-.promo-popup {
+.mobile-menu {
   max-width: 100vw;
 }
 
@@ -6496,13 +6508,69 @@ textarea {
   max-width: 100%;
 }
 
-/* Minimum touch target for icon-only buttons (they might have min-height: unset applied) */
+/* Minimum touch target for icon-only buttons */
 .nav-icon-btn,
 .hamburger,
 .cart-btn,
 .search-btn,
-.user-btn {
+.user-btn,
+.product-fav-btn,
+.modal-close,
+.cart-close-btn,
+.cart-qty-btn,
+.lightbox-close,
+.lightbox-nav {
   min-width: 44px;
   min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* iOS/Android Safe Area Inset Support */
+.cart-drawer,
+.checkout-body,
+.mobile-nav-bar {
+  padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
+}
+
+/* Floating WhatsApp Button for Moroccan Shoppers */
+.floating-whatsapp-btn {
+  position: fixed;
+  bottom: max(20px, env(safe-area-inset-bottom, 20px));
+  right: 20px;
+  z-index: 999;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #25D366;
+  color: #FFFFFF;
+  padding: 12px 18px;
+  border-radius: 50px;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.45);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 13px;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.floating-whatsapp-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 24px rgba(37, 211, 102, 0.6);
+  color: #FFFFFF;
+}
+
+@media (max-width: 640px) {
+  .floating-whatsapp-label {
+    display: none;
+  }
+  .floating-whatsapp-btn {
+    padding: 12px;
+    border-radius: 50%;
+    bottom: max(16px, env(safe-area-inset-bottom, 16px));
+    right: 16px;
+  }
 }
 

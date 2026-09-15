@@ -50,11 +50,15 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-client.js"></script>
 
-  <!-- Early Auth Guard: Redirect to admin if already authenticated -->
+  <!-- Early Auth Guard: Verify session with Supabase server -->
   <script src="js/admin-auth.js"></script>
   <script>
     if (window.AdminAuth && window.AdminAuth.isAuthenticated()) {
-      window.location.replace('admin.html');
+      window.AdminAuth.verifyServerSession().then(res => {
+        if (res.authenticated) {
+          window.location.replace('admin.html');
+        }
+      });
     }
   </script>
 </head>
@@ -72,16 +76,35 @@
     <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-card border border-slate-200/80">
       
       <!-- Logo & Header -->
-      <div class="text-center mb-7">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl overflow-hidden shadow-lg shadow-blue-500/20 mb-3.5 hover:scale-105 transition-transform">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl overflow-hidden shadow-lg shadow-blue-500/20 mb-3 hover:scale-105 transition-transform">
           <img src="images/elwamy-logo.jpg" alt="EL WAMY" class="w-full h-full object-cover">
         </div>
         <h1 class="font-display font-extrabold text-2xl text-slate-900 tracking-tight">
           EL <span class="text-blue-600">WAMY</span>
         </h1>
+        <p class="text-xs text-slate-500 mt-1 font-medium">Store Operations & Admin Dashboard</p>
       </div>
 
-      <!-- Error Alert Message -->
+      <!-- Tab Switcher: Sign In vs Register Admin -->
+      <div class="flex p-1 bg-slate-100 rounded-2xl mb-5">
+        <button 
+          type="button" 
+          id="tab-signin" 
+          class="flex-1 py-2 text-xs font-bold rounded-xl bg-white shadow-sm text-blue-600 transition-all"
+        >
+          Sign In
+        </button>
+        <button 
+          type="button" 
+          id="tab-register" 
+          class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all"
+        >
+          Register Admin
+        </button>
+      </div>
+
+      <!-- Alert Messages -->
       <div id="login-error-alert" class="hidden mb-4 p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-2">
         <svg class="w-4 h-4 text-rose-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -89,33 +112,55 @@
         <span id="login-error-text">Invalid credentials.</span>
       </div>
 
-      <!-- Login Form -->
+      <div id="login-success-alert" class="hidden mb-4 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold flex items-center gap-2">
+        <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <span id="login-success-text">Success.</span>
+      </div>
+
+      <!-- Auth Form -->
       <form id="admin-login-form" class="space-y-4" autocomplete="on">
         
-        <!-- Username / Email Field -->
+        <!-- Full Name (Only for Register) -->
+        <div id="field-fullname" class="hidden">
+          <label for="admin-fullname" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+            Full Name
+          </label>
+          <div class="relative">
+            <input 
+              type="text" 
+              id="admin-fullname" 
+              placeholder="e.g. Marwan Elwamy" 
+              class="w-full px-4 py-3 bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-2xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all"
+            >
+          </div>
+        </div>
+
+        <!-- Email Field -->
         <div>
-          <label for="admin-username" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-            Username or Email
+          <label for="admin-email" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+            Admin Email
           </label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
               </svg>
             </div>
             <input 
-              type="text" 
-              id="admin-username" 
-              name="username"
+              type="email" 
+              id="admin-email" 
+              name="email"
               required 
               autofocus
-              placeholder="Enter admin username" 
+              placeholder="admin@example.com" 
               class="w-full pl-10 pr-4 py-3 bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-2xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all"
             >
           </div>
         </div>
 
-        <!-- Password Field with Show/Hide Toggle -->
+        <!-- Password Field -->
         <div>
           <label for="admin-password" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
             Password
@@ -134,21 +179,16 @@
               placeholder="••••••••••••••••" 
               class="w-full pl-10 pr-11 py-3 bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-2xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-mono"
             >
-            
-            <!-- Show / Hide Password Toggle Button -->
             <button 
               type="button" 
               id="btn-toggle-password" 
               class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-700 focus:outline-none touch-manipulation" 
               title="Show or hide password"
-              aria-label="Toggle password visibility"
             >
-              <!-- Eye Icon (shown when hidden) -->
               <svg id="icon-eye-show" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
               </svg>
-              <!-- Eye-Off Icon (shown when visible) -->
               <svg id="icon-eye-hide" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path>
               </svg>
@@ -157,7 +197,7 @@
         </div>
 
         <!-- Remember Me Checkbox -->
-        <div class="flex items-center justify-between pt-1">
+        <div id="row-remember" class="flex items-center justify-between pt-1">
           <label class="flex items-center gap-2 cursor-pointer select-none">
             <input 
               type="checkbox" 
@@ -194,6 +234,7 @@
           </svg>
           <span>Back to Store</span>
         </a>
+        <span class="text-[11px] text-slate-400">CasaShoes Supabase Auth</span>
       </div>
 
     </div>
@@ -202,9 +243,13 @@
 
   <script>
     (function() {
+      let isRegisterMode = false;
       const form = document.getElementById('admin-login-form');
-      const userInput = document.getElementById('admin-username');
+      const emailInput = document.getElementById('admin-email');
       const passInput = document.getElementById('admin-password');
+      const fullnameInput = document.getElementById('admin-fullname');
+      const fieldFullname = document.getElementById('field-fullname');
+      const rowRemember = document.getElementById('row-remember');
       const rememberCheckbox = document.getElementById('remember-me');
       const togglePassBtn = document.getElementById('btn-toggle-password');
       const eyeShow = document.getElementById('icon-eye-show');
@@ -214,8 +259,38 @@
       const submitSpinner = document.getElementById('btn-submit-spinner');
       const errorAlert = document.getElementById('login-error-alert');
       const errorText = document.getElementById('login-error-text');
+      const successAlert = document.getElementById('login-success-alert');
+      const successText = document.getElementById('login-success-text');
+      const tabSignIn = document.getElementById('tab-signin');
+      const tabRegister = document.getElementById('tab-register');
 
-      // 1. Password Visibility Toggle
+      // 1. Tab Switching
+      tabSignIn.addEventListener('click', () => setMode(false));
+      tabRegister.addEventListener('click', () => setMode(true));
+
+      function setMode(register) {
+        isRegisterMode = register;
+        hideAlerts();
+        if (isRegisterMode) {
+          tabRegister.classList.add('bg-white', 'shadow-sm', 'text-blue-600');
+          tabRegister.classList.remove('text-slate-600');
+          tabSignIn.classList.remove('bg-white', 'shadow-sm', 'text-blue-600');
+          tabSignIn.classList.add('text-slate-600');
+          fieldFullname.classList.remove('hidden');
+          rowRemember.classList.add('hidden');
+          submitText.textContent = 'Create Admin Account';
+        } else {
+          tabSignIn.classList.add('bg-white', 'shadow-sm', 'text-blue-600');
+          tabSignIn.classList.remove('text-slate-600');
+          tabRegister.classList.remove('bg-white', 'shadow-sm', 'text-blue-600');
+          tabRegister.classList.add('text-slate-600');
+          fieldFullname.classList.add('hidden');
+          rowRemember.classList.remove('hidden');
+          submitText.textContent = 'Sign In to Dashboard';
+        }
+      }
+
+      // 2. Password Visibility Toggle
       let isPassVisible = false;
       togglePassBtn.addEventListener('click', () => {
         isPassVisible = !isPassVisible;
@@ -229,65 +304,92 @@
         }
       });
 
-      // 2. Form Submission Handler
+      // 3. Form Submission
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        hideError();
+        hideAlerts();
 
-        const username = userInput.value.trim();
+        const email = emailInput.value.trim();
         const password = passInput.value;
+        const fullName = fullnameInput.value.trim() || 'Store Administrator';
         const remember = rememberCheckbox.checked;
 
-        if (!username || !password) {
-          showError('Please provide both username and password.');
+        if (!email || !password) {
+          showError('Please provide both email and password.');
           return;
         }
 
-        // Set Loading UI
         setLoading(true);
 
         try {
-          const res = await window.AdminAuth.login(username, password, remember);
-          if (res.success) {
-            submitText.textContent = 'Redirecting...';
-            // Check for redirect param
-            const params = new URLSearchParams(window.location.search);
-            const redirect = params.get('redirect') ? decodeURIComponent(params.get('redirect')) : 'admin.html';
-            setTimeout(() => {
-              window.location.replace(redirect);
-            }, 300);
-          } else {
+          if (isRegisterMode) {
+            const res = await window.AdminAuth.registerAdmin(email, password, fullName);
             setLoading(false);
-            showError(res.message || 'Invalid username or password.');
+            if (res.success) {
+              showSuccess(res.message || 'Account created! Signing you in...');
+              // Attempt login right away
+              setTimeout(async () => {
+                const loginRes = await window.AdminAuth.login(email, password, true);
+                if (loginRes.success) {
+                  window.location.replace('admin.html');
+                } else {
+                  setMode(false);
+                  showSuccess('Admin registered! Please sign in with your credentials.');
+                }
+              }, 1200);
+            } else {
+              showError(res.message || 'Registration failed.');
+            }
+          } else {
+            const res = await window.AdminAuth.login(email, password, remember);
+            if (res.success) {
+              submitText.textContent = 'Verified! Redirecting...';
+              const params = new URLSearchParams(window.location.search);
+              const redirect = params.get('redirect') ? decodeURIComponent(params.get('redirect')) : 'admin.html';
+              setTimeout(() => {
+                window.location.replace(redirect);
+              }, 300);
+            } else {
+              setLoading(false);
+              showError(res.message || 'Invalid email or password.');
+            }
           }
         } catch (err) {
           setLoading(false);
-          showError('An authentication error occurred. Please try again.');
+          showError('An unexpected authentication error occurred.');
         }
       });
 
       function showError(msg) {
         errorText.textContent = msg;
         errorAlert.classList.remove('hidden');
+        successAlert.classList.add('hidden');
         form.classList.remove('shake-anim');
-        void form.offsetWidth; // trigger reflow
+        void form.offsetWidth;
         form.classList.add('shake-anim');
       }
 
-      function hideError() {
+      function showSuccess(msg) {
+        successText.textContent = msg;
+        successAlert.classList.remove('hidden');
         errorAlert.classList.add('hidden');
+      }
+
+      function hideAlerts() {
+        errorAlert.classList.add('hidden');
+        successAlert.classList.add('hidden');
       }
 
       function setLoading(isLoading) {
         if (isLoading) {
           submitBtn.disabled = true;
           submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
-          submitText.textContent = 'Verifying...';
+          submitText.textContent = isRegisterMode ? 'Creating Account...' : 'Verifying...';
           submitSpinner.classList.remove('hidden');
         } else {
           submitBtn.disabled = false;
           submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
-          submitText.textContent = 'Sign In to Dashboard';
+          submitText.textContent = isRegisterMode ? 'Create Admin Account' : 'Sign In to Dashboard';
           submitSpinner.classList.add('hidden');
         }
       }

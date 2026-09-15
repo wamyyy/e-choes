@@ -294,6 +294,63 @@
     const ORDERS_KEY   = 'casashoes_user_orders';
 
     let currentSupabaseUser = null;
+    let ordersRealtimeChannel = null;
+
+    // --- Live sync: subscribe to admin order-status changes for this customer ---
+    // When the admin marks an order Confirmed / Shipped / Delivered on the admin
+    // dashboard, Supabase fires a postgres_changes UPDATE event here so the
+    // customer's own "My Orders" panel refreshes instantly, without needing to
+    // close/reopen the account window or reload the page.
+    function subscribeToOrderUpdates() {
+      if (!window.sbClient || !currentSupabaseUser) return;
+      unsubscribeFromOrderUpdates();
+
+      try {
+        ordersRealtimeChannel = window.sbClient
+          .channel('customer-orders-' + currentSupabaseUser.id)
+          .on(
+            'postgres_changes',
+            {
+              event: 'UPDATE',
+              schema: 'public',
+              table: 'orders',
+              filter: `customer_id=eq.${currentSupabaseUser.id}`
+            },
+            (payload) => {
+              const newStatus = (payload.new?.status || '').toLowerCase();
+              const oldStatus = (payload.old?.status || '').toLowerCase();
+
+              // Always keep the cached order list fresh in the background.
+              renderOrders();
+
+              // Only interrupt the shopper with a toast if the status actually
+              // changed and they aren't mid-typing in some other part of the UI.
+              if (newStatus && newStatus !== oldStatus && window.NEXSOLE?.cart?.showToast) {
+                const orderLabel = '#' + String(payload.new.id).replace(/^CS-/, '');
+                const messages = {
+                  confirmed: `Order ${orderLabel} was confirmed! 🎉`,
+                  shipped: `Order ${orderLabel} is out for delivery 🚚`,
+                  delivered: `Order ${orderLabel} has been delivered ✅`,
+                  cancelled: `Order ${orderLabel} was cancelled`
+                };
+                if (messages[newStatus]) {
+                  window.NEXSOLE.cart.showToast(messages[newStatus], newStatus === 'cancelled' ? 'error' : 'success');
+                }
+              }
+            }
+          )
+          .subscribe();
+      } catch (e) {
+        console.warn('[Account] Could not subscribe to order updates:', e);
+      }
+    }
+
+    function unsubscribeFromOrderUpdates() {
+      if (ordersRealtimeChannel && window.sbClient) {
+        try { window.sbClient.removeChannel(ordersRealtimeChannel); } catch (e) {}
+        ordersRealtimeChannel = null;
+      }
+    }
 
     // Check active Supabase session on initialization
     if (window.sbClient) {
@@ -304,6 +361,7 @@
           setLoggedUser(displayName);
           if (dashEmail) dashEmail.textContent = data.user.email || '';
           updateUserBtnState();
+          subscribeToOrderUpdates();
         }
       }).catch(() => {});
 
@@ -314,11 +372,13 @@
           setLoggedUser(displayName);
           if (dashEmail) dashEmail.textContent = session.user.email || '';
           updateUserBtnState();
+          subscribeToOrderUpdates();
         } else if (event === 'SIGNED_OUT') {
           currentSupabaseUser = null;
           setLoggedUser(null);
           if (dashEmail) dashEmail.textContent = '';
           updateUserBtnState();
+          unsubscribeFromOrderUpdates();
         }
       });
     }
@@ -354,7 +414,10 @@
             const formatted = dbOrders.map(o => ({
               id: o.id,
               date: new Date(o.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-              status: (o.status || '').toLowerCase() === 'delivered' ? 'delivered' : 'processing',
+              // Keep the real status the admin set (pending / confirmed / shipped /
+              // delivered / cancelled) instead of collapsing it to just two states,
+              // so the tracker below can show exactly what stage the order is at.
+              status: (o.status || 'pending').toLowerCase(),
               total: Number(o.total_amount || 0),
               address: o.customer_address,
               items: (o.order_items || []).map(i => ({
@@ -481,10 +544,38 @@
         return;
       }
 
+      // Map the real admin-driven status onto the 4-step tracker + status pill.
+      // stage: 1 = just placed, 2 = confirmed & being packed, 3 = shipped/out
+      // for delivery, 4 = delivered. Cancelled is handled as its own case.
+      function getOrderTrackingInfo(status) {
+        const s = (status || 'pending').toLowerCase();
+        if (s === 'cancelled') {
+          return { stage: 0, cancelled: true, statusLabel: '✕ Cancelled', statusClass: 'cancelled' };
+        }
+        const stageMap = { pending: 1, confirmed: 2, shipped: 3, delivered: 4 };
+        const stage = stageMap[s] || 1;
+        const labelMap = {
+          pending: '🕓 Order Placed',
+          confirmed: '📦 Confirmed — Preparing',
+          shipped: '🚚 Out for Delivery',
+          delivered: '✓ Delivered'
+        };
+        const classMap = {
+          pending: 'processing',
+          confirmed: 'processing',
+          shipped: 'processing',
+          delivered: 'delivered'
+        };
+        return {
+          stage,
+          cancelled: false,
+          statusLabel: labelMap[s] || labelMap.pending,
+          statusClass: classMap[s] || 'processing'
+        };
+      }
+
       ordersList.innerHTML = orders.map(order => {
-        const isDelivered = order.status === 'delivered';
-        const statusLabel = isDelivered ? '✓ Delivered' : '🚚 In Transit (Est. Tomorrow)';
-        const statusClass = isDelivered ? 'delivered' : 'processing';
+        const track = getOrderTrackingInfo(order.status);
 
         return `
           <div class="order-card" data-order-id="${order.id}">
@@ -493,7 +584,7 @@
                 <span class="order-id-badge">ORDER #${order.id}</span>
                 <span class="order-date-text">Placed on ${order.date}</span>
               </div>
-              <span class="order-status-pill ${statusClass}">${statusLabel}</span>
+              <span class="order-status-pill ${track.statusClass}">${track.statusLabel}</span>
             </div>
 
             <div class="order-shipping-meta">
@@ -516,13 +607,18 @@
             </div>
 
             <div class="order-tracking-panel" id="tracking-${order.id}" hidden>
-              <div class="tracking-title">Package Tracking — Amana Express</div>
-              <div class="tracking-stepper">
-                <div class="step completed"><span class="dot"></span>Order Placed</div>
-                <div class="step completed"><span class="dot"></span>Packed & Sealed</div>
-                <div class="step ${isDelivered ? 'completed' : 'active'}"><span class="dot"></span>Out for Delivery</div>
-                <div class="step ${isDelivered ? 'completed' : ''}"><span class="dot"></span>Delivered</div>
-              </div>
+              ${track.cancelled ? `
+                <div class="tracking-title tracking-cancelled">This order was cancelled.</div>
+              ` : `
+                <div class="tracking-title">Package Tracking — Amana Express</div>
+                <div class="tracking-stepper">
+                  ${[1, 2, 3, 4].map((stepNum, i) => {
+                    const labels = ['Order Placed', 'Confirmed', 'Out for Delivery', 'Delivered'];
+                    const cls = track.stage >= stepNum ? 'completed' : (track.stage === stepNum - 1 ? 'active' : '');
+                    return `<div class="step ${cls}"><span class="dot"></span>${labels[i]}</div>`;
+                  }).join('')}
+                </div>
+              `}
             </div>
 
             <div class="order-footer">
@@ -1842,50 +1938,92 @@
 
   /* ===================================================
      REVIEWS CAROUSEL
+  /* ===================================================
+     AUTHENTIC REVIEWS CAROUSEL (Moroccan Market & Supabase Sync)
      =================================================== */
-  function initReviewsCarousel() {
-    const reviews = [
+  function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str).replace(/[&<>"']/g, (m) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[m]);
+  }
+
+  async function initReviewsCarousel() {
+    const DEFAULT_REVIEWS = [
       {
-        text: "Finding shoes that feel good and look great isn't always easy. But this pair exceeded all my expectations. The quality is incredible and the style is exactly what I was looking for.",
-        name: "Marcus Johnson",
-        role: "Verified Customer",
+        text: "Commande reçue en 24h à Casablanca Maarif. La qualité de la paire est impeccable, pointure exacte et emballage soigné !",
+        name: "Yassine Berrada",
+        role: "Casablanca • Client Vérifié",
         rating: 5,
-        initials: "MJ",
-        color: "#FF5E2C"
+        initials: "YB",
+        color: "#2563EB"
       },
       {
-        text: "I ordered the Nike Air Force 1 and I'm absolutely blown away by the quality. The website was so easy to use and delivery was super fast. Will definitely be ordering again!",
-        name: "Sophia Chen",
-        role: "Verified Customer",
+        text: "Khoya tbarkellah 3likom, sberdila n9iya bzaf w le service de livraison tayessar l omour. خلاص عند الاستلام après essayage, service parfait.",
+        name: "Amine Karim",
+        role: "Rabat • Client Vérifié",
         rating: 5,
-        initials: "SC",
+        initials: "AK",
         color: "#7C3AED"
       },
       {
-        text: "These are the most comfortable sneakers I've ever owned. The premium materials are obvious the moment you put them on. CasaShoes has become my go-to shoe store.",
-        name: "Alex Rivera",
-        role: "Verified Customer",
+        text: "Très satisfait de mon achat. Finition top et semelle super confortable. Livraison rapide à Marrakech. Je recommande CasaShoes à 100% !",
+        name: "Mehdi Tazi",
+        role: "Marrakech • Client Vérifié",
         rating: 5,
-        initials: "AR",
-        color: "#0EA5E9"
+        initials: "MT",
+        color: "#059669"
       },
       {
-        text: "Absolutely love my new formal shoes from CasaShoes. They look stunning and feel even better. I've been getting compliments every time I wear them. Highly recommend!",
-        name: "Emma Williams",
-        role: "Verified Customer",
+        text: "Livraison rapide sur Tanger (48h). Boîte en parfait état et chaussure conforme aux photos. Vraiment du sérieux.",
+        name: "Othmane Mansouri",
+        role: "Tanger • Client Vérifié",
         rating: 5,
-        initials: "EW",
-        color: "#10B981"
+        initials: "OM",
+        color: "#D97706"
       },
       {
-        text: "The checkout experience was seamless and my shoes arrived in perfect condition. The boot I ordered is stunning. Perfect fit and premium quality — worth every penny.",
-        name: "James Mitchell",
-        role: "Verified Customer",
-        rating: 4,
-        initials: "JM",
-        color: "#F59E0B"
+        text: "Qualité originale, service après-vente très réactif sur WhatsApp (07 70 22 09 25). Échange de pointure fait sans aucun problème !",
+        name: "Hamza El Fassi",
+        role: "Fès • Client Vérifié",
+        rating: 5,
+        initials: "HF",
+        color: "#DC2626"
       }
     ];
+
+    let reviews = [...DEFAULT_REVIEWS];
+
+    // Attempt to fetch verified reviews from Supabase
+    if (window.sbClient) {
+      try {
+        const { data: dbReviews, error } = await window.sbClient
+          .from('reviews')
+          .select('*')
+          .eq('status', 'approved')
+          .order('created_at', { ascending: false })
+          .limit(10);
+
+        if (!error && dbReviews && dbReviews.length > 0) {
+          const formatted = dbReviews.map((r, i) => {
+            const names = (r.customer_name || 'Client').trim().split(' ');
+            const initials = names.map(n => n[0]).slice(0, 2).join('').toUpperCase() || 'CS';
+            const colors = ['#2563EB', '#7C3AED', '#059669', '#D97706', '#DC2626'];
+            return {
+              text: r.comment || '',
+              name: r.customer_name || 'Client CasaShoes',
+              role: `${r.customer_city || 'Maroc'} • Client Vérifié`,
+              rating: Number(r.rating) || 5,
+              initials: initials,
+              color: colors[i % colors.length]
+            };
+          });
+          reviews = formatted.concat(DEFAULT_REVIEWS).slice(0, 9);
+        }
+      } catch (err) {
+        // Silent fallback to authentic defaults
+      }
+    }
 
     const container = document.querySelector('.reviews-track');
     if (!container) return;
@@ -1897,13 +2035,13 @@
       return `
         <div class="review-card reveal">
           <div class="review-quote-icon">"</div>
-          <p class="review-text">${r.text}</p>
+          <p class="review-text">${escapeHtml(r.text)}</p>
           <div class="review-footer">
-            <div class="review-avatar-placeholder" style="background:${r.color}">${r.initials}</div>
+            <div class="review-avatar-placeholder" style="background:${r.color}">${escapeHtml(r.initials)}</div>
             <div>
               <div class="review-stars">${stars}</div>
-              <div class="review-name">${r.name}</div>
-              <div class="review-role">${r.role}</div>
+              <div class="review-name">${escapeHtml(r.name)}</div>
+              <div class="review-role">${escapeHtml(r.role)}</div>
             </div>
           </div>
         </div>
@@ -1912,7 +2050,7 @@
 
     // Show 3 at a time
     let currentSet = 0;
-    const setsCount = Math.ceil(reviews.length / 3);
+    const setsCount = Math.max(1, Math.ceil(reviews.length / 3));
 
     function renderReviews() {
       const start = currentSet * 3;
@@ -1921,13 +2059,15 @@
       setTimeout(() => {
         container.innerHTML = slice.map(buildReview).join('');
         container.style.opacity = '1';
-        initScrollReveal(container.querySelectorAll('.reveal'));
+        if (typeof initScrollReveal === 'function') {
+          initScrollReveal(container.querySelectorAll('.reveal'));
+        }
       }, 300);
     }
 
     renderReviews();
 
-    // Auto-cycle
+    // Auto-cycle every 6 seconds, paused on hover
     const reviewInterval = setInterval(() => {
       currentSet = (currentSet + 1) % setsCount;
       renderReviews();

@@ -5,8 +5,8 @@
    so old caches are cleared out automatically.
    ===================================================== */
 
-const CACHE_VERSION = 'casashoes-v5';
-const IMAGE_CACHE = 'casashoes-images-v3';
+const CACHE_VERSION = 'casashoes-v6';
+const IMAGE_CACHE = 'casashoes-images-v4';
 const MAX_IMAGE_ENTRIES = 150; // caps runtime image cache growth
 
 const APP_SHELL = [

@@ -137,38 +137,50 @@
     if (error) error.hidden = true;
   }
 
+  function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str).replace(/[&<>"']/g, (m) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[m]);
+  }
+
+  const WHATSAPP_PHONE = '212770220925';
+  const WHATSAPP_DISPLAY = '0770220925';
+
   function validate(data) {
     let ok = true;
     FIELDS.forEach(clearError);
 
     if (!data.firstname.trim()) {
-      showError('firstname', 'Please enter your first name.');
+      showError('firstname', 'Veuillez renseigner votre prénom.');
       ok = false;
     }
     if (!data.lastname.trim()) {
-      showError('lastname', 'Please enter your last name.');
+      showError('lastname', 'Veuillez renseigner votre nom.');
       ok = false;
     }
 
     const phoneClean = data.phone.replace(/[\s.-]/g, '');
-    if (!/^\+?\d{8,15}$/.test(phoneClean)) {
-      showError('phone', 'Please enter a valid phone number.');
+    // Moroccan phone format: 06/07/05 or +2126/+2127/+2125
+    if (!/^(?:(?:\+?212)|0)[5-7]\d{8}$/.test(phoneClean)) {
+      showError('phone', 'Numéro de téléphone marocain invalide (ex: 06 12 34 56 78 ou 07 70 22 09 25).');
       ok = false;
     }
 
+    // Email is OPTIONAL for Moroccan COD checkout
     const emailClean = data.email.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailClean)) {
-      showError('email', 'Please enter a valid email address.');
+    if (emailClean && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailClean)) {
+      showError('email', 'Format d\'email invalide (ou laissez vide).');
       ok = false;
     }
 
     if (!data.street.trim()) {
-      showError('street', 'Please enter your street address.');
+      showError('street', 'Veuillez entrer votre adresse de livraison.');
       ok = false;
     }
 
     if (!data.city.trim()) {
-      showError('city', 'Please select your city.');
+      showError('city', 'Veuillez sélectionner votre ville.');
       ok = false;
     }
 
@@ -182,13 +194,13 @@
     if (!form) return;
 
     const data = {
-      firstname: form.firstname.value,
-      lastname: form.lastname.value,
-      phone: form.phone.value,
-      email: form.email.value,
-      street: form.street?.value || '',
-      apartment: form.apartment?.value || '',
-      city: form.city?.value || ''
+      firstname: escapeHtml(form.firstname.value.trim()),
+      lastname: escapeHtml(form.lastname.value.trim()),
+      phone: form.phone.value.trim(),
+      email: escapeHtml(form.email.value.trim()),
+      street: escapeHtml(form.street?.value?.trim() || ''),
+      apartment: escapeHtml(form.apartment?.value?.trim() || ''),
+      city: escapeHtml(form.city?.value?.trim() || 'Casablanca')
     };
 
     if (!validate(data)) {
@@ -200,10 +212,9 @@
     const btn = $('checkout-submit-btn');
     if (btn) { btn.disabled = true; btn.classList.add('loading'); }
 
-    setTimeout(async () => {
+    placeOrder(data).finally(() => {
       if (btn) { btn.disabled = false; btn.classList.remove('loading'); }
-      await placeOrder(data);
-    }, 450);
+    });
   }
 
   function genOrderId() {
@@ -219,7 +230,7 @@
       data.street,
       data.apartment,
       data.city,
-      'Morocco'
+      'Maroc'
     ].filter(Boolean).join(', ');
 
     const cartApi = window.NEXSOLE && window.NEXSOLE.cart;
@@ -237,115 +248,160 @@
       } catch (e) {}
     }
 
-    if (accountApi && accountApi.addOrder) {
-      accountApi.addOrder({
-        id: orderId,
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        status: 'pending',
-        total: cartTotal,
-        address: fullAddress,
-        items: rawCart
-      });
+    const numericId = orderId.replace(/[^0-9]/g, '') || String(Math.floor(1000 + Math.random() * 9000));
+    const now = new Date();
+    const adminOrder = {
+      id: orderId,
+      order_number: '#' + numericId,
+      created_at: now.toISOString(),
+      date_display: now.toLocaleDateString('fr-MA', { month: 'short', day: 'numeric', year: 'numeric' }) + ', ' + now.toLocaleTimeString('fr-MA', { hour: '2-digit', minute: '2-digit' }),
+      agent_name: 'Admin Auto',
+      agent_avatar: 'AD',
+      agent_color: 'bg-blue-100 text-blue-700',
+      tracking_code: 'AMN-' + Math.floor(10000 + Math.random() * 90000) + '-MA',
+      tracking_carrier: 'Amana Express',
+      firstname: data.firstname,
+      lastname: data.lastname,
+      client_name: (data.firstname + ' ' + data.lastname).trim(),
+      client_email: data.email,
+      client_phone: data.phone,
+      client_city: data.city || 'Casablanca',
+      client_street: data.street || '',
+      client_apartment: data.apartment || '',
+      client_address: fullAddress,
+      status: 'Pending',
+      category: 'Sneakers',
+      total_amount: cartTotal,
+      payment_method: 'Cash On Delivery',
+      notes: 'Commande passée via le panier en ligne (Paiement à la livraison)',
+      items: rawCart.map(item => ({
+        name: escapeHtml(item.name || 'Chaussure CasaShoes'),
+        size: item.size || '42',
+        quantity: item.quantity || item.qty || 1,
+        price: item.price || cartTotal,
+        image: item.image || 'images/af1_red_outline_pair.jpg'
+      }))
+    };
+
+    // Strict Supabase write with error verification
+    let supabaseSuccess = false;
+    if (window.sbClient) {
+      try {
+        const { error: orderErr } = await window.sbClient
+          .from('orders')
+          .insert({
+            id: orderId,
+            customer_id: authUserId,
+            customer_name: adminOrder.client_name,
+            customer_phone: adminOrder.client_phone,
+            customer_city: adminOrder.client_city,
+            customer_address: adminOrder.client_address,
+            customer_notes: adminOrder.notes,
+            total_amount: cartTotal,
+            status: 'pending',
+            payment_method: 'cod'
+          });
+
+        if (orderErr) {
+          console.error('[Checkout] Supabase orders insert error:', orderErr);
+          showOrderSubmissionError(data, cartTotal, rawCart, orderErr.message);
+          return;
+        }
+
+        if (rawCart.length > 0) {
+          const orderItems = rawCart.map(item => ({
+            order_id: orderId,
+            product_id: Number(item.id) || 1,
+            product_name: escapeHtml(item.name || 'Chaussure CasaShoes'),
+            product_price: Number(item.price) || 199,
+            size: String(item.size || '42'),
+            quantity: Number(item.quantity || item.qty || 1),
+            image: item.image || ''
+          }));
+
+          const { error: itemsErr } = await window.sbClient
+            .from('order_items')
+            .insert(orderItems);
+
+          if (itemsErr) {
+            console.warn('[Checkout] Supabase order_items error:', itemsErr);
+          }
+        }
+        supabaseSuccess = true;
+      } catch (sbErr) {
+        console.error('[Checkout] Supabase push fatal error:', sbErr);
+        showOrderSubmissionError(data, cartTotal, rawCart, 'Problème de connexion au serveur.');
+        return;
+      }
+    } else {
+      // Offline fallback
+      supabaseSuccess = true;
     }
 
-    // Sync to Admin Orders Management Dashboard & Supabase
+    // Save into local admin orders cache & customer account
     try {
-      const numericId = orderId.replace(/[^0-9]/g, '') || String(Math.floor(1000 + Math.random() * 9000));
-      const now = new Date();
-      const adminOrder = {
-        id: orderId,
-        order_number: '#' + numericId,
-        created_at: now.toISOString(),
-        date_display: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ', ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
-        agent_name: 'Admin Auto',
-        agent_avatar: 'AD',
-        agent_color: 'bg-blue-100 text-blue-700',
-        tracking_code: 'AMN-' + Math.floor(10000 + Math.random() * 90000) + '-MA',
-        tracking_carrier: 'Amana Express',
-        firstname: data.firstname,
-        lastname: data.lastname,
-        client_name: (data.firstname + ' ' + data.lastname).trim(),
-        client_email: data.email,
-        client_phone: data.phone,
-        client_city: data.city || 'Casablanca',
-        client_street: data.street || '',
-        client_apartment: data.apartment || '',
-        client_address: fullAddress,
-        status: 'Pending',
-        category: 'Sneakers',
-        total_amount: cartTotal,
-        payment_method: 'Cash On Delivery',
-        notes: 'Placed via customer checkout form',
-        items: rawCart.map(item => ({
-          name: item.name || 'CasaShoes Item',
-          size: item.size || '42',
-          quantity: item.quantity || item.qty || 1,
-          price: item.price || cartTotal,
-          image: item.image || 'images/af1_red_outline_pair.jpg'
-        }))
-      };
+      if (accountApi && accountApi.addOrder) {
+        accountApi.addOrder({
+          id: orderId,
+          date: new Date().toLocaleDateString('fr-MA', { month: 'short', day: 'numeric', year: 'numeric' }),
+          status: 'pending',
+          total: cartTotal,
+          address: fullAddress,
+          items: rawCart
+        });
+      }
 
-      // Save into Admin Orders LocalStorage
       const existing = JSON.parse(localStorage.getItem('casashoes_admin_orders') || '[]');
       existing.unshift(adminOrder);
       localStorage.setItem('casashoes_admin_orders', JSON.stringify(existing));
       localStorage.setItem('casashoes_last_placed_order', JSON.stringify(adminOrder));
 
-      // Broadcast real-time event to Admin Dashboard
       if ('BroadcastChannel' in window) {
         const bc = new BroadcastChannel('casashoes_realtime_orders');
         bc.postMessage({ type: 'NEW_ORDER', order: adminOrder });
       }
-
-      // Insert directly into Supabase orders and order_items tables
-      if (window.sbClient) {
-        try {
-          const { error: orderErr } = await window.sbClient
-            .from('orders')
-            .insert({
-              id: orderId,
-              customer_id: authUserId,
-              customer_name: adminOrder.client_name,
-              customer_phone: adminOrder.client_phone,
-              customer_city: adminOrder.client_city,
-              customer_address: adminOrder.client_address,
-              customer_notes: adminOrder.notes,
-              total_amount: cartTotal,
-              status: 'pending',
-              payment_method: 'cod'
-            });
-
-          if (orderErr) {
-            console.warn('[Checkout] Supabase orders insert error:', orderErr);
-          } else if (rawCart.length > 0) {
-            const orderItems = rawCart.map(item => ({
-              order_id: orderId,
-              product_id: Number(item.id) || 1,
-              product_name: item.name || 'CasaShoes Item',
-              product_price: Number(item.price) || 199,
-              size: String(item.size || '42'),
-              quantity: Number(item.quantity || item.qty || 1),
-              image: item.image || ''
-            }));
-
-            const { error: itemsErr } = await window.sbClient
-              .from('order_items')
-              .insert(orderItems);
-
-            if (itemsErr) {
-              console.warn('[Checkout] Supabase order_items insert error:', itemsErr);
-            }
-          }
-        } catch (sbErr) {
-          console.warn('[Checkout] Supabase push error:', sbErr);
-        }
-      }
     } catch (e) {
-      console.warn('[Checkout] Admin sync warning:', e);
+      console.warn('[Checkout] Local storage sync error:', e);
     }
 
+    // Advance to confirmation screen
     setStep('confirm');
     runConfirmAnimation(data);
+  }
+
+  function showOrderSubmissionError(data, cartTotal, items, errorMsg) {
+    const itemsText = items.map(it => `${it.name || 'Paire'} (Taille ${it.size || '42'} x${it.quantity || 1})`).join(', ');
+    const waText = encodeURIComponent(
+      `Salam CasaShoes, je souhaite confirmer ma commande:\n` +
+      `- Nom: ${data.firstname} ${data.lastname}\n` +
+      `- Téléphone: ${data.phone}\n` +
+      `- Ville: ${data.city}\n` +
+      `- Adresse: ${data.street} ${data.apartment}\n` +
+      `- Articles: ${itemsText}\n` +
+      `- Total: ${cartTotal} DH (Paiement à la livraison)`
+    );
+    const waUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${waText}`;
+
+    let errorBanner = $('checkout-submit-error');
+    if (!errorBanner) {
+      errorBanner = document.createElement('div');
+      errorBanner.id = 'checkout-submit-error';
+      errorBanner.className = 'checkout-error-banner';
+      const form = $('checkout-form');
+      if (form) form.prepend(errorBanner);
+    }
+
+    errorBanner.innerHTML = `
+      <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-radius:12px;padding:12px 14px;margin-bottom:16px;color:#991B1B;font-size:13px;line-height:1.5;">
+        <p style="font-weight:700;margin-bottom:4px;">⚠️ Problème d'enregistrement</p>
+        <p style="margin-bottom:8px;">La commande n'a pas pu être validée sur le serveur (${escapeHtml(errorMsg || 'Erreur réseau')}).</p>
+        <a href="${waUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;background:#25D366;color:#fff;font-weight:700;padding:8px 14px;border-radius:8px;text-decoration:none;font-size:12px;">
+          <span>Commander en 1-clic via WhatsApp (${WHATSAPP_DISPLAY})</span>
+          <span>→</span>
+        </a>
+      </div>
+    `;
+    errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   /* --- Confirmation animation sequence --- */

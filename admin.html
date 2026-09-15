@@ -31,11 +31,13 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-client.js?v=2.6"></script>
 
-  <!-- Protected Route Guard (No database required, .env & crypto authenticated) -->
-  <script src="js/admin-auth.js?v=2.6"></script>
+  <!-- Protected Route Guard (Verified via Supabase Auth & Profile Role) -->
+  <script src="js/admin-auth.js?v=3.0"></script>
   <script>
     if (!window.AdminAuth || !window.AdminAuth.isAuthenticated()) {
       window.location.replace('admin-login.html');
+    } else {
+      window.AdminAuth.requireAuth();
     }
   </script>
 
