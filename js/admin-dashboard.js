@@ -54,7 +54,12 @@
 
     const cleanPhone = sanitizePhoneNumber(orderData.client_phone || orderData.phone);
     const customerName = (orderData.client_name || `${orderData.firstname || ''} ${orderData.lastname || ''}`).trim() || 'الزبون المحترم';
-    const orderNumber = orderData.order_number || orderData.id || '';
+    // order_number is sometimes already stored with a leading "#" (see
+    // checkout.js: order_number: '#' + numericId). Strip any leading #
+    // here so the template below can safely add exactly ONE # itself,
+    // instead of producing a literal "##" in the message text.
+    const rawOrderNumber = orderData.order_number || orderData.id || '';
+    const orderNumber = String(rawOrderNumber).replace(/^#+/, '');
     const totalAmount = Number(orderData.total_amount || 0).toFixed(2);
 
     // Format products / items list
