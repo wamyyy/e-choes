@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>EL WAMY — Admin Sign In</title>
+  <title>EL WAMY — Admin</title>
 
   <!-- PWA & Mobile Meta Tags -->
   <link rel="manifest" href="admin-manifest.json">
@@ -83,25 +83,14 @@
         <h1 class="font-display font-extrabold text-2xl text-slate-900 tracking-tight">
           EL <span class="text-blue-600">WAMY</span>
         </h1>
-        <p class="text-xs text-slate-500 mt-1 font-medium">Store Operations & Admin Dashboard</p>
+        <p class="text-xs text-slate-500 mt-1 font-medium">Admin Dashboard</p>
       </div>
 
-      <!-- Tab Switcher: Sign In vs Register Admin -->
-      <div class="flex p-1 bg-slate-100 rounded-2xl mb-5">
-        <button 
-          type="button" 
-          id="tab-signin" 
-          class="flex-1 py-2 text-xs font-bold rounded-xl bg-white shadow-sm text-blue-600 transition-all"
-        >
+      <!-- Sign In -->
+      <div class="mb-5">
+        <div class="w-full py-2 text-center text-xs font-bold rounded-xl bg-white text-blue-600">
           Sign In
-        </button>
-        <button 
-          type="button" 
-          id="tab-register" 
-          class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all"
-        >
-          Register Admin
-        </button>
+        </div>
       </div>
 
       <!-- Alert Messages -->
@@ -121,21 +110,6 @@
 
       <!-- Auth Form -->
       <form id="admin-login-form" class="space-y-4" autocomplete="on">
-        
-        <!-- Full Name (Only for Register) -->
-        <div id="field-fullname" class="hidden">
-          <label for="admin-fullname" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-            Full Name
-          </label>
-          <div class="relative">
-            <input 
-              type="text" 
-              id="admin-fullname" 
-              placeholder="e.g. Marwan Elwamy" 
-              class="w-full px-4 py-3 bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-2xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all"
-            >
-          </div>
-        </div>
 
         <!-- Email Field -->
         <div>
@@ -234,7 +208,6 @@
           </svg>
           <span>Back to Store</span>
         </a>
-        <span class="text-[11px] text-slate-400">CasaShoes Supabase Auth</span>
       </div>
 
     </div>
@@ -243,12 +216,9 @@
 
   <script>
     (function() {
-      let isRegisterMode = false;
       const form = document.getElementById('admin-login-form');
       const emailInput = document.getElementById('admin-email');
       const passInput = document.getElementById('admin-password');
-      const fullnameInput = document.getElementById('admin-fullname');
-      const fieldFullname = document.getElementById('field-fullname');
       const rowRemember = document.getElementById('row-remember');
       const rememberCheckbox = document.getElementById('remember-me');
       const togglePassBtn = document.getElementById('btn-toggle-password');
@@ -261,36 +231,8 @@
       const errorText = document.getElementById('login-error-text');
       const successAlert = document.getElementById('login-success-alert');
       const successText = document.getElementById('login-success-text');
-      const tabSignIn = document.getElementById('tab-signin');
-      const tabRegister = document.getElementById('tab-register');
 
-      // 1. Tab Switching
-      tabSignIn.addEventListener('click', () => setMode(false));
-      tabRegister.addEventListener('click', () => setMode(true));
-
-      function setMode(register) {
-        isRegisterMode = register;
-        hideAlerts();
-        if (isRegisterMode) {
-          tabRegister.classList.add('bg-white', 'shadow-sm', 'text-blue-600');
-          tabRegister.classList.remove('text-slate-600');
-          tabSignIn.classList.remove('bg-white', 'shadow-sm', 'text-blue-600');
-          tabSignIn.classList.add('text-slate-600');
-          fieldFullname.classList.remove('hidden');
-          rowRemember.classList.add('hidden');
-          submitText.textContent = 'Create Admin Account';
-        } else {
-          tabSignIn.classList.add('bg-white', 'shadow-sm', 'text-blue-600');
-          tabSignIn.classList.remove('text-slate-600');
-          tabRegister.classList.remove('bg-white', 'shadow-sm', 'text-blue-600');
-          tabRegister.classList.add('text-slate-600');
-          fieldFullname.classList.add('hidden');
-          rowRemember.classList.remove('hidden');
-          submitText.textContent = 'Sign In to Dashboard';
-        }
-      }
-
-      // 2. Password Visibility Toggle
+      // 1. Password Visibility Toggle
       let isPassVisible = false;
       togglePassBtn.addEventListener('click', () => {
         isPassVisible = !isPassVisible;
@@ -304,14 +246,16 @@
         }
       });
 
-      // 3. Form Submission
+      // 2. Form Submission — sign in only. Admin accounts are created and
+      // promoted exclusively from the Supabase SQL Editor by the site owner
+      // (SELECT public.promote_user_to_admin('email');) — there is
+      // intentionally no self-serve "Register Admin" option on this page.
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         hideAlerts();
 
         const email = emailInput.value.trim();
         const password = passInput.value;
-        const fullName = fullnameInput.value.trim() || 'Store Administrator';
         const remember = rememberCheckbox.checked;
 
         if (!email || !password) {
@@ -322,37 +266,17 @@
         setLoading(true);
 
         try {
-          if (isRegisterMode) {
-            const res = await window.AdminAuth.registerAdmin(email, password, fullName);
-            setLoading(false);
-            if (res.success) {
-              showSuccess(res.message || 'Account created! Signing you in...');
-              // Attempt login right away
-              setTimeout(async () => {
-                const loginRes = await window.AdminAuth.login(email, password, true);
-                if (loginRes.success) {
-                  window.location.replace('admin.html');
-                } else {
-                  setMode(false);
-                  showSuccess('Admin registered! Please sign in with your credentials.');
-                }
-              }, 1200);
-            } else {
-              showError(res.message || 'Registration failed.');
-            }
+          const res = await window.AdminAuth.login(email, password, remember);
+          if (res.success) {
+            submitText.textContent = 'Verified! Redirecting...';
+            const params = new URLSearchParams(window.location.search);
+            const redirect = params.get('redirect') ? decodeURIComponent(params.get('redirect')) : 'admin.html';
+            setTimeout(() => {
+              window.location.replace(redirect);
+            }, 300);
           } else {
-            const res = await window.AdminAuth.login(email, password, remember);
-            if (res.success) {
-              submitText.textContent = 'Verified! Redirecting...';
-              const params = new URLSearchParams(window.location.search);
-              const redirect = params.get('redirect') ? decodeURIComponent(params.get('redirect')) : 'admin.html';
-              setTimeout(() => {
-                window.location.replace(redirect);
-              }, 300);
-            } else {
-              setLoading(false);
-              showError(res.message || 'Invalid email or password.');
-            }
+            setLoading(false);
+            showError(res.message || 'Invalid email or password.');
           }
         } catch (err) {
           setLoading(false);
@@ -384,12 +308,12 @@
         if (isLoading) {
           submitBtn.disabled = true;
           submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
-          submitText.textContent = isRegisterMode ? 'Creating Account...' : 'Verifying...';
+          submitText.textContent = 'Verifying...';
           submitSpinner.classList.remove('hidden');
         } else {
           submitBtn.disabled = false;
           submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
-          submitText.textContent = isRegisterMode ? 'Create Admin Account' : 'Sign In to Dashboard';
+          submitText.textContent = 'Sign In to Dashboard';
           submitSpinner.classList.add('hidden');
         }
       }

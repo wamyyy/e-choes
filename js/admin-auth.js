@@ -138,53 +138,14 @@
       }
     },
 
-    /**
-     * Sign up a new admin account (First-time setup helper)
-     */
-    async registerAdmin(email, password, fullName = 'Administrator') {
-      const cleanEmail = (email || '').trim().toLowerCase();
-      const cleanPass = password || '';
-
-      if (!cleanEmail || !cleanPass) {
-        return { success: false, message: 'Please enter both email and password.' };
-      }
-
-      if (!window.sbClient) {
-        return { success: false, message: 'Supabase client is not available.' };
-      }
-
-      try {
-        const { data, error } = await window.sbClient.auth.signUp({
-          email: cleanEmail,
-          password: cleanPass,
-          options: {
-            data: {
-              full_name: fullName,
-              role: 'admin'
-            }
-          }
-        });
-
-        if (error) {
-          return { success: false, message: error.message };
-        }
-
-        // NOTE: we no longer auto-promote here. A freshly registered account
-        // is just a normal ('customer') account until the site owner
-        // explicitly promotes it from the Supabase SQL Editor. This is what
-        // stops anyone who fills in this form from becoming an admin on
-        // their own — see prevent_role_self_escalation trigger + the
-        // REVOKE on promote_user_to_admin() in supabase-schema.sql.
-        return { 
-          success: true, 
-          user: data.user,
-          session: data.session,
-          message: 'Account created. It is NOT an admin yet — ask the site owner to run: SELECT public.promote_user_to_admin(\'' + cleanEmail + '\'); in the Supabase SQL Editor before you can sign in here.'
-        };
-      } catch (err) {
-        return { success: false, message: err.message || 'Registration failed.' };
-      }
-    },
+    // NOTE: registerAdmin() was removed entirely. Admin accounts are created
+    // and promoted exclusively from the Supabase SQL Editor by the site
+    // owner — there is no self-serve "become an admin" path in this file or
+    // on admin-login.html anymore. This is the client-side half of closing
+    // the self-promotion security hole (see supabase-schema.sql for the
+    // database-side half: REVOKE on promote_user_to_admin(), the
+    // prevent_role_self_escalation trigger, and handle_new_user() hardcoding
+    // role='customer' on every signup).
 
     /**
      * Clear all local authentication credentials
